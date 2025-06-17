@@ -80,11 +80,12 @@ button:hover {
   max-width: 600px;
   background-color: white;
   margin-bottom: 2rem;
+  border: 2px solid black; /* černý rámeček */
 }
 
 #zahonyTable th,
 #zahonyTable td {
-  border: 1px solid #ccc;
+  border: 2px solid black; /* silnější čáry uvnitř */
   padding: 0.5rem 1rem;
   text-align: left;
 }
