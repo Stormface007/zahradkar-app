@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 // ZDE vlož svojí vlastní Apps Script URL, kterou už máš vytvořenou:
-const APPS_SCRIPT_URL = "hhttps://script.google.com/macros/s/AKfycbyQ8W0o7Kb_BR-umdOYho6DG4h4f7UXle3wsDOy6DbZMA6IwXaZ2bXKMui5VcwFQIn9/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQ8W0o7Kb_BR-umdOYho6DG4h4f7UXle3wsDOy6DbZMA6IwXaZ2bXKMui5VcwFQIn9/exec";
 
 exports.handler = async function(event, context) {
     const params = event.rawQuery ? "?" + event.rawQuery : "";
