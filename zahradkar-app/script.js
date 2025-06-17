@@ -53,7 +53,10 @@ function loadZahony() {
           <td class="id-column">${zahon.ZahonID}</td>
           <td>${zahon.NazevZahonu}</td>
           <td>${zahon.Velikost_m2} m²</td>
-          <td><button onclick="deleteZahon(${zahon.ZahonID})">Smazat</button></td>
+          <td>
+            <button onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Velikost_m2})">Upravit</button>
+            <button onclick="deleteZahon(${zahon.ZahonID})">🗑️</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -87,4 +90,31 @@ function deleteZahon(zahonID) {
   fetch(proxyUrl + "?" + params)
     .then(res => res.text())
     .then(() => loadZahony());
+}
+
+function editZahon(zahonID, nazev, velikost) {
+  document.getElementById("editZahonID").value = zahonID;
+  document.getElementById("editNazev").value = nazev;
+  document.getElementById("editVelikost").value = velikost;
+}
+
+function saveEdit() {
+  const zahonID = document.getElementById("editZahonID").value;
+  const nazev = document.getElementById("editNazev").value;
+  const velikost = document.getElementById("editVelikost").value;
+
+  const params = new URLSearchParams();
+  params.append("action", "updateZahon");
+  params.append("ZahonID", zahonID);
+  params.append("NazevZahonu", nazev);
+  params.append("Velikost_m2", velikost);
+
+  fetch(proxyUrl + "?" + params)
+    .then(res => res.text())
+    .then(() => {
+      document.getElementById("editZahonID").value = "";
+      document.getElementById("editNazev").value = "";
+      document.getElementById("editVelikost").value = "";
+      loadZahony();
+    });
 }
