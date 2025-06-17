@@ -108,6 +108,12 @@ button:hover {
   display: none;
 }
 
+/* 👇 Zmenšení sloupce velikosti */
+#zahonyTable th.velikost-column,
+#zahonyTable td:nth-child(3) {
+  width: 80px;
+}
+
 button.mini-btn {
   padding: 0.5rem;
   width: 40px;
