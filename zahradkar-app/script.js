@@ -54,8 +54,8 @@ function loadZahony() {
           <td>${zahon.NazevZahonu}</td>
           <td>${zahon.Velikost_m2} m²</td>
           <td>
-            <button onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Velikost_m2})">Upravit</button>
-            <button onclick="deleteZahon(${zahon.ZahonID})">🗑️</button>
+            <button class="mini-btn" onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Velikost_m2})">✏️</button>
+            <button class="mini-btn" onclick="deleteZahon(${zahon.ZahonID})">🗑️</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -93,6 +93,5 @@ function deleteZahon(zahonID) {
 }
 
 function editZahon(zahonID, nazev, velikost) {
-  // místo formuláře zde můžeš otevřít modal nebo provést další akci
-  alert("Zde bude možnost úpravy: " + nazev + " (" + velikost + " m²)");
+  alert(`Úprava záhonu: ${nazev} (${velikost} m²) — Tato funkce bude brzy přidána.`);
 }
