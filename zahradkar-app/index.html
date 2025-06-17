@@ -38,9 +38,14 @@
     <input type="text" id="newNazev" placeholder="Název záhonu" />
     <input type="number" id="newVelikost" placeholder="Velikost v m²" />
     <button onclick="addZahon()">Přidat</button>
+
+    <h3>Upravit záhon</h3>
+    <input type="hidden" id="editZahonID" />
+    <input type="text" id="editNazev" placeholder="Název záhonu" />
+    <input type="number" id="editVelikost" placeholder="Velikost v m²" />
+    <button onclick="saveEdit()">Uložit změny</button>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
