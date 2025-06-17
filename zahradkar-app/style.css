@@ -1,12 +1,10 @@
-body {
+html, body {
+  height: 100%;
+  overflow: auto;
   margin: 0;
   padding: 0;
   background-color: #009900;
   font-family: 'Segoe UI', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
 #loginDiv {
@@ -16,6 +14,8 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   width: 90%;
   max-width: 400px;
+  margin: auto;
+  margin-top: 10vh;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -70,12 +70,20 @@ button:hover {
   align-items: center;
   padding: 2rem;
   color: #333;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
 }
 
 #zahonyTable {
   border-collapse: collapse;
   width: 100%;
-  max-width: 600px;
+  min-width: 400px;
   background-color: white;
   margin-bottom: 2rem;
   border: 2px solid black;
@@ -86,6 +94,7 @@ button:hover {
   border: 2px solid black;
   padding: 0.5rem 1rem;
   text-align: left;
+  white-space: nowrap;
 }
 
 #zahonyTable th {
