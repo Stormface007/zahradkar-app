@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #e8f5e9; /* světle zelená */
+  background-color: #c8e6c9; /* tmavší zelená */
   font-family: 'Segoe UI', sans-serif;
   display: flex;
   justify-content: center;
@@ -19,11 +19,6 @@ body {
   text-align: center;
 }
 
-#loginDiv h2 {
-  margin-bottom: 1rem;
-  color: #2e7d32;
-}
-
 input[type="text"], input[type="password"] {
   width: 100%;
   padding: 0.75rem;
@@ -34,7 +29,7 @@ input[type="text"], input[type="password"] {
 
 button {
   padding: 0.75rem 1.5rem;
-  background-color: #43a047;
+  background-color: #388e3c; /* tmavší zelené tlačítko */
   color: white;
   border: none;
   border-radius: 8px;
@@ -44,7 +39,7 @@ button {
 }
 
 button:hover {
-  background-color: #388e3c;
+  background-color: #2e7d32;
 }
 
 #loginMsg {
