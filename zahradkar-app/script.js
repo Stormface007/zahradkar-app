@@ -93,28 +93,6 @@ function deleteZahon(zahonID) {
 }
 
 function editZahon(zahonID, nazev, velikost) {
-  document.getElementById("editZahonID").value = zahonID;
-  document.getElementById("editNazev").value = nazev;
-  document.getElementById("editVelikost").value = velikost;
-}
-
-function saveEdit() {
-  const zahonID = document.getElementById("editZahonID").value;
-  const nazev = document.getElementById("editNazev").value;
-  const velikost = document.getElementById("editVelikost").value;
-
-  const params = new URLSearchParams();
-  params.append("action", "updateZahon");
-  params.append("ZahonID", zahonID);
-  params.append("NazevZahonu", nazev);
-  params.append("Velikost_m2", velikost);
-
-  fetch(proxyUrl + "?" + params)
-    .then(res => res.text())
-    .then(() => {
-      document.getElementById("editZahonID").value = "";
-      document.getElementById("editNazev").value = "";
-      document.getElementById("editVelikost").value = "";
-      loadZahony();
-    });
+  // místo formuláře zde můžeš otevřít modal nebo provést další akci
+  alert("Zde bude možnost úpravy: " + nazev + " (" + velikost + " m²)");
 }
