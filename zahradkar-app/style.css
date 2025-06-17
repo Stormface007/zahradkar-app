@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #009900; /* tvoje tmavší zelená */
+  background-color: #009900;
   font-family: 'Segoe UI', sans-serif;
   display: flex;
   justify-content: center;
@@ -64,8 +64,6 @@ button:hover {
   margin-bottom: 1rem;
 }
 
-/* appDiv a tabulka */
-
 #appDiv {
   display: flex;
   flex-direction: column;
@@ -80,12 +78,12 @@ button:hover {
   max-width: 600px;
   background-color: white;
   margin-bottom: 2rem;
-  border: 2px solid black; /* černý rámeček */
+  border: 2px solid black;
 }
 
 #zahonyTable th,
 #zahonyTable td {
-  border: 2px solid black; /* silnější čáry uvnitř */
+  border: 2px solid black;
   padding: 0.5rem 1rem;
   text-align: left;
 }
@@ -94,10 +92,7 @@ button:hover {
   background-color: #f5f5f5;
 }
 
-#zahonyTable td.id-column {
-  display: none;
-}
-
+#zahonyTable td.id-column,
 #zahonyTable th.id-column {
   display: none;
 }
