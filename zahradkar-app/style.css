@@ -1,8 +1,6 @@
 html, body {
   height: 100%;
-  overflow: auto;
   margin: 0;
-  padding: 0;
   background-color: #009900;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -11,15 +9,11 @@ html, body {
   background: white;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   width: 90%;
   max-width: 400px;
   margin: auto;
   margin-top: 10vh;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 input[type="text"],
@@ -38,27 +32,19 @@ input[type="password"],
 
 button {
   padding: 0.75rem 1.5rem;
-  background-color: #ffffff;
+  background-color: white;
   color: #009900;
   border: 2px solid #009900;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 1rem;
-  width: 100%;
-  max-width: 300px;
   font-weight: bold;
+  margin-top: 1rem;
   transition: all 0.3s ease;
 }
 
 button:hover {
   background-color: #009900;
   color: white;
-}
-
-#loginMsg {
-  color: red;
-  margin-top: 1rem;
-  font-size: 0.9rem;
 }
 
 .logo {
@@ -87,7 +73,7 @@ button:hover {
   width: 100%;
   min-width: 400px;
   background-color: white;
-  margin-bottom: 2rem;
+  margin-top: 1rem;
   border: 2px solid black;
 }
 
@@ -99,38 +85,11 @@ button:hover {
   white-space: nowrap;
 }
 
-#zahonyTable th {
-  background-color: #f5f5f5;
-}
-
-#zahonyTable td.id-column,
-#zahonyTable th.id-column {
-  display: none;
-}
-
-/* 👇 Zmenšení sloupce velikosti */
 #zahonyTable th.velikost-column,
 #zahonyTable td:nth-child(3) {
   width: 80px;
 }
 
-button.mini-btn {
-  padding: 0.5rem;
-  width: 40px;
-  font-size: 1.2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 4px;
-  border: 2px solid #009900;
-  background-color: white;
-  color: #009900;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.table-actions {
+  margin-top: 1rem;
 }
-
-button.mini-btn:hover {
-  background-color: #009900;
-  color: white;
-} 
