@@ -21,28 +21,24 @@
 
     <button onclick="logout()" style="margin-bottom: 1rem;">Odhlásit se</button>
 
-    <table id="zahonyTable">
-      <thead>
-        <tr>
-          <th class="id-column">ID</th>
-          <th>Název záhonu</th>
-          <th>Velikost</th>
-          <th>Akce</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-container">
+      <table id="zahonyTable">
+        <thead>
+          <tr>
+            <th class="id-column">ID</th>
+            <th>Název záhonu</th>
+            <th>Velikost</th>
+            <th>Akce</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <h3>Přidat nový záhon</h3>
     <input type="text" id="newNazev" placeholder="Název záhonu" />
     <input type="number" id="newVelikost" placeholder="Velikost v m²" />
     <button onclick="addZahon()">Přidat</button>
-
-    <h3>Upravit záhon</h3>
-    <input type="hidden" id="editZahonID" />
-    <input type="text" id="editNazev" placeholder="Název záhonu" />
-    <input type="number" id="editVelikost" placeholder="Velikost v m²" />
-    <button onclick="saveEdit()">Uložit změny</button>
   </div>
 
   <script src="script.js"></script>
