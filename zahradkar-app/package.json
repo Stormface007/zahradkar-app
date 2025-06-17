@@ -1,0 +1,9 @@
+{
+  "name": "zahradkar-app",
+  "version": "1.0.0",
+  "description": "Zahrádkářský systém s Netlify Functions",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
