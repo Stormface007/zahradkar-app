@@ -53,8 +53,9 @@ function loadZahony() {
           <td class="id-column">${zahon.ZahonID}</td>
           <td>${zahon.NazevZahonu}</td>
           <td>${zahon.Velikost_m2} m²</td>
-          <td><button onclick="deleteZahon(${zahon.ZahonID})">Smazat</button></td>
-        `;
+         <td><button onclick="deleteZahon(${zahon.ZahonID})" class="deleteBtn" title="Smazat">
+  🗑️
+</button></td>
         tbody.appendChild(tr);
       });
     });
