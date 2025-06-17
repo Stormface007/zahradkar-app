@@ -31,7 +31,7 @@ function login() {
 function logout() {
   userID = null;
   document.getElementById("appDiv").style.display = "none";
-  document.getElementById("loginDiv").style.display = "flex";
+  document.getElementById("loginDiv").style.display = "block";
   document.getElementById("username").value = "";
   document.getElementById("password").value = "";
   document.getElementById("loginMsg").innerText = "";
@@ -50,13 +50,11 @@ function loadZahony() {
       data.forEach(zahon => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="id-column">${zahon.ZahonID}</td>
-          <td>${zahon.NazevZahonu}</td>
-          <td>${zahon.Velikost_m2} m²</td>
-          <td>
-            <button class="mini-btn" onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Velikost_m2})">✏️</button>
-            <button class="mini-btn" onclick="deleteZahon(${zahon.ZahonID})">🗑️</button>
+          <td><input type="checkbox" class="zahonCheckbox" data-id="${zahon.ZahonID}"></td>
+          <td class="clickable" onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Velikost_m2})">
+            ${zahon.NazevZahonu}
           </td>
+          <td>${zahon.Velikost_m2} m²</td>
         `;
         tbody.appendChild(tr);
       });
@@ -82,16 +80,20 @@ function addZahon() {
     });
 }
 
-function deleteZahon(zahonID) {
-  const params = new URLSearchParams();
-  params.append("action", "deleteZahon");
-  params.append("ZahonID", zahonID);
+function deleteSelected() {
+  const checkboxes = document.querySelectorAll(".zahonCheckbox:checked");
+  checkboxes.forEach(cb => {
+    const zahonID = cb.getAttribute("data-id");
+    const params = new URLSearchParams();
+    params.append("action", "deleteZahon");
+    params.append("ZahonID", zahonID);
 
-  fetch(proxyUrl + "?" + params)
-    .then(res => res.text())
-    .then(() => loadZahony());
+    fetch(proxyUrl + "?" + params)
+      .then(res => res.text())
+      .then(() => loadZahony());
+  });
 }
 
 function editZahon(zahonID, nazev, velikost) {
-  alert(`Úprava záhonu: ${nazev} (${velikost} m²) — Tato funkce bude brzy přidána.`);
-} 
+  alert(`Úprava záhonu: ${nazev} (${velikost} m²) — Funkce bude doplněna.`);
+}
