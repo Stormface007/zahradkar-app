@@ -94,4 +94,4 @@ function deleteZahon(zahonID) {
 
 function editZahon(zahonID, nazev, velikost) {
   alert(`Úprava záhonu: ${nazev} (${velikost} m²) — Tato funkce bude brzy přidána.`);
-}
+} 
