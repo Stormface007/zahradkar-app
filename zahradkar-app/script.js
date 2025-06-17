@@ -11,18 +11,27 @@ function login() {
     params.append("password", password);
 
     fetch(proxyUrl + "?" + params)
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            userID = data.userID;
-            document.getElementById("loginDiv").style.display = "none";
-            document.getElementById("appDiv").style.display = "block";
-            loadZahony();
-        } else {
-            document.getElementById("loginMsg").innerText = "Neplatné přihlášení.";
-        }
-    })
-    .catch(err => console.error(err));
+        .then(async res => {
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error("Chybná odpověď z proxy: " + text);
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                userID = data.userID;
+                document.getElementById("loginDiv").style.display = "none";
+                document.getElementById("appDiv").style.display = "block";
+                loadZahony();
+            } else {
+                document.getElementById("loginMsg").innerText = "Neplatné přihlášení.";
+            }
+        })
+        .catch(err => {
+            console.error("Chyba při přihlašování:", err);
+            document.getElementById("loginMsg").innerText = "Chyba na serveru.";
+        });
 }
 
 function loadZahony() {
@@ -31,21 +40,28 @@ function loadZahony() {
     params.append("userID", userID);
 
     fetch(proxyUrl + "?" + params)
-    .then(res => res.json())
-    .then(data => {
-        const tbody = document.querySelector("#zahonyTable tbody");
-        tbody.innerHTML = "";
-        data.forEach(zahon => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${zahon.ZahonID}</td>
-                <td>${zahon.NazevZahonu}</td>
-                <td>${zahon.Velikost_m2}</td>
-                <td><button onclick="deleteZahon(${zahon.ZahonID})">Smazat</button></td>
-            `;
-            tbody.appendChild(tr);
-        });
-    });
+        .then(async res => {
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error("Chybná odpověď z proxy: " + text);
+            }
+            return res.json();
+        })
+        .then(data => {
+            const tbody = document.querySelector("#zahonyTable tbody");
+            tbody.innerHTML = "";
+            data.forEach(zahon => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${zahon.ZahonID}</td>
+                    <td>${zahon.NazevZahonu}</td>
+                    <td>${zahon.Velikost_m2}</td>
+                    <td><button onclick="deleteZahon(${zahon.ZahonID})">Smazat</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(err => console.error("Chyba při načítání záhonů:", err));
 }
 
 function addZahon() {
@@ -59,12 +75,12 @@ function addZahon() {
     params.append("Velikost_m2", velikost);
 
     fetch(proxyUrl + "?" + params)
-    .then(res => res.text())
-    .then(() => {
-        document.getElementById("newNazev").value = "";
-        document.getElementById("newVelikost").value = "";
-        loadZahony();
-    });
+        .then(res => res.text())
+        .then(() => {
+            document.getElementById("newNazev").value = "";
+            document.getElementById("newVelikost").value = "";
+            loadZahony();
+        });
 }
 
 function deleteZahon(zahonID) {
@@ -73,6 +89,6 @@ function deleteZahon(zahonID) {
     params.append("ZahonID", zahonID);
 
     fetch(proxyUrl + "?" + params)
-    .then(res => res.text())
-    .then(() => loadZahony());
+        .then(res => res.text())
+        .then(() => loadZahony());
 }
