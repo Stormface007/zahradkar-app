@@ -61,6 +61,48 @@
 
       <button onclick="saveZahon()">Uložit změny</button>
       <button onclick="closeModal()">Zavřít</button>
+      <!-- ODDĚLENÍ -->
+<hr style="margin: 20px 0;">
+
+<!-- SEKCE: Přidání události -->
+<h3>Přidat událost</h3>
+
+<div id="udalostForm">
+  <label for="udalostTyp">Typ události:</label>
+  <select id="udalostTyp" onchange="handleTypChange()">
+    <option value="">Vyberte</option>
+    <option value="seti">Setí</option>
+    <option value="hnojeni">Hnojení</option>
+    <option value="sklizen">Sklizeň</option>
+  </select><br>
+
+  <label for="udalostDatum">Datum:</label>
+  <input type="date" id="udalostDatum"><br>
+
+  <div id="udalostPlodinaDiv" style="display: none;">
+    <label for="udalostPlodina">Plodina:</label>
+    <select id="udalostPlodina"></select><br>
+  </div>
+
+  <div id="udalostHnojivoDiv" style="display: none;">
+    <label for="udalostHnojivo">Hnojivo:</label>
+    <select id="udalostHnojivo"></select><br>
+
+    <label for="udalostMnozstvi">Množství (kg):</label>
+    <input type="number" id="udalostMnozstvi"><br>
+  </div>
+
+  <div id="udalostVynosDiv" style="display: none;">
+    <label for="udalostVynos">Výnos (kg):</label>
+    <input type="number" id="udalostVynos"><br>
+  </div>
+
+  <label for="udalostPoznamka">Poznámka:</label>
+  <input type="text" id="udalostPoznamka"><br><br>
+
+  <button onclick="ulozUdalost()">Uložit událost</button>
+</div>
+
     </div>
   </div>
 
