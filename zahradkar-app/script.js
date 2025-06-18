@@ -233,3 +233,32 @@ function smazUdalost(id) {
       nactiUdalosti();
     });
 }
+function nactiPlodiny() {
+  fetch(proxyUrl + "?action=getPlodiny")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById("udalostPlodina");
+      select.innerHTML = "";
+      data.forEach(p => {
+        const option = document.createElement("option");
+        option.value = p.nazev;
+        option.textContent = p.nazev;
+        select.appendChild(option);
+      });
+    });
+}
+
+function nactiHnojiva() {
+  fetch(proxyUrl + "?action=getHnojiva")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById("udalostHnojivo");
+      select.innerHTML = "";
+      data.forEach(h => {
+        const option = document.createElement("option");
+        option.value = h.nazev;
+        option.textContent = h.nazev;
+        select.appendChild(option);
+      });
+    });
+}
