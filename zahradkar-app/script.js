@@ -46,32 +46,13 @@ function loadZahony() {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><input type="checkbox" class="zahonCheckbox" data-id="${zahon.ZahonID}"></td>
-          <td onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Delka || 0}, ${zahon.Sirka || 0})">
+          <td onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Delka}, ${zahon.Sirka})">
             ${zahon.NazevZahonu}
           </td>
           <td>${zahon.Velikost_m2} m²</td>
         `;
         tbody.appendChild(tr);
       });
-    });
-}
-
-function addZahon() {
-  const nazev = document.getElementById("newNazev").value;
-  const velikost = document.getElementById("newVelikost").value;
-
-  const params = new URLSearchParams();
-  params.append("action", "addZahon");
-  params.append("userID", userID);
-  params.append("NazevZahonu", nazev);
-  params.append("Velikost_m2", velikost);
-
-  fetch(proxyUrl + "?" + params)
-    .then(res => res.text())
-    .then(() => {
-      document.getElementById("newNazev").value = "";
-      document.getElementById("newVelikost").value = "";
-      loadZahony();
     });
 }
 
@@ -84,7 +65,6 @@ function deleteSelected() {
     params.append("ZahonID", zahonID);
 
     fetch(proxyUrl + "?" + params)
-      .then(res => res.text())
       .then(() => loadZahony());
   });
 }
@@ -92,10 +72,11 @@ function deleteSelected() {
 function editZahon(id, nazev, delka, sirka) {
   currentZahonID = id;
   document.getElementById("editNazev").value = nazev;
-  document.getElementById("editDelka").value = delka || "";
-  document.getElementById("editSirka").value = sirka || "";
+  document.getElementById("editDelka").value = delka;
+  document.getElementById("editSirka").value = sirka;
   updatePlocha();
   document.getElementById("modal").style.display = "flex";
+  nactiUdalosti(); // načíst události při otevření
 }
 
 function updatePlocha() {
@@ -108,12 +89,11 @@ function updatePlocha() {
   const scale = 200 / Math.max(d, s || 1);
   viz.style.width = (s * scale) + "px";
   viz.style.height = (d * scale) + "px";
-  viz.style.backgroundColor = "#d2b48c";
 }
 
 function closeModal() {
   document.getElementById("modal").style.display = "none";
-  currentZahonID = null;
+  document.getElementById("udalostFormContainer").innerHTML = "";
 }
 
 function saveZahon() {
@@ -126,70 +106,133 @@ function saveZahon() {
   params.append("Velikost_m2", document.getElementById("vypocetPlochy").innerText);
 
   fetch(proxyUrl + "?" + params)
-    .then(res => res.text())
     .then(() => {
       closeModal();
       loadZahony();
     });
 }
 
+// Formulář událostí
 function showUdalostForm(typ) {
   currentTypUdalosti = typ;
   const container = document.getElementById("udalostFormContainer");
   container.innerHTML = "";
 
-  let html = `<p><strong>${typ.charAt(0).toUpperCase() + typ.slice(1)}</strong></p>`;
-  html += `<input type="date" id="udalostDatum" /><br/>`;
+  let html = `
+    <p><strong>${typ.toUpperCase()}</strong></p>
+    <label>Datum:</label><input type="date" id="udalostDatum"><br>
+  `;
 
-  if (typ === "seti") {
-    html += `<input type="text" id="udalostPlodina" placeholder="Plodina" />`;
-  } else if (typ === "hnojeni") {
-    html += `<input type="text" id="udalostHnojivo" placeholder="Hnojivo" />`;
-    html += `<input type="number" id="udalostMnozstvi" placeholder="Množství (kg)" />`;
-  } else if (typ === "sklizen") {
-    html += `<input type="text" id="udalostPlodina" placeholder="Plodina" />`;
-    html += `<input type="number" id="udalostVynos" placeholder="Výnos (kg)" />`;
+  if (typ === "seti" || typ === "sklizen") {
+    html += `<label>Plodina:</label><select id="udalostPlodina"></select><br>`;
+    nactiPlodinySelect("udalostPlodina");
   }
 
-  html += `<textarea id="udalostPoznamka" placeholder="Poznámka"></textarea>`;
-  html += `<button onclick="saveUdalost()">Uložit ${typ}</button>`;
+  if (typ === "hnojeni") {
+    html += `<label>Hnojivo:</label><select id="udalostHnojivo"></select><br>`;
+    html += `<label>Množství (kg):</label><input type="number" id="udalostMnozstvi"><br>`;
+    nactiHnojivaSelect("udalostHnojivo");
+  }
+
+  if (typ === "sklizen") {
+    html += `<label>Výnos (kg):</label><input type="number" id="udalostVynos"><br>`;
+  }
+
+  html += `<label>Poznámka:</label><textarea id="udalostPoznamka"></textarea><br>`;
+  html += `<button onclick="saveUdalost()">Uložit událost</button>`;
 
   container.innerHTML = html;
 }
 
-function saveUdalost() {
-  const datum = document.getElementById("udalostDatum").value;
-  const poznamka = document.getElementById("udalostPoznamka").value;
+function nactiPlodinySelect(id) {
+  fetch(proxyUrl + "?action=getPlodiny")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById(id);
+      data.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.nazev;
+        opt.textContent = p.nazev;
+        select.appendChild(opt);
+      });
+    });
+}
 
+function nactiHnojivaSelect(id) {
+  fetch(proxyUrl + "?action=getHnojiva")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById(id);
+      data.forEach(h => {
+        const opt = document.createElement("option");
+        opt.value = h.nazev;
+        opt.textContent = h.nazev;
+        select.appendChild(opt);
+      });
+    });
+}
+
+function saveUdalost() {
   const params = new URLSearchParams();
   params.append("action", "addUdalost");
   params.append("zahonID", currentZahonID);
   params.append("typ", currentTypUdalosti);
-  params.append("datum", datum);
-  params.append("poznamka", poznamka);
+  params.append("datum", document.getElementById("udalostDatum").value);
+  params.append("poznamka", document.getElementById("udalostPoznamka").value);
 
   if (currentTypUdalosti === "seti") {
     params.append("plodina", document.getElementById("udalostPlodina").value);
   }
-
   if (currentTypUdalosti === "hnojeni") {
     params.append("hnojivo", document.getElementById("udalostHnojivo").value);
     params.append("mnozstvi", document.getElementById("udalostMnozstvi").value);
   }
-
   if (currentTypUdalosti === "sklizen") {
     params.append("plodina", document.getElementById("udalostPlodina").value);
     params.append("vynos", document.getElementById("udalostVynos").value);
   }
 
-  fetch(proxyUrl + "?" + params.toString())
-    .then(res => res.text())
+  fetch(proxyUrl + "?" + params)
     .then(() => {
       alert("Událost uložena.");
-      document.getElementById("udalostFormContainer").innerHTML = "";
-    })
-    .catch(err => {
-      console.error("Chyba při ukládání události:", err);
-      alert("Chyba při ukládání události.");
+      showUdalostForm(currentTypUdalosti);
+      nactiUdalosti();
+    });
+}
+
+function nactiUdalosti() {
+  const params = new URLSearchParams();
+  params.append("action", "getUdalosti");
+  params.append("zahonID", currentZahonID);
+
+  fetch(proxyUrl + "?" + params)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("udalostFormContainer");
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = "<h4>Existující události:</h4>";
+
+      data.forEach(udalost => {
+        const div = document.createElement("div");
+        div.className = "udalostItem";
+        div.innerHTML = `
+          <strong>${udalost.typ.toUpperCase()}</strong> – ${udalost.datum}
+          <button onclick="smazUdalost(${udalost.id})">🗑️</button>
+        `;
+        wrapper.appendChild(div);
+      });
+
+      container.appendChild(wrapper);
+    });
+}
+
+function smazUdalost(id) {
+  const params = new URLSearchParams();
+  params.append("action", "deleteUdalost");
+  params.append("udalostID", id);
+
+  fetch(proxyUrl + "?" + params)
+    .then(() => {
+      nactiUdalosti();
     });
 }
