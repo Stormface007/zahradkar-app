@@ -1,8 +1,7 @@
-html, body {
+body {
   margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
   background-color: #009900;
-  font-family: 'Segoe UI', sans-serif;
 }
 
 #loginDiv {
@@ -18,101 +17,94 @@ html, body {
 
 input[type="text"],
 input[type="password"],
-#appDiv input[type="text"],
-#appDiv input[type="number"],
-.modal input {
+input[type="number"] {
   width: 100%;
   max-width: 300px;
   padding: 0.75rem;
   margin: 0.5rem 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: 2px solid black;
+  border-radius: 6px;
   font-size: 1rem;
-  box-sizing: border-box;
 }
 
 button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   background-color: white;
   color: #009900;
   border: 2px solid #009900;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  margin-top: 1rem;
-  transition: all 0.3s ease;
-}
-
-button:hover {
-  background-color: #009900;
-  color: white;
-}
-
-.logo {
-  width: 120px;
-  margin-bottom: 1rem;
+  margin: 0.5rem;
 }
 
 #appDiv {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 2rem;
-  color: #333;
-  width: 100%;
-  box-sizing: border-box;
+  color: black;
+  text-align: center;
 }
 
 .table-container {
   overflow-x: auto;
-  width: 100%;
-  max-width: 100%;
 }
 
 #zahonyTable {
   border-collapse: collapse;
   width: 100%;
-  min-width: 400px;
-  background-color: white;
+  background: white;
   margin-top: 1rem;
   border: 2px solid black;
 }
 
-#zahonyTable th,
-#zahonyTable td {
+#zahonyTable th, #zahonyTable td {
   border: 2px solid black;
-  padding: 0.5rem 1rem;
-  text-align: left;
-  white-space: nowrap;
+  padding: 0.5rem;
 }
 
-#zahonyTable th.velikost-column,
-#zahonyTable td:nth-child(3) {
-  width: 80px;
-}
-
-.table-actions {
-  margin-top: 1rem;
-}
-
-/* MODÁLNÍ OKNO */
 .modal {
   display: none;
   position: fixed;
   top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   justify-content: center;
   align-items: center;
-  z-index: 999;
 }
 
 .modal-content {
   background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  max-width: 400px;
+  padding: 1.5rem;
+  border-radius: 10px;
   width: 90%;
+  max-width: 500px;
   text-align: center;
+}
+
+.dimensions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dimensions input {
+  flex: 1;
+  background: white;
+  border: 2px solid black;
+  padding: 0.5rem;
+}
+
+.plocha {
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+#zahonVizualizace {
+  margin: 1rem auto;
+  background-color: #d2b48c; /* světle hnědá */
+  width: 200px;
+  height: 200px;
+  max-width: 100%;
+  max-height: 200px;
+  transition: all 0.3s ease;
 }
