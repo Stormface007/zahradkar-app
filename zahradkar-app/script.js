@@ -196,7 +196,71 @@ function saveUdalost() {
       nactiUdalosti();
     });
 }
+function loadUdalosti() {
+  const params = new URLSearchParams();
+  params.append("action", "getUdalosti");
+  params.append("zahonID", currentZahonID);
 
+  fetch(proxyUrl + "?" + params)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("udalostSeznamContainer");
+      container.innerHTML = "<h4>Události</h4>";
+      if (data.length === 0) {
+        container.innerHTML += "<p>Žádné události.</p>";
+        return;
+      }
+
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Typ</th>
+            <th>Datum</th>
+            <th>Plodina</th>
+            <th>Hnojivo</th>
+            <th>Množství</th>
+            <th>Výnos</th>
+            <th>Poznámka</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      `;
+
+      data.forEach(udalost => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${udalost.typ}</td>
+          <td>${udalost.datum}</td>
+          <td>${udalost.plodina || ""}</td>
+          <td>${udalost.hnojivo || ""}</td>
+          <td>${udalost.mnozstvi || ""}</td>
+          <td>${udalost.vynos || ""}</td>
+          <td>${udalost.poznamka || ""}</td>
+          <td><button onclick="deleteUdalost(${udalost.id})">❌</button></td>
+        `;
+        table.querySelector("tbody").appendChild(row);
+      });
+
+      container.appendChild(table);
+    });
+}
+
+function deleteUdalost(id) {
+  if (!confirm("Opravdu chcete smazat tuto událost?")) return;
+
+  const params = new URLSearchParams();
+  params.append("action", "deleteUdalost");
+  params.append("udalostID", id);
+
+  fetch(proxyUrl + "?" + params)
+    .then(res => res.text())
+    .then(() => {
+      alert("Událost smazána.");
+      loadUdalosti();
+    });
+}
 function nactiUdalosti() {
   const params = new URLSearchParams();
   params.append("action", "getUdalosti");
