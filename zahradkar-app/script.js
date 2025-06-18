@@ -17,7 +17,7 @@ function login() {
       if (data.success) {
         userID = data.userID;
         document.getElementById("loginDiv").style.display = "none";
-        document.getElementById("appDiv").style.display = "flex";
+        document.getElementById("appDiv").style.display = "block";
         loadZahony();
       } else {
         document.getElementById("loginMsg").innerText = "Neplatné přihlášení.";
@@ -45,7 +45,7 @@ function loadZahony() {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><input type="checkbox" class="zahonCheckbox" data-id="${zahon.ZahonID}"></td>
-          <td onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Velikost_m2})">
+          <td onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Delka}, ${zahon.Sirka})">
             ${zahon.NazevZahonu}
           </td>
           <td>${zahon.Velikost_m2} m²</td>
@@ -88,11 +88,25 @@ function deleteSelected() {
   });
 }
 
-function editZahon(id, nazev, velikost) {
+function editZahon(id, nazev, delka, sirka) {
   currentZahonID = id;
   document.getElementById("editNazev").value = nazev;
-  document.getElementById("editVelikost").value = velikost;
+  document.getElementById("editDelka").value = delka;
+  document.getElementById("editSirka").value = sirka;
+  updatePlocha();
   document.getElementById("modal").style.display = "flex";
+}
+
+function updatePlocha() {
+  const d = parseFloat(document.getElementById("editDelka").value) || 0;
+  const s = parseFloat(document.getElementById("editSirka").value) || 0;
+  const plocha = d * s;
+  document.getElementById("vypocetPlochy").innerText = plocha.toFixed(2);
+
+  const viz = document.getElementById("zahonVizualizace");
+  const scale = 200 / Math.max(d, s || 1);
+  viz.style.width = (s * scale) + "px";
+  viz.style.height = (d * scale) + "px";
 }
 
 function closeModal() {
@@ -105,7 +119,9 @@ function saveZahon() {
   params.append("action", "updateZahon");
   params.append("ZahonID", currentZahonID);
   params.append("NazevZahonu", document.getElementById("editNazev").value);
-  params.append("Velikost_m2", document.getElementById("editVelikost").value);
+  params.append("Delka", document.getElementById("editDelka").value);
+  params.append("Sirka", document.getElementById("editSirka").value);
+  params.append("Velikost_m2", document.getElementById("vypocetPlochy").innerText);
 
   fetch(proxyUrl + "?" + params)
     .then(res => res.text())
