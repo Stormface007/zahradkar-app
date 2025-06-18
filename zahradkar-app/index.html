@@ -43,12 +43,22 @@
     <button onclick="addZahon()">Přidat</button>
   </div>
 
-  <!-- MODÁLNÍ OKNO -->
+  <!-- NOVÉ MODÁLNÍ OKNO -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <h3>Úprava záhonu</h3>
+
       <input type="text" id="editNazev" placeholder="Název záhonu" />
-      <input type="number" id="editVelikost" placeholder="Velikost v m²" />
+
+      <div class="dimensions">
+        <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
+        <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
+      </div>
+
+      <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
+
+      <div id="zahonVizualizace"></div>
+
       <button onclick="saveZahon()">Uložit změny</button>
       <button onclick="closeModal()">Zavřít</button>
     </div>
