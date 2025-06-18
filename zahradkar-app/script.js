@@ -130,3 +130,77 @@ function saveZahon() {
       loadZahony();
     });
 }
+function zobrazUdalostForm(zahonID) {
+  document.getElementById("udalostForm").style.display = "block";
+  document.getElementById("udalostForm").setAttribute("data-zahonid", zahonID);
+  nactiPlodiny();
+  nactiHnojiva();
+}
+
+function handleTypChange() {
+  const typ = document.getElementById("udalostTyp").value;
+
+  document.getElementById("udalostPlodinaDiv").style.display = (typ === "seti") ? "block" : "none";
+  document.getElementById("udalostHnojivoDiv").style.display = (typ === "hnojeni") ? "block" : "none";
+  document.getElementById("udalostVynosDiv").style.display = (typ === "sklizen") ? "block" : "none";
+}
+
+function nactiPlodiny() {
+  fetch(proxyUrl + "?action=getPlodiny")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById("udalostPlodina");
+      select.innerHTML = "";
+      data.forEach(p => {
+        const option = document.createElement("option");
+        option.value = p.nazev;
+        option.textContent = p.nazev;
+        select.appendChild(option);
+      });
+    });
+}
+
+function nactiHnojiva() {
+  fetch(proxyUrl + "?action=getHnojiva")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById("udalostHnojivo");
+      select.innerHTML = "";
+      data.forEach(h => {
+        const option = document.createElement("option");
+        option.value = h.nazev;
+        option.textContent = h.nazev;
+        select.appendChild(option);
+      });
+    });
+}
+
+function ulozUdalost() {
+  const zahonID = document.getElementById("udalostForm").getAttribute("data-zahonid");
+  const typ = document.getElementById("udalostTyp").value;
+  const datum = document.getElementById("udalostDatum").value;
+  const plodina = document.getElementById("udalostPlodina").value;
+  const hnojivo = document.getElementById("udalostHnojivo").value;
+  const mnozstvi = document.getElementById("udalostMnozstvi").value;
+  const vynos = document.getElementById("udalostVynos").value;
+  const poznamka = document.getElementById("udalostPoznamka").value;
+
+  const params = new URLSearchParams();
+  params.append("action", "addUdalost");
+  params.append("zahonID", zahonID);
+  params.append("typ", typ);
+  params.append("datum", datum);
+  params.append("plodina", typ === "seti" ? plodina : "");
+  params.append("hnojivo", typ === "hnojeni" ? hnojivo : "");
+  params.append("mnozstvi", typ === "hnojeni" ? mnozstvi : "");
+  params.append("vynos", typ === "sklizen" ? vynos : "");
+  params.append("poznamka", poznamka);
+
+  fetch(proxyUrl + "?" + params)
+    .then(res => res.text())
+    .then(() => {
+      alert("Událost uložena.");
+      document.getElementById("udalostForm").reset();
+      document.getElementById("udalostForm").style.display = "none";
+    });
+}
