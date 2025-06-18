@@ -8,6 +8,7 @@
 </head>
 <body>
 
+  <!-- Přihlašovací formulář -->
   <div id="loginDiv">
     <img src="img/logo.png" alt="Logo" class="logo" />
     <input type="text" id="username" placeholder="Uživatelské jméno" />
@@ -16,6 +17,7 @@
     <div id="loginMsg"></div>
   </div>
 
+  <!-- Aplikace -->
   <div id="appDiv" style="display: none;">
     <h2>Moje záhony</h2>
     <button onclick="logout()">Odhlásit se</button>
@@ -43,7 +45,7 @@
     <button onclick="addZahon()">Přidat</button>
   </div>
 
-  <!-- NOVÉ MODÁLNÍ OKNO -->
+  <!-- MODÁLNÍ OKNO -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <h3>Úprava záhonu</h3>
@@ -56,41 +58,20 @@
       </div>
 
       <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
-
       <div id="zahonVizualizace"></div>
+
+      <!-- PŘEPÍNAČE PRO UDÁLOSTI -->
+      <div class="udalost-buttons">
+        <button onclick="showUdalostForm('seti')">Setí</button>
+        <button onclick="showUdalostForm('hnojeni')">Hnojení</button>
+        <button onclick="showUdalostForm('sklizen')">Sklizeň</button>
+      </div>
+
+      <!-- DYNAMICKÝ OBSAH PRO FORMULÁŘE UDÁLOSTÍ -->
+      <div id="udalostFormContainer"></div>
 
       <button onclick="saveZahon()">Uložit změny</button>
       <button onclick="closeModal()">Zavřít</button>
-    <!-- MODÁLNÍ OKNO -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <h3>Úprava záhonu</h3>
-
-    <input type="text" id="editNazev" placeholder="Název záhonu" />
-
-    <div class="dimensions">
-      <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
-      <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
-    </div>
-
-    <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
-    <div id="zahonVizualizace"></div>
-
-    <!-- PŘEPÍNAČE PRO UDÁLOSTI -->
-    <div class="udalost-buttons">
-      <button onclick="showUdalostForm('seti')">Setí</button>
-      <button onclick="showUdalostForm('hnojeni')">Hnojení</button>
-      <button onclick="showUdalostForm('sklizen')">Sklizeň</button>
-    </div>
-
-    <!-- DYNAMICKÝ OBSAH UDÁLOSTI -->
-    <div id="udalostFormContainer"></div>
-
-    <button onclick="saveZahon()">Uložit změny</button>
-    <button onclick="closeModal()">Zavřít</button>
-  </div>
-</div>
-
     </div>
   </div>
 
