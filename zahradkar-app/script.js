@@ -3,7 +3,7 @@ let userID = null;
 let currentZahonID = null;
 let currentTypUdalosti = "seti";
 
-// LOGIN
+// ✅ LOGIN
 function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
@@ -27,14 +27,14 @@ function login() {
     });
 }
 
-// ODHLÁŠENÍ
+// ✅ ODHLÁŠENÍ
 function logout() {
   userID = null;
   document.getElementById("appDiv").style.display = "none";
   document.getElementById("loginDiv").style.display = "block";
 }
 
-// NAČTENÍ ZÁHONŮ
+// ✅ NAČTENÍ ZÁHONŮ
 function loadZahony() {
   const params = new URLSearchParams();
   params.append("action", "getZahony");
@@ -59,7 +59,7 @@ function loadZahony() {
     });
 }
 
-// PŘIDÁNÍ NOVÉHO ZÁHONU
+// ✅ PŘIDÁNÍ ZÁHONU
 function addZahon() {
   const nazev = document.getElementById("newNazev").value;
   const velikost = document.getElementById("newVelikost").value;
@@ -79,7 +79,7 @@ function addZahon() {
     });
 }
 
-// SMAZÁNÍ VYBRANÝCH ZÁHONŮ
+// ✅ SMAZÁNÍ VÍCE ZÁHONŮ
 function deleteSelected() {
   const checkboxes = document.querySelectorAll(".zahonCheckbox:checked");
   checkboxes.forEach(cb => {
@@ -94,18 +94,18 @@ function deleteSelected() {
   });
 }
 
-// ÚPRAVA ZÁHONU
+// ✅ OTEVŘENÍ MODÁLU SE ZÁHONEM
 function editZahon(id, nazev, delka, sirka) {
   currentZahonID = id;
   document.getElementById("editNazev").value = nazev;
-  document.getElementById("editDelka").value = delka;
-  document.getElementById("editSirka").value = sirka;
+  document.getElementById("editDelka").value = delka || "";
+  document.getElementById("editSirka").value = sirka || "";
   updatePlocha();
   document.getElementById("modal").style.display = "flex";
-  loadUdalostiForZahon(id);
+  document.getElementById("udalostFormContainer").innerHTML = "";
 }
 
-// VÝPOČET A VIZUALIZACE PLOCHY
+// ✅ AKTUALIZACE PLOCHY A VIZUALIZACE
 function updatePlocha() {
   const d = parseFloat(document.getElementById("editDelka").value) || 0;
   const s = parseFloat(document.getElementById("editSirka").value) || 0;
@@ -118,23 +118,26 @@ function updatePlocha() {
   viz.style.height = (d * scale) + "px";
 }
 
-// ZAVŘENÍ MODÁLU
+// ✅ ZAVŘENÍ MODÁLU
 function closeModal() {
   document.getElementById("modal").style.display = "none";
-  document.getElementById("udalostFormContainer").innerHTML = "";
-  document.getElementById("udalostSeznamContainer").innerHTML = "";
   currentZahonID = null;
+  document.getElementById("udalostFormContainer").innerHTML = "";
 }
 
-// ULOŽENÍ ZÁHONU
+// ✅ ULOŽENÍ ZMĚN ZÁHONU
 function saveZahon() {
+  const d = parseFloat(document.getElementById("editDelka").value) || 0;
+  const s = parseFloat(document.getElementById("editSirka").value) || 0;
+  const m2 = d * s;
+
   const params = new URLSearchParams();
   params.append("action", "updateZahon");
   params.append("ZahonID", currentZahonID);
   params.append("NazevZahonu", document.getElementById("editNazev").value);
-  params.append("Delka_m", document.getElementById("editDelka").value);
-  params.append("Sirka_m", document.getElementById("editSirka").value);
-  params.append("Velikost_m2", document.getElementById("vypocetPlochy").innerText);
+  params.append("Delka_m", d);
+  params.append("Sirka_m", s);
+  params.append("Velikost_m2", m2.toFixed(2));
 
   fetch(proxyUrl + "?" + params)
     .then(res => res.text())
@@ -144,30 +147,31 @@ function saveZahon() {
     });
 }
 
-// ZOBRAZENÍ FORMULÁŘE UDÁLOSTI
+// ✅ FORMULÁŘ UDÁLOSTI
 function showUdalostForm(typ) {
   currentTypUdalosti = typ;
   const container = document.getElementById("udalostFormContainer");
   container.innerHTML = "";
 
-  let html = `<h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>
-    <label>Datum:</label><input type="date" id="udalostDatum"><br>`;
+  let html = `<p><strong>${typ.toUpperCase()}</strong></p>`;
+  html += `<label>Datum:</label><input type="date" id="udalostDatum"><br>`;
 
   if (typ === "seti" || typ === "sklizen") {
     html += `<label>Plodina:</label><select id="udalostPlodina"></select><br>`;
+    if (typ === "sklizen") {
+      html += `<label>Výnos (kg):</label><input type="number" id="udalostVynos"><br>`;
+    }
   }
 
   if (typ === "hnojeni") {
-    html += `<label>Hnojivo:</label><select id="udalostHnojivo"></select><br>
-             <label>Množství (kg):</label><input type="number" id="udalostMnozstvi"><br>`;
+    html += `
+      <label>Hnojivo:</label><select id="udalostHnojivo"></select><br>
+      <label>Množství (kg):</label><input type="number" id="udalostMnozstvi"><br>
+    `;
   }
 
-  if (typ === "sklizen") {
-    html += `<label>Výnos (kg):</label><input type="number" id="udalostVynos"><br>`;
-  }
-
-  html += `<label>Poznámka:</label><textarea id="udalostPoznamka"></textarea><br>
-           <button onclick="saveUdalost()">Uložit událost</button>`;
+  html += `<label>Poznámka:</label><textarea id="udalostPoznamka"></textarea><br>`;
+  html += `<button onclick="saveUdalost()">Uložit</button>`;
 
   container.innerHTML = html;
 
@@ -175,45 +179,12 @@ function showUdalostForm(typ) {
   if (typ === "hnojeni") nactiHnojiva();
 }
 
-// ULOŽENÍ UDÁLOSTI
-function saveUdalost() {
-  const datum = document.getElementById("udalostDatum").value;
-  const poznamka = document.getElementById("udalostPoznamka").value;
-  const params = new URLSearchParams();
-  params.append("action", "addUdalost");
-  params.append("zahonID", currentZahonID);
-  params.append("typ", currentTypUdalosti);
-  params.append("datum", datum);
-  params.append("poznamka", poznamka);
-
-  if (currentTypUdalosti === "seti") {
-    params.append("plodina", document.getElementById("udalostPlodina").value);
-  }
-  if (currentTypUdalosti === "hnojeni") {
-    params.append("hnojivo", document.getElementById("udalostHnojivo").value);
-    params.append("mnozstvi", document.getElementById("udalostMnozstvi").value);
-  }
-  if (currentTypUdalosti === "sklizen") {
-    params.append("plodina", document.getElementById("udalostPlodina").value);
-    params.append("vynos", document.getElementById("udalostVynos").value);
-  }
-
-  fetch(proxyUrl + "?" + params)
-    .then(res => res.text())
-    .then(() => {
-      alert("Událost uložena.");
-      showUdalostForm(currentTypUdalosti);
-      loadUdalostiForZahon(currentZahonID);
-    });
-}
-
-// NAČTI PLODINY
+// ✅ NAČTI PLODINY
 function nactiPlodiny() {
   fetch(proxyUrl + "?action=getPlodiny")
     .then(res => res.json())
     .then(data => {
       const select = document.getElementById("udalostPlodina");
-      select.innerHTML = "";
       data.forEach(p => {
         const option = document.createElement("option");
         option.value = p.nazev;
@@ -223,13 +194,12 @@ function nactiPlodiny() {
     });
 }
 
-// NAČTI HNOJIVA
+// ✅ NAČTI HNOJIVA
 function nactiHnojiva() {
   fetch(proxyUrl + "?action=getHnojiva")
     .then(res => res.json())
     .then(data => {
       const select = document.getElementById("udalostHnojivo");
-      select.innerHTML = "";
       data.forEach(h => {
         const option = document.createElement("option");
         option.value = h.nazev;
@@ -239,40 +209,32 @@ function nactiHnojiva() {
     });
 }
 
-// NAČTI EXISTUJÍCÍ UDÁLOSTI
-function loadUdalostiForZahon(zahonID) {
+// ✅ ULOŽENÍ UDÁLOSTI
+function saveUdalost() {
   const params = new URLSearchParams();
-  params.append("action", "getZahonUdalosti");
-  params.append("zahonID", zahonID);
+  params.append("action", "addUdalost");
+  params.append("zahonID", currentZahonID);
+  params.append("typ", currentTypUdalosti);
+  params.append("datum", document.getElementById("udalostDatum").value);
+  params.append("poznamka", document.getElementById("udalostPoznamka").value);
 
-  fetch(proxyUrl + "?" + params)
-    .then(res => res.json())
-    .then(data => {
-      const div = document.getElementById("udalostSeznamContainer");
-      div.innerHTML = "<h4>Události</h4>";
-      if (data.length === 0) {
-        div.innerHTML += "<p>Žádné události</p>";
-        return;
-      }
-      data.forEach(u => {
-        div.innerHTML += `
-          <div>
-            <strong>${u.Typ}</strong> - ${u.Datum} – ${u.Plodina || u.Hnojivo || ""} 
-            ${u.Mnozstvi_kg || u.Vynos_kg || ""} kg 
-            <button onclick="deleteUdalost(${u.UdalostID})">❌</button>
-          </div>
-        `;
-      });
-    });
-}
+  if (currentTypUdalosti === "seti" || currentTypUdalosti === "sklizen") {
+    params.append("plodina", document.getElementById("udalostPlodina").value);
+  }
 
-// SMAZAT UDÁLOST
-function deleteUdalost(id) {
-  const params = new URLSearchParams();
-  params.append("action", "deleteUdalost");
-  params.append("udalostID", id);
+  if (currentTypUdalosti === "sklizen") {
+    params.append("vynos", document.getElementById("udalostVynos").value);
+  }
+
+  if (currentTypUdalosti === "hnojeni") {
+    params.append("hnojivo", document.getElementById("udalostHnojivo").value);
+    params.append("mnozstvi", document.getElementById("udalostMnozstvi").value);
+  }
 
   fetch(proxyUrl + "?" + params)
     .then(res => res.text())
-    .then(() => loadUdalostiForZahon(currentZahonID));
+    .then(() => {
+      alert("Událost uložena.");
+      document.getElementById("udalostFormContainer").innerHTML = "";
+    });
 }
