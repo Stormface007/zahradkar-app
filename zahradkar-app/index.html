@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Přihlášení</title>
+  <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -41,6 +41,17 @@
     <input type="text" id="newNazev" placeholder="Název záhonu" />
     <input type="number" id="newVelikost" placeholder="Velikost v m²" />
     <button onclick="addZahon()">Přidat</button>
+  </div>
+
+  <!-- MODÁLNÍ OKNO -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h3>Úprava záhonu</h3>
+      <input type="text" id="editNazev" placeholder="Název záhonu" />
+      <input type="number" id="editVelikost" placeholder="Velikost v m²" />
+      <button onclick="saveZahon()">Uložit změny</button>
+      <button onclick="closeModal()">Zavřít</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
