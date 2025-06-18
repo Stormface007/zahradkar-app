@@ -1,5 +1,6 @@
 const proxyUrl = "/.netlify/functions/proxy";
 let userID = null;
+let currentZahonID = null;
 
 function login() {
   const username = document.getElementById("username").value;
@@ -21,10 +22,6 @@ function login() {
       } else {
         document.getElementById("loginMsg").innerText = "Neplatné přihlášení.";
       }
-    })
-    .catch(err => {
-      console.error("Chyba při přihlašování:", err);
-      document.getElementById("loginMsg").innerText = "Chyba připojení.";
     });
 }
 
@@ -32,9 +29,6 @@ function logout() {
   userID = null;
   document.getElementById("appDiv").style.display = "none";
   document.getElementById("loginDiv").style.display = "block";
-  document.getElementById("username").value = "";
-  document.getElementById("password").value = "";
-  document.getElementById("loginMsg").innerText = "";
 }
 
 function loadZahony() {
@@ -51,7 +45,7 @@ function loadZahony() {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><input type="checkbox" class="zahonCheckbox" data-id="${zahon.ZahonID}"></td>
-          <td class="clickable" onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Velikost_m2})">
+          <td onclick="editZahon(${zahon.ZahonID}, '${zahon.NazevZahonu}', ${zahon.Velikost_m2})">
             ${zahon.NazevZahonu}
           </td>
           <td>${zahon.Velikost_m2} m²</td>
@@ -94,6 +88,29 @@ function deleteSelected() {
   });
 }
 
-function editZahon(zahonID, nazev, velikost) {
-  alert(`Úprava záhonu: ${nazev} (${velikost} m²) — Funkce bude doplněna.`);
+function editZahon(id, nazev, velikost) {
+  currentZahonID = id;
+  document.getElementById("editNazev").value = nazev;
+  document.getElementById("editVelikost").value = velikost;
+  document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+  currentZahonID = null;
+}
+
+function saveZahon() {
+  const params = new URLSearchParams();
+  params.append("action", "updateZahon");
+  params.append("ZahonID", currentZahonID);
+  params.append("NazevZahonu", document.getElementById("editNazev").value);
+  params.append("Velikost_m2", document.getElementById("editVelikost").value);
+
+  fetch(proxyUrl + "?" + params)
+    .then(res => res.text())
+    .then(() => {
+      closeModal();
+      loadZahony();
+    });
 }
