@@ -114,31 +114,28 @@ function saveZahon() {
 
 // Formulář událostí
 function showUdalostForm(typ) {
-  currentTypUdalosti = typ;
   const container = document.getElementById("udalostFormContainer");
-  container.innerHTML = "";
+  container.innerHTML = ""; // Vyčisti obsah
 
-  let html = `
-    <p><strong>${typ.toUpperCase()}</strong></p>
-    <label>Datum:</label><input type="date" id="udalostDatum"><br>
-  `;
+  let html = `<p><strong>${typ.charAt(0).toUpperCase() + typ.slice(1)}</strong></p>`;
+  html += `<input type="date" id="udalostDatum" /><br/>`;
 
   if (typ === "seti" || typ === "sklizen") {
-    html += `<label>Plodina:</label><select id="udalostPlodina"></select><br>`;
-    nactiPlodinySelect("udalostPlodina");
+    html += `<label>Plodina:</label><select id="udalostPlodina"></select><br/>`;
+    nactiPlodiny();
   }
 
   if (typ === "hnojeni") {
-    html += `<label>Hnojivo:</label><select id="udalostHnojivo"></select><br>`;
-    html += `<label>Množství (kg):</label><input type="number" id="udalostMnozstvi"><br>`;
-    nactiHnojivaSelect("udalostHnojivo");
+    html += `<label>Hnojivo:</label><select id="udalostHnojivo"></select><br/>`;
+    html += `<label>Množství (kg):</label><input type="number" id="udalostMnozstvi" /><br/>`;
+    nactiHnojiva();
   }
 
   if (typ === "sklizen") {
-    html += `<label>Výnos (kg):</label><input type="number" id="udalostVynos"><br>`;
+    html += `<label>Výnos (kg):</label><input type="number" id="udalostVynos" /><br/>`;
   }
 
-  html += `<label>Poznámka:</label><textarea id="udalostPoznamka"></textarea><br>`;
+  html += `<label>Poznámka:</label><textarea id="udalostPoznamka"></textarea><br/>`;
   html += `<button onclick="saveUdalost()">Uložit událost</button>`;
 
   container.innerHTML = html;
