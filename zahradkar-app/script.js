@@ -38,9 +38,6 @@ fetch(${SERVER_URL}?action=getZahony&userID=${userID})
 const tbody = document.querySelector("#zahonyTable tbody");
 tbody.innerHTML = "";
 
-pgsql
-Zkopírovat
-Upravit
   data.forEach(z => {
     const row = document.createElement("tr");
 
