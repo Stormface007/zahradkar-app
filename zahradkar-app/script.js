@@ -108,6 +108,9 @@ function otevriModal(zahon) {
   document.getElementById("editDelka").value = zahon.Delka;
   document.getElementById("editSirka").value = zahon.Sirka;
 
+  const plocha = (parseFloat(zahon.Delka) * parseFloat(zahon.Sirka)).toFixed(2);
+  document.getElementById("vypocetPlochy").textContent = isNaN(plocha) ? "0" : plocha;
+
   const canvas = document.getElementById("zahonCanvas");
   const ctx = canvas.getContext("2d");
   const width = 200;
@@ -116,7 +119,7 @@ function otevriModal(zahon) {
   canvas.height = width * ratio;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#d2b48c";
+  ctx.fillStyle = "#d2b48c"; // světle hnědá
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   document.getElementById("modal").style.display = "block";
@@ -124,6 +127,7 @@ function otevriModal(zahon) {
   loadHnojiva();
   zobrazUdalosti(zahon.ZahonID);
 }
+
 
 function closeModal() {
   aktualniZahon = null;
