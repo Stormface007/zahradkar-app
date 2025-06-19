@@ -251,3 +251,40 @@ function smazUdalost(udalostID, zahonID) {
     });
 }
 
+// Přepínání mezi výchozím a událostním režimem
+function showUdalostForm(typ) {
+  // Skryj výchozí pohled
+  document.getElementById("modalViewDefault").style.display = "none";
+  document.getElementById("modalViewUdalost").style.display = "block";
+
+  const container = document.getElementById("udalostFormContainer");
+  container.innerHTML = `<h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>`;
+
+  // Zde přidej další obsah formuláře dle potřeby – např. datum, plodina, množství...
+  // (Zde jen ukázka jednoduchého formuláře.)
+  container.innerHTML += `
+    <label>Datum: <input type="date" id="udalostDatum" /></label><br>
+    <label>Plodina: <input type="text" id="udalostPlodina" /></label><br>
+    <label>Poznámka: <input type="text" id="udalostPoznamka" /></label><br>
+    <button onclick="ulozUdalost('${typ}')">Upravit</button>
+  `;
+}
+
+function zpetNaDetailZahonu() {
+  // Přepnutí zpět na hlavní zobrazení záhonu
+  document.getElementById("modalViewDefault").style.display = "block";
+  document.getElementById("modalViewUdalost").style.display = "none";
+}
+
+// Pro ukázku – jednoduchý handler pro uložení události
+function ulozUdalost(typ) {
+  const datum = document.getElementById("udalostDatum").value;
+  const plodina = document.getElementById("udalostPlodina").value;
+  const poznamka = document.getElementById("udalostPoznamka").value;
+
+  alert(`Ukládám ${typ}:\nDatum: ${datum}\nPlodina: ${plodina}\nPoznámka: ${poznamka}`);
+  // Zde volání na backend – můžeš doplnit
+
+  zpetNaDetailZahonu(); // Vrátí zpět
+}
+
