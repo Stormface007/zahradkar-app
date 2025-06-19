@@ -5,6 +5,30 @@ const SERVER_URL = 'https://script.google.com/macros/s/TVŮJ_ID/exec'; // ← ZD
 
 let aktualniZahon = null;
 
+async function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const response = await fetch(proxyUrl + "?action=login", {
+    method: "POST",
+    body: new URLSearchParams({
+      username,
+      password
+    })
+  });
+
+  const data = await response.json();
+
+  if (data.success) {
+    localStorage.setItem("userID", data.userID);
+    document.getElementById("loginDiv").style.display = "none";
+    document.getElementById("appDiv").style.display = "block";
+    loadZahony();
+  } else {
+    document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
+  }
+}
+
 // Uložení záhonu
 function saveZahon() {
   const nazev = document.getElementById("editNazev").value;
