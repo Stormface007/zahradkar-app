@@ -137,7 +137,7 @@ function updatePlocha() {
   const delka = parseFloat(document.getElementById("editDelka").value) || 0;
   const sirka = parseFloat(document.getElementById("editSirka").value) || 0;
   const plocha = (delka * sirka).toFixed(2);
-  document.getElementById("vypocetPlochy").textContent = isNaN(plocha) ? "0" : plocha;
+  document.getElementById("vypocetPlochy").textContent = plocha;
 }
 
 
