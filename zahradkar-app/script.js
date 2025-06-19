@@ -1,7 +1,7 @@
 // - Dynamické <select> pro plodiny a hnojiva
 // - Výpis a mazání událostí pro konkrétní záhon
 
-const SERVER_URL = 'https://script.google.com/macros/s/AKfycbxQzLhh7Tf97qutgcIL_jXFZID95dMp8NQLkQgJo3oenxtJPui3L-45WQz_Ysg_SmgX/exec';
+const SERVER_URL = 'https://script.google.com/macros/s/AKfycbyGn2TAzvn4y0xd7I1fSluPxT5oBXVNgQ30Ln1Y2sdxdzpBjGvWKRw92SodvgwDZBXL/exec';
 
 let aktualniZahon = null;
 
