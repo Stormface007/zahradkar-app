@@ -118,20 +118,25 @@ document.getElementById("udalostSeznamContainer").innerHTML = "";
 
 // Uložit změny záhonu
 function saveZahon() {
-const params = new URLSearchParams({
-action: "updateZahon",
-ZahonID: currentZahonID,
-NazevZahonu: document.getElementById("editNazev").value,
-Delka: document.getElementById("editDelka").value,
-Sirka: document.getElementById("editSirka").value
-});
+  const params = new URLSearchParams();
+  params.append("action", "updateZahon");
+  params.append("ZahonID", currentZahonID);
+  params.append("NazevZahonu", document.getElementById("editNazev").value);
+  params.append("Delka", document.getElementById("editDelka").value);
+  params.append("Sirka", document.getElementById("editSirka").value);
 
-fetch(${proxyUrl}?${params})
-.then(() => {
-closeModal();
-loadZahony();
-});
+  fetch(proxyUrl + "?" + params.toString())
+    .then(res => res.text())
+    .then(() => {
+      closeModal();
+      loadZahony();
+    })
+    .catch(err => {
+      console.error("Chyba při ukládání záhonu:", err);
+      alert("Nepodařilo se uložit záhon.");
+    });
 }
+
 
 // Zobrazí formulář události
 function showUdalostForm(typ) {
