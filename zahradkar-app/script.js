@@ -63,6 +63,47 @@ tbody.innerHTML = "";
 });
 }
 
+function addZahon() {
+  const userID = localStorage.getItem("userID");
+  const nazev = prompt("Zadej název nového záhonu:");
+  if (!nazev) return;
+
+  const formData = new URLSearchParams();
+  formData.append("action", "addZahon");
+  formData.append("userID", userID);
+  formData.append("NazevZahonu", nazev);
+  formData.append("Delka", 1); // výchozí hodnota
+  formData.append("Sirka", 1); // výchozí hodnota
+
+  fetch(SERVER_URL, {
+    method: "POST",
+    body: formData
+  })
+    .then(r => r.text())
+    .then(resp => {
+      if (resp === "OK") {
+        loadZahony();
+      } else {
+        alert("Chyba při přidávání záhonu.");
+      }
+    });
+}
+function openEditModal(zahonDataStr) {
+  const z = JSON.parse(decodeURIComponent(zahonDataStr));
+  aktualniZahon = z;
+  document.getElementById("editNazev").value = z.NazevZahonu || "";
+  document.getElementById("editDelka").value = z.Delka || 1;
+  document.getElementById("editSirka").value = z.Sirka || 1;
+
+  document.getElementById("modalZahon").style.display = "block";
+  nakresliZahonCanvas(z.Delka, z.Sirka);
+}
+function closeModal() {
+  document.getElementById("modalZahon").style.display = "none";
+  aktualniZahon = null;
+}
+
+
 // Otevře modal pro úpravu záhonu
 function otevriModal(zahon) {
 aktualniZahon = zahon;
