@@ -54,15 +54,12 @@ function loadZahony() {
         nameLink.textContent = z.NazevZahonu;
         nameLink.onclick = () => otevriModal(z);
 
-      const plocha = z.Velikost_m2 || (z.Delka * z.Sirka).toFixed(2);
-sizeCell.textContent = `${Plocha} m²`;
-
+        const plocha = z.Velikost_m2 || ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
 
         row.innerHTML = `
           <td></td>
           <td></td>
-          <td>${z.Velikost_m2 || "-"} m²</td>
-
+          <td>${plocha} m²</td>
         `;
         row.children[0].appendChild(check);
         row.children[1].appendChild(nameLink);
