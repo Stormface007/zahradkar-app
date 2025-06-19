@@ -129,6 +129,13 @@ function closeModal() {
   aktualniZahon = null;
   document.getElementById("modal").style.display = "none";
 }
+function updatePlocha() {
+  const delka = parseFloat(document.getElementById("editDelka").value) || 0;
+  const sirka = parseFloat(document.getElementById("editSirka").value) || 0;
+  const plocha = (delka * sirka).toFixed(2);
+  document.getElementById("vypocetPlochy").textContent = isNaN(plocha) ? "0" : plocha;
+}
+
 
 function saveZahon() {
   const nazev = document.getElementById("editNazev").value;
