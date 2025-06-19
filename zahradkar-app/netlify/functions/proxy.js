@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 // Nahraď svou funkční Google Apps Script URL
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_trvEYUb8kJj5Qofs05lAysLbdhcUdvivusjUohNz2MqfEEHupvFeq8-FoIT77mu_/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPCjYsvYak-c7AjAlLG3g5q790uyKL20ezg69xAWw-A6bUIkUbALOWNZGqYdd1j6E1/exec";
 
 exports.handler = async function(event, context) {
     const params = event.rawQuery ? "?" + event.rawQuery : "";
