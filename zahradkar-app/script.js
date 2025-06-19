@@ -5,11 +5,12 @@ const SERVER_URL = 'https://script.google.com/macros/s/AKfycbwjdWV6J04OJQ4VHxqL5
 
 let aktualniZahon = null;
 
+// ✅ LOGIN
 async function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  const response = await fetch(proxyUrl + "?action=login", {
+  const response = await fetch(SERVER_URL + "?action=login", {
     method: "POST",
     body: new URLSearchParams({
       username,
@@ -23,13 +24,13 @@ async function login() {
     localStorage.setItem("userID", data.userID);
     document.getElementById("loginDiv").style.display = "none";
     document.getElementById("appDiv").style.display = "block";
-    loadZahony();
+    loadZahony(); // ← tato funkce musí být definovaná níže
   } else {
     document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
   }
 }
 
-// Uložení záhonu
+// ✅ Uložení záhonu
 function saveZahon() {
   const nazev = document.getElementById("editNazev").value;
   const delka = parseFloat(document.getElementById("editDelka").value) || 0;
@@ -63,7 +64,7 @@ function saveZahon() {
     });
 }
 
-// Načti plodiny do <select>
+// ✅ Načti plodiny do <select>
 function loadPlodiny() {
   fetch(SERVER_URL + "?action=getPlodiny")
     .then(r => r.json())
@@ -80,7 +81,7 @@ function loadPlodiny() {
     });
 }
 
-// Načti hnojiva do <select>
+// ✅ Načti hnojiva do <select>
 function loadHnojiva() {
   fetch(SERVER_URL + "?action=getHnojiva")
     .then(r => r.json())
@@ -97,7 +98,7 @@ function loadHnojiva() {
     });
 }
 
-// Načti události pro záhon
+// ✅ Zobraz události
 function zobrazUdalosti(zahonID) {
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`)
     .then(r => r.json())
@@ -125,7 +126,7 @@ function zobrazUdalosti(zahonID) {
     });
 }
 
-// Smazat událost
+// ✅ Smazání události
 function smazUdalost(udalostID, zahonID) {
   const data = new URLSearchParams();
   data.append("action", "deleteUdalost");
