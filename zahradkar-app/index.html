@@ -17,7 +17,7 @@
     <div id="loginMsg"></div>
   </div>
 
-  <!-- Aplikace -->
+  <!-- Hlavní aplikace -->
   <div id="appDiv" style="display: none;">
     <h2>Moje záhony</h2>
     <button onclick="logout()">Odhlásit se</button>
@@ -41,7 +41,8 @@
 
     <h3>Přidat nový záhon</h3>
     <input type="text" id="newNazev" placeholder="Název záhonu" />
-    <input type="number" id="newVelikost" placeholder="Velikost v m²" />
+    <input type="number" id="newDelka" placeholder="Délka (m)" />
+    <input type="number" id="newSirka" placeholder="Šířka (m)" />
     <button onclick="addZahon()">Přidat</button>
   </div>
 
@@ -60,14 +61,14 @@
       <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
       <div id="zahonVizualizace"></div>
 
-      <!-- PŘEPÍNAČE PRO UDÁLOSTI -->
+      <!-- Tlačítka pro události -->
       <div class="udalost-buttons">
         <button onclick="showUdalostForm('seti')">Setí</button>
         <button onclick="showUdalostForm('hnojeni')">Hnojení</button>
         <button onclick="showUdalostForm('sklizen')">Sklizeň</button>
       </div>
 
-      <!-- DYNAMICKÝ OBSAH PRO FORMULÁŘE UDÁLOSTÍ -->
+      <!-- Dynamický formulář události -->
       <div id="udalostFormContainer"></div>
       <div id="udalostSeznamContainer"></div>
 
