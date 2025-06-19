@@ -284,3 +284,23 @@ function ulozUdalost(typ) {
   zpetNaDetailZahonu(); // Vrátí zpět
 }
 
+function nakresliZahonCanvas(delka, sirka) {
+  const canvasContainer = document.getElementById("zahonVizualizace");
+  canvasContainer.innerHTML = ""; // vyčisti předchozí
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 200;
+  canvas.height = 200;
+
+  const ctx = canvas.getContext("2d");
+  const scale = Math.min(canvas.width / delka, canvas.height / sirka);
+
+  const width = delka * scale;
+  const height = sirka * scale;
+
+  ctx.fillStyle = "#c2b280"; // světle hnědá barva záhonu
+  ctx.fillRect((canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+
+  canvasContainer.appendChild(canvas);
+}
+
