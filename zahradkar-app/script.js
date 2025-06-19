@@ -24,7 +24,7 @@ async function login() {
     localStorage.setItem("userID", data.userID);
     document.getElementById("loginDiv").style.display = "none";
     document.getElementById("appDiv").style.display = "block";
-    loadZahony(); // ← tato funkce musí být definovaná níže
+    loadZahony();
   } else {
     document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
   }
