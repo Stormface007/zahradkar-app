@@ -104,28 +104,24 @@ function addZahon() {
 
 function otevriModal(zahon) {
   aktualniZahon = zahon;
+
+  // Nastav hodnoty do formuláře
   document.getElementById("editNazev").value = zahon.NazevZahonu;
-  document.getElementById("editDelka").value = zahon.Delka;
-  document.getElementById("editSirka").value = zahon.Sirka;
+  document.getElementById("editDelka").value = zahon.Delka || 0;
+  document.getElementById("editSirka").value = zahon.Sirka || 0;
 
-  const plocha = (parseFloat(zahon.Delka) * parseFloat(zahon.Sirka)).toFixed(2);
-  document.getElementById("vypocetPlochy").textContent = isNaN(plocha) ? "0" : plocha;
+  // Spočítej plochu
+  updatePlocha();
 
-  const canvas = document.getElementById("zahonCanvas");
-  const ctx = canvas.getContext("2d");
-  const width = 200;
-  const ratio = zahon.Sirka / zahon.Delka;
-  canvas.width = width;
-  canvas.height = width * ratio;
+  // Zobrazí vizualizaci záhonu
+  nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#d2b48c"; // světle hnědá
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Přepne na výchozí pohled
+  document.getElementById("modalViewDefault").style.display = "block";
+  document.getElementById("modalViewUdalost").style.display = "none";
 
+  // Zobrazí modální okno
   document.getElementById("modal").style.display = "block";
-  loadPlodiny();
-  loadHnojiva();
-  zobrazUdalosti(zahon.ZahonID);
 }
 
 
