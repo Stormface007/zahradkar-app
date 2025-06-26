@@ -114,16 +114,25 @@ function otevriModal(zahon) {
   updatePlocha();
 
   // Zobrazí vizualizaci záhonu
-  nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
+function nakresliZahonCanvas(delka, sirka) {
+  const canvasContainer = document.getElementById("zahonVizualizace");
+  canvasContainer.innerHTML = ""; // vyčisti předchozí
 
-  // Přepne na výchozí pohled
-  document.getElementById("modalViewDefault").style.display = "block";
-  document.getElementById("modalViewUdalost").style.display = "none";
+  const canvas = document.createElement("canvas");
+  canvas.width = 200;
+  canvas.height = 200;
 
-  // Zobrazí modální okno
-  document.getElementById("modal").style.display = "block";
+  const ctx = canvas.getContext("2d");
+  const scale = Math.min(canvas.width / delka, canvas.height / sirka);
+
+  const width = delka * scale;
+  const height = sirka * scale;
+
+  ctx.fillStyle = "#c2b280"; // světle hnědá barva záhonu
+  ctx.fillRect((canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+
+  canvasContainer.appendChild(canvas);
 }
-
 
 function closeModal() {
   aktualniZahon = null;
