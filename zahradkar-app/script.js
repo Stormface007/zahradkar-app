@@ -1,10 +1,13 @@
-// - Dynamické <select> pro plodiny a hnojiva
-// - Výpis a mazání událostí pro konkrétní záhon
+from pathlib import Path
+
+corrected_script = """// Dynamické <select> pro plodiny a hnojiva
+// Výpis a mazání událostí pro konkrétní záhon
 
 const SERVER_URL = 'https://script.google.com/macros/s/AKfycbyGn2TAzvn4y0xd7I1fSluPxT5oBXVNgQ30Ln1Y2sdxdzpBjGvWKRw92SodvgwDZBXL/exec';
 
 let aktualniZahon = null;
 
+// Přihlášení uživatele
 async function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
@@ -26,12 +29,14 @@ async function login() {
   }
 }
 
+// Odhlášení uživatele
 function logout() {
   localStorage.removeItem("userID");
   document.getElementById("loginDiv").style.display = "block";
   document.getElementById("appDiv").style.display = "none";
 }
 
+// Načtení záhonů
 function loadZahony() {
   const userID = localStorage.getItem("userID");
   if (!userID) return;
@@ -69,7 +74,7 @@ function loadZahony() {
     });
 }
 
-
+// Přidání nového záhonu
 function addZahon() {
   const userID = localStorage.getItem("userID");
   const nazev = document.getElementById("newNazev").value.trim();
@@ -97,11 +102,12 @@ function addZahon() {
       if (resp === "OK") {
         loadZahony();
       } else {
-        alert("Chyba při přidávání záhonu.");
+        alert("Chyba při přidávání záhonu: " + resp);
       }
     });
 }
 
+// Otevření modálního okna záhonu
 function otevriModal(zahon) {
   aktualniZahon = zahon;
 
@@ -114,30 +120,23 @@ function otevriModal(zahon) {
   updatePlocha();
 
   // Zobrazí vizualizaci záhonu
-function nakresliZahonCanvas(delka, sirka) {
-  const canvasContainer = document.getElementById("zahonVizualizace");
-  canvasContainer.innerHTML = ""; // vyčisti předchozí
+  nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
 
-  const canvas = document.createElement("canvas");
-  canvas.width = 200;
-  canvas.height = 200;
+  // Přepne na výchozí pohled
+  document.getElementById("modalViewDefault").style.display = "block";
+  document.getElementById("modalViewUdalost").style.display = "none";
 
-  const ctx = canvas.getContext("2d");
-  const scale = Math.min(canvas.width / delka, canvas.height / sirka);
-
-  const width = delka * scale;
-  const height = sirka * scale;
-
-  ctx.fillStyle = "#c2b280"; // světle hnědá barva záhonu
-  ctx.fillRect((canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
-
-  canvasContainer.appendChild(canvas);
+  // Zobrazí modální okno
+  document.getElementById("modal").style.display = "block";
 }
 
+// Zavření modálního okna
 function closeModal() {
   aktualniZahon = null;
   document.getElementById("modal").style.display = "none";
 }
+
+// Aktualizace výpočtu plochy
 function updatePlocha() {
   const delka = parseFloat(document.getElementById("editDelka").value) || 0;
   const sirka = parseFloat(document.getElementById("editSirka").value) || 0;
@@ -145,7 +144,7 @@ function updatePlocha() {
   document.getElementById("vypocetPlochy").textContent = plocha;
 }
 
-
+// Uložení změn záhonu
 function saveZahon() {
   const nazev = document.getElementById("editNazev").value;
   const delka = parseFloat(document.getElementById("editDelka").value) || 0;
@@ -179,8 +178,9 @@ function saveZahon() {
     });
 }
 
+// Načtení plodin do <select>
 function loadPlodiny() {
-  fetch(SERVER_URL + "?action=getPlodiny")
+  fetch(`${SERVER_URL}?action=getPlodiny`)
     .then(r => r.json())
     .then(data => {
       const select = document.getElementById("plodinaSelect");
@@ -195,8 +195,9 @@ function loadPlodiny() {
     });
 }
 
+// Načtení hnojiv do <select>
 function loadHnojiva() {
-  fetch(SERVER_URL + "?action=getHnojiva")
+  fetch(`${SERVER_URL}?action=getHnojiva`)
     .then(r => r.json())
     .then(data => {
       const select = document.getElementById("hnojivoSelect");
@@ -211,6 +212,7 @@ function loadHnojiva() {
     });
 }
 
+// Výpis událostí pro záhon
 function zobrazUdalosti(zahonID) {
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`)
     .then(r => r.json())
@@ -237,6 +239,7 @@ function zobrazUdalosti(zahonID) {
     });
 }
 
+// Smazání události
 function smazUdalost(udalostID, zahonID) {
   const data = new URLSearchParams();
   data.append("action", "deleteUdalost");
@@ -258,15 +261,12 @@ function smazUdalost(udalostID, zahonID) {
 
 // Přepínání mezi výchozím a událostním režimem
 function showUdalostForm(typ) {
-  // Skryj výchozí pohled
   document.getElementById("modalViewDefault").style.display = "none";
   document.getElementById("modalViewUdalost").style.display = "block";
 
   const container = document.getElementById("udalostFormContainer");
   container.innerHTML = `<h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>`;
 
-  // Zde přidej další obsah formuláře dle potřeby – např. datum, plodina, množství...
-  // (Zde jen ukázka jednoduchého formuláře.)
   container.innerHTML += `
     <label>Datum: <input type="date" id="udalostDatum" /></label><br>
     <label>Plodina: <input type="text" id="udalostPlodina" /></label><br>
@@ -275,41 +275,47 @@ function showUdalostForm(typ) {
   `;
 }
 
+// Návrat z událostního režimu
 function zpetNaDetailZahonu() {
-  // Přepnutí zpět na hlavní zobrazení záhonu
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
 }
 
-// Pro ukázku – jednoduchý handler pro uložení události
+// Uložení události (ukázka)
 function ulozUdalost(typ) {
   const datum = document.getElementById("udalostDatum").value;
   const plodina = document.getElementById("udalostPlodina").value;
   const poznamka = document.getElementById("udalostPoznamka").value;
 
-  alert(`Ukládám ${typ}:\nDatum: ${datum}\nPlodina: ${plodina}\nPoznámka: ${poznamka}`);
-  // Zde volání na backend – můžeš doplnit
-
-  zpetNaDetailZahonu(); // Vrátí zpět
+  alert(`Ukládám ${typ}: Datum: ${datum}, Plodina: ${plodina}, Poznámka: ${poznamka}`);
+  zpetNaDetailZahonu();
 }
 
+// Vykreslení záhonu
 function nakresliZahonCanvas(delka, sirka) {
   const canvasContainer = document.getElementById("zahonVizualizace");
-  canvasContainer.innerHTML = ""; // vyčisti předchozí
-
+  canvasContainer.innerHTML = "";
+  
   const canvas = document.createElement("canvas");
   canvas.width = 200;
   canvas.height = 200;
 
   const ctx = canvas.getContext("2d");
-  const scale = Math.min(canvas.width / delka, canvas.height / sirka);
+  const scale = Math.min(canvas.width / (delka||1), canvas.height / (sirka||1));
 
-  const width = delka * scale;
-  const height = sirka * scale;
+  const width = (delka||1) * scale;
+  const height = (sirka||1) * scale;
 
-  ctx.fillStyle = "#c2b280"; // světle hnědá barva záhonu
+  ctx.fillStyle = "#c2b280";
   ctx.fillRect((canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
 
   canvasContainer.appendChild(canvas);
 }
+"""
+
+# Save to file
+script_path = Path("/mnt/data/script.js")
+script_path.write_text(corrected_script, encoding='utf-8')
+script_path
+
 
