@@ -114,15 +114,23 @@ button {
   font-weight: bold;
 }
 
+/* Kontejner už nemá vlastní barvu ani pevné rozměry,
+   pouze centrální odsazení a omezení maximální šířky. */
 #zahonVizualizace {
   margin: 1rem auto;
-  background-color: #d2b48c; /* světle hnědá */
-  width: 200px;
-  height: 200px;
   max-width: 100%;
-  max-height: 200px;
-  transition: all 0.3s ease;
+  /* výšku a šířku určuje už <canvas> */
+  transition: none; /* zrušíme animace rozměrů */
 }
+
+/* Canvas uvnitř bude naše kreslící plocha */
+#zahonVizualizace canvas {
+  display: block;
+  margin: 0 auto;
+  /* tady nastavíme tu světlou hnědou pozadí */
+  background-color: #d2b48c;
+}
+
 
 .logo-small {
   width: 80px;
