@@ -1,4 +1,4 @@
-// script.js
+#// script.js
 
 const SERVER_URL = 'https://script.google.com/macros/s/AKfycbyGn2TAzvn4y0xd7I1fSluPxT5oBXVNgQ30Ln1Y2sdxdzpBjGvWKRw92SodvgwDZBXL/exec';
 
@@ -146,7 +146,11 @@ function addZahon() {
 // ----------------------
 function otevriModal(zahon) {
   aktualniZahon = zahon;
+// … (vyplnění políček a vizualizace)
+  document.getElementById("modal").style.display = "flex";
 
+  // reset ikon
+  setActiveIcon(null);
   // vyplnění polí
   document.getElementById("editNazev").value = zahon.NazevZahonu;
   document.getElementById("editDelka").value = zahon.Delka || 0;
