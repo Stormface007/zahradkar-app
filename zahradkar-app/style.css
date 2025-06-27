@@ -27,20 +27,6 @@ input[type="number"] {
   font-size: 1rem;
 }
 
-.udalost-buttons {
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.udalost-buttons button {
-  padding: 5px 10px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-
 button {
   padding: 0.6rem 1.2rem;
   background-color: white;
