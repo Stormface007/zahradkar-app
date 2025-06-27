@@ -314,10 +314,7 @@ function showUdalostForm(typ) {
   `;
 }
 
-function zpetNaDetailZahonu() {
-  document.getElementById("modalViewDefault").style.display = "block";
-  document.getElementById("modalViewUdalost").style.display = "none";
-}
+
 
 function ulozUdalost(typ) {
   const datum = document.getElementById("udalostDatum").value;
