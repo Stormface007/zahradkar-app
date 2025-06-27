@@ -333,6 +333,7 @@ function nakresliZahonCanvas(delka, sirka) {
   container.innerHTML = "";
 
   const canvas = document.createElement("canvas");
+  // velikost canvasu určíte podle potřeby:
   canvas.width = 200;
   canvas.height = 200;
 
@@ -341,9 +342,12 @@ function nakresliZahonCanvas(delka, sirka) {
   const w = (delka || 1) * scale;
   const h = (sirka || 1) * scale;
 
-  ctx.fillStyle = "#c2b280";
-  ctx.fillRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+  ctx.fillStyle = "#c2b280";  // světlá hnědá pro tvar záhonu
+  ctx.fillRect((canvas.width - w) / 2,
+               (canvas.height - h) / 2,
+               w, h);
 
   container.appendChild(canvas);
 }
+
 
