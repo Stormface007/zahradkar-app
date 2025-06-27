@@ -3,18 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Přihlašovací formulář -->
   <div id="loginDiv">
-  <img src="img/icon_trimmed_transparent_customcolor.png" alt="Logo" class="logo-small" />
-  <input type="text" id="username" placeholder="Uživatelské jméno" />
-  <input type="password" id="password" placeholder="Heslo" />
-  <button onclick="login()">Přihlásit</button>
-  <div id="loginMsg"></div>
-</div>
+    <img src="img/icon_trimmed_transparent_customcolor.png" alt="Logo" class="logo-small" />
+    <input type="text" id="username" placeholder="Uživatelské jméno" />
+    <input type="password" id="password" placeholder="Heslo" />
+    <button onclick="login()">Přihlásit</button>
+    <div id="loginMsg"></div>
+  </div>
 
-
+  <!-- Hlavní aplikace -->
   <div id="appDiv" style="display: none;">
     <h2>Moje záhony</h2>
     <button onclick="logout()">Odhlásit se</button>
@@ -44,52 +47,41 @@
   </div>
 
   <!-- MODÁLNÍ OKNO -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    
-       <!-- BOČNÍ PANEL IKON -->
-    <div class="side-icons"> … </div>
+  <div id="modal" class="modal">
+    <div class="modal-content">
 
-    <!-- výchozí režim -->
-    <div id="modalViewDefault"> … </div>
-
-    <!-- režim události -->
-    <div id="modalViewUdalost" style="display:none"> … </div>
-
-    <!-- Hlavní část pro úpravu záhonu -->
-    <div id="modalViewDefault">
-      <h3>Úprava záhonu</h3>
-
-      <input type="text" id="editNazev" placeholder="Název záhonu" />
-
-      <div class="dimensions">
-        <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
-        <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
+      <!-- BOČNÍ PANEL IKON -->
+      <div class="side-icons">
+        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"    onclick="onIconClick('seti')"    />
+        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení" onclick="onIconClick('hnojeni')" />
+        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň" onclick="onIconClick('sklizen')" />
       </div>
 
-      <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
-      <div id="zahonVizualizace"></div>
+      <!-- Výchozí režim úpravy záhonu -->
+      <div id="modalViewDefault">
+        <h3>Úprava záhonu</h3>
+        <input type="text" id="editNazev" placeholder="Název záhonu" />
 
-      <!-- Tlačítka pro přepínání událostí -->
-      
+        <div class="dimensions">
+          <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
+          <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
+        </div>
 
-      <button onclick="saveZahon()">Uložit změny</button>
-      <button onclick="closeModal()">Zavřít</button>
+        <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
+        <div id="zahonVizualizace"></div>
+
+        <button onclick="saveZahon()">Uložit změny</button>
+        <button onclick="closeModal()">Zavřít</button>
+      </div>
+
+      <!-- Režim práce s událostmi -->
+      <div id="modalViewUdalost" style="display: none;">
+        <div id="udalostFormContainer"></div>
+        <button id="btnZpet" onclick="zpetNaDetailZahonu()">Zpět</button>
+      </div>
+
     </div>
-  <!-- BOČNÍ PANEL IKON -->
-  <div class="side-icons">
-    <img id="icon-seti"      class="side-icon" src="img/seti.png"     alt="Setí"    onclick="onIconClick('seti')"    />
-    <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"  alt="Hnojení" onclick="onIconClick('hnojeni')" />
-    <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"  alt="Sklizeň" onclick="onIconClick('sklizen')" />
   </div>
-    <!-- Dynamická část pro konkrétní událost -->
-    <div id="modalViewUdalost" style="display: none;">
-      <div id="udalostFormContainer"></div>
-      <button id="btnZpet" onclick="zpetNaDetailZahonu()">Zpět</button>
-    </div>
-
-  </div>
-</div>
 
   <script src="script.js"></script>
 </body>
