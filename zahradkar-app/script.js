@@ -1,48 +1,52 @@
-from pathlib import Path
-
-corrected_script = """// Dynamické <select> pro plodiny a hnojiva
-// Výpis a mazání událostí pro konkrétní záhon
+// script.js
 
 const SERVER_URL = 'https://script.google.com/macros/s/AKfycbyGn2TAzvn4y0xd7I1fSluPxT5oBXVNgQ30Ln1Y2sdxdzpBjGvWKRw92SodvgwDZBXL/exec';
 
 let aktualniZahon = null;
 
-// Přihlášení uživatele
+// ----------------------
+// Přihlášení / odhlášení
+// ----------------------
 async function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  const response = await fetch(SERVER_URL + "?action=login", {
-    method: "POST",
-    body: new URLSearchParams({ username, password })
-  });
+  try {
+    const response = await fetch(`${SERVER_URL}?action=login`, {
+      method: "POST",
+      body: new URLSearchParams({ username, password })
+    });
+    const data = await response.json();
 
-  const data = await response.json();
-
-  if (data.success) {
-    localStorage.setItem("userID", data.userID);
-    document.getElementById("loginDiv").style.display = "none";
-    document.getElementById("appDiv").style.display = "block";
-    loadZahony();
-  } else {
-    document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
+    if (data.success) {
+      localStorage.setItem("userID", data.userID);
+      document.getElementById("loginDiv").style.display = "none";
+      document.getElementById("appDiv").style.display = "block";
+      loadZahony();
+    } else {
+      document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
+    }
+  } catch (e) {
+    console.error("Login error:", e);
+    document.getElementById("loginMsg").innerText = "Chyba při přihlášení.";
   }
 }
 
-// Odhlášení uživatele
 function logout() {
   localStorage.removeItem("userID");
   document.getElementById("loginDiv").style.display = "block";
   document.getElementById("appDiv").style.display = "none";
 }
 
-// Načtení záhonů
+// ----------------------
+// Práce se záhony
+// ----------------------
 function loadZahony() {
   const userID = localStorage.getItem("userID");
   if (!userID) return;
 
   fetch(`${SERVER_URL}?action=getZahony&userID=${userID}`)
-    .then(res => res.json())
+    .then(r => r.json())
     .then(data => {
       const tbody = document.querySelector("#zahonyTable tbody");
       tbody.innerHTML = "";
@@ -50,31 +54,56 @@ function loadZahony() {
       data.forEach(z => {
         const row = document.createElement("tr");
 
+        // checkbox pro smazání
+        const tdCheck = document.createElement("td");
         const check = document.createElement("input");
         check.type = "checkbox";
         check.dataset.id = z.ZahonID;
+        tdCheck.appendChild(check);
 
+        // název záhonu jako odkaz
+        const tdName = document.createElement("td");
         const nameLink = document.createElement("a");
         nameLink.href = "#";
         nameLink.textContent = z.NazevZahonu;
         nameLink.onclick = () => otevriModal(z);
+        tdName.appendChild(nameLink);
 
-        const plocha = z.Velikost_m2 || ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
+        // velikost
+        const plocha = z.Velikost_m2
+          ? z.Velikost_m2
+          : ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
+        const tdSize = document.createElement("td");
+        tdSize.textContent = `${plocha} m²`;
 
-        row.innerHTML = `
-          <td></td>
-          <td></td>
-          <td>${plocha} m²</td>
-        `;
-        row.children[0].appendChild(check);
-        row.children[1].appendChild(nameLink);
-
+        row.appendChild(tdCheck);
+        row.appendChild(tdName);
+        row.appendChild(tdSize);
         tbody.appendChild(row);
       });
-    });
+    })
+    .catch(e => console.error("Chyba načtení záhonů:", e));
 }
 
-// Přidání nového záhonu
+function deleteSelected() {
+  const checks = document.querySelectorAll(
+    '#zahonyTable tbody input[type="checkbox"]:checked'
+  );
+  checks.forEach(cb => {
+    const zahonID = cb.dataset.id;
+    const params = new URLSearchParams();
+    params.append("action", "deleteZahon");
+    params.append("ZahonID", zahonID);
+
+    fetch(SERVER_URL, {
+      method: "POST",
+      body: params
+    })
+      .then(() => loadZahony())
+      .catch(e => console.error("Chyba mazání záhonu:", e));
+  });
+}
+
 function addZahon() {
   const userID = localStorage.getItem("userID");
   const nazev = document.getElementById("newNazev").value.trim();
@@ -100,43 +129,44 @@ function addZahon() {
     .then(r => r.text())
     .then(resp => {
       if (resp === "OK") {
+        // vyčistíme inputy
+        document.getElementById("newNazev").value = "";
+        document.getElementById("newDelka").value = "";
+        document.getElementById("newSirka").value = "";
         loadZahony();
       } else {
         alert("Chyba při přidávání záhonu: " + resp);
       }
-    });
+    })
+    .catch(e => console.error("Chyba addZahon:", e));
 }
 
-// Otevření modálního okna záhonu
+// ----------------------
+// Modální okno záhonu
+// ----------------------
 function otevriModal(zahon) {
   aktualniZahon = zahon;
 
-  // Nastav hodnoty do formuláře
+  // vyplnění polí
   document.getElementById("editNazev").value = zahon.NazevZahonu;
   document.getElementById("editDelka").value = zahon.Delka || 0;
   document.getElementById("editSirka").value = zahon.Sirka || 0;
 
-  // Spočítej plochu
   updatePlocha();
-
-  // Zobrazí vizualizaci záhonu
   nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
 
-  // Přepne na výchozí pohled
+  // přepneme na výchozí pohled
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
 
-  // Zobrazí modální okno
-  document.getElementById("modal").style.display = "block";
+  document.getElementById("modal").style.display = "flex";
 }
 
-// Zavření modálního okna
 function closeModal() {
   aktualniZahon = null;
   document.getElementById("modal").style.display = "none";
 }
 
-// Aktualizace výpočtu plochy
 function updatePlocha() {
   const delka = parseFloat(document.getElementById("editDelka").value) || 0;
   const sirka = parseFloat(document.getElementById("editSirka").value) || 0;
@@ -144,9 +174,8 @@ function updatePlocha() {
   document.getElementById("vypocetPlochy").textContent = plocha;
 }
 
-// Uložení změn záhonu
 function saveZahon() {
-  const nazev = document.getElementById("editNazev").value;
+  const nazev = document.getElementById("editNazev").value.trim();
   const delka = parseFloat(document.getElementById("editDelka").value) || 0;
   const sirka = parseFloat(document.getElementById("editSirka").value) || 0;
 
@@ -155,72 +184,76 @@ function saveZahon() {
     return;
   }
 
-  const data = new URLSearchParams();
-  data.append("action", "updateZahon");
-  data.append("ZahonID", aktualniZahon.ZahonID);
-  data.append("NazevZahonu", nazev);
-  data.append("Delka", delka);
-  data.append("Sirka", sirka);
+  const params = new URLSearchParams();
+  params.append("action", "updateZahon");
+  params.append("ZahonID", aktualniZahon.ZahonID);
+  params.append("NazevZahonu", nazev);
+  params.append("Delka", delka);
+  params.append("Sirka", sirka);
 
   fetch(SERVER_URL, {
     method: "POST",
-    body: data
+    body: params
   })
     .then(r => r.text())
-    .then(res => {
-      if (res === "OK") {
+    .then(resp => {
+      if (resp === "OK") {
         alert("Záhon uložen.");
         closeModal();
         loadZahony();
       } else {
-        alert("Chyba při ukládání: " + res);
+        alert("Chyba při ukládání záhonu: " + resp);
       }
-    });
+    })
+    .catch(e => console.error("Chyba saveZahon:", e));
 }
 
-// Načtení plodin do <select>
+// ----------------------
+// Plodiny / hnojiva
+// ----------------------
 function loadPlodiny() {
   fetch(`${SERVER_URL}?action=getPlodiny`)
     .then(r => r.json())
     .then(data => {
-      const select = document.getElementById("plodinaSelect");
-      if (!select) return;
-      select.innerHTML = "";
+      const sel = document.getElementById("plodinaSelect");
+      if (!sel) return;
+      sel.innerHTML = "";
       data.forEach(p => {
         const opt = document.createElement("option");
         opt.value = p.nazev;
         opt.textContent = p.nazev;
-        select.appendChild(opt);
+        sel.appendChild(opt);
       });
     });
 }
 
-// Načtení hnojiv do <select>
 function loadHnojiva() {
   fetch(`${SERVER_URL}?action=getHnojiva`)
     .then(r => r.json())
     .then(data => {
-      const select = document.getElementById("hnojivoSelect");
-      if (!select) return;
-      select.innerHTML = "";
+      const sel = document.getElementById("hnojivoSelect");
+      if (!sel) return;
+      sel.innerHTML = "";
       data.forEach(h => {
         const opt = document.createElement("option");
         opt.value = h.nazev;
         opt.textContent = h.nazev;
-        select.appendChild(opt);
+        sel.appendChild(opt);
       });
     });
 }
 
-// Výpis událostí pro záhon
+// ----------------------
+// Události
+// ----------------------
 function zobrazUdalosti(zahonID) {
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`)
     .then(r => r.json())
     .then(data => {
-      const container = document.getElementById("udalostSeznamContainer");
-      container.innerHTML = "";
+      const c = document.getElementById("udalostSeznamContainer");
+      c.innerHTML = "";
       if (data.length === 0) {
-        container.textContent = "Žádné události.";
+        c.textContent = "Žádné události.";
         return;
       }
       data.forEach(u => {
@@ -232,90 +265,85 @@ function zobrazUdalosti(zahonID) {
           Množství: ${u.Mnozstvi || "-"} kg<br>
           Výnos: ${u.Vynos || "-"} kg<br>
           <em>${u.Poznamka || ""}</em><br>
-          <button onclick="smazUdalost(${u.UdalostID}, ${zahonID})">🗑️ Smazat</button>
+          <button onclick="smazUdalost(${u.UdalostID}, ${zahonID})">🗑️</button>
         `;
-        container.appendChild(div);
+        c.appendChild(div);
       });
-    });
+    })
+    .catch(e => console.error("Chyba načtení událostí:", e));
 }
 
-// Smazání události
 function smazUdalost(udalostID, zahonID) {
-  const data = new URLSearchParams();
-  data.append("action", "deleteUdalost");
-  data.append("udalostID", udalostID);
+  const params = new URLSearchParams();
+  params.append("action", "deleteUdalost");
+  params.append("udalostID", udalostID);
 
   fetch(SERVER_URL, {
     method: "POST",
-    body: data
+    body: params
   })
     .then(r => r.text())
     .then(resp => {
       if (resp === "OK") {
         zobrazUdalosti(zahonID);
       } else {
-        alert("Chyba při mazání.");
+        alert("Chyba mazání události: " + resp);
       }
-    });
+    })
+    .catch(e => console.error("Chyba smazUdalost:", e));
 }
 
-// Přepínání mezi výchozím a událostním režimem
+// ----------------------
+// Přepínání režimů v modálním okně
+// ----------------------
 function showUdalostForm(typ) {
   document.getElementById("modalViewDefault").style.display = "none";
   document.getElementById("modalViewUdalost").style.display = "block";
 
-  const container = document.getElementById("udalostFormContainer");
-  container.innerHTML = `<h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>`;
-
-  container.innerHTML += `
+  const c = document.getElementById("udalostFormContainer");
+  c.innerHTML = `<h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>`;
+  c.innerHTML += `
     <label>Datum: <input type="date" id="udalostDatum" /></label><br>
     <label>Plodina: <input type="text" id="udalostPlodina" /></label><br>
     <label>Poznámka: <input type="text" id="udalostPoznamka" /></label><br>
-    <button onclick="ulozUdalost('${typ}')">Upravit</button>
+    <button onclick="ulozUdalost('${typ}')">Uložit</button>
   `;
 }
 
-// Návrat z událostního režimu
 function zpetNaDetailZahonu() {
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
 }
 
-// Uložení události (ukázka)
 function ulozUdalost(typ) {
   const datum = document.getElementById("udalostDatum").value;
   const plodina = document.getElementById("udalostPlodina").value;
   const poznamka = document.getElementById("udalostPoznamka").value;
 
-  alert(`Ukládám ${typ}: Datum: ${datum}, Plodina: ${plodina}, Poznámka: ${poznamka}`);
+  // sem doplň volání backendu...
+  alert(`Ukládám ${typ}: ${datum}, ${plodina}, ${poznamka}`);
   zpetNaDetailZahonu();
 }
 
-// Vykreslení záhonu
+// ----------------------
+// Vizualizace záhonu
+// ----------------------
 function nakresliZahonCanvas(delka, sirka) {
-  const canvasContainer = document.getElementById("zahonVizualizace");
-  canvasContainer.innerHTML = "";
-  
+  const container = document.getElementById("zahonVizualizace");
+  container.innerHTML = "";
+
   const canvas = document.createElement("canvas");
   canvas.width = 200;
   canvas.height = 200;
 
   const ctx = canvas.getContext("2d");
-  const scale = Math.min(canvas.width / (delka||1), canvas.height / (sirka||1));
-
-  const width = (delka||1) * scale;
-  const height = (sirka||1) * scale;
+  const scale = Math.min(canvas.width / (delka || 1), canvas.height / (sirka || 1));
+  const w = (delka || 1) * scale;
+  const h = (sirka || 1) * scale;
 
   ctx.fillStyle = "#c2b280";
-  ctx.fillRect((canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+  ctx.fillRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
 
-  canvasContainer.appendChild(canvas);
+  container.appendChild(canvas);
 }
-"""
-
-# Save to file
-script_path = Path("/mnt/data/script.js")
-script_path.write_text(corrected_script, encoding='utf-8')
-script_path
-
 
