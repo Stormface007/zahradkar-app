@@ -124,9 +124,11 @@ button {
   transition: all 0.3s ease;
 }
 
-.logo {
-  max-width: 150px;
-  margin: 20px auto;
+.logo-small {
+  width: 80px;
+  height: auto;
+  margin: 10px auto;
   display: block;
 }
+
 
