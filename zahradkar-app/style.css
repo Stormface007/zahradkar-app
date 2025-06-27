@@ -123,3 +123,10 @@ button {
   max-height: 200px;
   transition: all 0.3s ease;
 }
+
+.logo {
+  max-width: 150px;
+  margin: 20px auto;
+  display: block;
+}
+
