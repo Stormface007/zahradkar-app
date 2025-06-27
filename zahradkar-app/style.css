@@ -10,9 +10,14 @@ body {
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
-  margin: auto;
-  margin-top: 10vh;
+  margin: 10vh auto 0;
   text-align: center;
+}
+
+.logo-small {
+  width: 80px;
+  margin: 10px auto;
+  display: block;
 }
 
 input[type="text"],
@@ -40,8 +45,8 @@ button {
 
 #appDiv {
   padding: 2rem;
-  color: black;
   text-align: center;
+  color: black;
 }
 
 .table-container {
@@ -56,11 +61,13 @@ button {
   border: 2px solid black;
 }
 
-#zahonyTable th, #zahonyTable td {
+#zahonyTable th,
+#zahonyTable td {
   border: 2px solid black;
   padding: 0.5rem;
 }
 
+/* MODÁL */
 .modal {
   display: none;
   position: fixed;
@@ -73,6 +80,7 @@ button {
 }
 
 .modal-content {
+  position: relative;
   background: white;
   margin: 5% auto;
   padding: 20px;
@@ -81,16 +89,14 @@ button {
   border-radius: 8px;
 }
 
+/* Rozměry */
 .dimensions {
   display: flex;
-  justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1rem;
 }
-
 .dimensions input {
   flex: 1;
-  background: white;
   border: 2px solid black;
   padding: 0.5rem;
 }
@@ -100,35 +106,23 @@ button {
   font-weight: bold;
 }
 
-/* Kontejner už nemá vlastní barvu ani pevné rozměry,
-   pouze centrální odsazení a omezení maximální šířky. */
+/* Vizualizace záhonu */
 #zahonVizualizace {
   margin: 1rem auto;
   max-width: 100%;
-  /* výšku a šířku určuje už <canvas> */
-  transition: none; /* zrušíme animace rozměrů */
+  transition: none;
 }
-
-/* Canvas uvnitř bude naše kreslící plocha */
 #zahonVizualizace canvas {
   display: block;
   margin: 0 auto;
-  /* tady nastavíme tu světlou hnědou pozadí */
   background-color: white;
 }
 
-
-.logo-small {
-  width: 80px;
-  height: auto;
-  margin: 10px auto;
-  display: block;
-}
 /* ----- boční panel ikon v modálu ----- */
 .side-icons {
   position: absolute;
   top: 50%;
-  left: -60px;              /* schované zčásti vlevo */
+  left: -60px;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -138,7 +132,7 @@ button {
 .side-icon {
   width: 40px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
   opacity: 0.7;
 }
 
@@ -147,7 +141,6 @@ button {
 }
 
 .side-icon.active {
-  transform: translateX(10px); /* vysunutí doprava */
+  transform: translateX(10px);
   opacity: 1;
 }
-
