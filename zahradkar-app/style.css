@@ -89,7 +89,7 @@ button {
   background-color: #ffffff;     /* bílé pozadí */
   margin: 5% auto;
   padding: 20px;                 /* horní, pravý a spodní odsazení */
-  padding-left: 80px;            /* levé odsazení – rezervuje místo pro panel ikon */
+  padding-left: 160px;            /* levé odsazení – rezervuje místo pro panel ikon */
   width: 90%;
   max-width: 600px;
   border-radius: 8px;
@@ -136,9 +136,8 @@ button {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 120px;      /* rozšíříme panel na dvojnásobek 60px → 120px */
+  width: 160px;      /* původně 120px */
   z-index: 1000;
-  overflow: visible;
 }
 
 /* Dvěkrát větší ikonky */
@@ -154,6 +153,6 @@ button {
 }
 
 .side-icon.active {
-  transform: translateX(10px);
+  transform: translateX(15px);
   opacity: 1;
 }
