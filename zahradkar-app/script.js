@@ -205,6 +205,21 @@ function saveZahon() {
     })
     .catch((e) => console.error("Chyba saveZahon:", e));
 }
+// --- Správa aktivních ikon ---
+function setActiveIcon(activeTyp) {
+  ['seti','hnojeni','sklizen','analyza']
+    .forEach(t => {
+      const el = document.getElementById(`icon-${t}`);
+      if (!el) return;
+      if (t === activeTyp) el.classList.add('active');
+      else                 el.classList.remove('active');
+    });
+}
+
+function onIconClick(typ) {
+  setActiveIcon(typ);
+  showUdalostForm(typ);
+}
 
 // ----------------------
 // Plodiny / hnojiva
