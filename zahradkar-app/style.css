@@ -167,3 +167,16 @@ button {
   width: 90%;
   box-sizing: border-box;
 }
+/* Úprava pole pro datum v modalViewUdalost */
+#modalViewUdalost #udalostFormContainer input[type="date"] {
+  width: 50%;                  /* 1/2 šířky kontejneru */
+  height: 1.5em;               /* 1,5× vyšší než standardní textové pole */
+  font-size: 1rem;             /* přizpůsobená velikost písma */
+  color: #000;                 /* černá barva písma */
+  background-color: #fff;      /* bílý podklad */
+  border: 1px solid #000;      /* černý rámeček */
+  border-radius: 4px;          /* zaobl. rohy (volitelné) */
+  padding: 0.2em 0.4em;        /* vnitřní odsazení */
+  box-sizing: border-box;      /* včetně rámečku/paddingu do šířky a výšky */
+  margin-bottom: 0.5rem;       /* prostor pod polem */
+}
