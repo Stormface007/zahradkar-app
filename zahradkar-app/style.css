@@ -131,7 +131,7 @@ button {
 .side-icons {
   position: absolute;
   top: 50%;
-  left: -60px;                   /* panel sedí zčásti mimo obsah */
+  left: 0;                   /* panel sedí zčásti mimo obsah */
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
