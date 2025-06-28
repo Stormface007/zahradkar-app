@@ -78,6 +78,7 @@ function loadZahony() {
 }
 
 function deleteSelected() {
+  Logger.log("Volám deleteZahon s ID: " + e.parameter.ZahonID);
   const checks = document.querySelectorAll(
     '#zahonyTable tbody input[type="checkbox"]:checked'
   );
