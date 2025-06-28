@@ -127,21 +127,23 @@ button {
   background-color: white;
 }
 
-/* ----- boční panel ikon v modálním okně ----- */
+/* Boční panel ikon */
 .side-icons {
   position: absolute;
   top: 50%;
-  left: 0;                   /* panel sedí zčásti mimo obsah */
+  left: 0;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 60px;                   /* šířka panelu */
-  z-index: 1000;                 /* nad obsahem modalu */
+  width: 120px;      /* rozšíříme panel na dvojnásobek 60px → 120px */
+  z-index: 1000;
+  overflow: visible;
 }
 
+/* Dvěkrát větší ikonky */
 .side-icon {
-  width: 40px;
+  width: 80px;       /* původně 40px, teď 2× větší */
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
   opacity: 0.7;
@@ -152,6 +154,6 @@ button {
 }
 
 .side-icon.active {
-  transform: translateX(10px);  /* vysunutá ikona */
+  transform: translateX(10px);
   opacity: 1;
 }
