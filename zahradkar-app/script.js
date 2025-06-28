@@ -81,14 +81,28 @@ function deleteSelected() {
   const checks = document.querySelectorAll(
     '#zahonyTable tbody input[type="checkbox"]:checked'
   );
-  checks.forEach((cb) => {
-    const zahonID = cb.dataset.id;
+  if (!checks.length) {
+    console.warn("Žádné zaškrtnuté záhony k odstranění");
+    return;
+  }
+  checks.forEach(cb => {
+    const zahonID = cb.getAttribute("data-id");
+    console.log("Mazání záhonu ID:", zahonID);
+
     const params = new URLSearchParams();
     params.append("action", "deleteZahon");
     params.append("ZahonID", zahonID);
-    fetch(SERVER_URL, { method: "POST", body: params })
-      .then(() => loadZahony())
-      .catch((e) => console.error("Chyba mazání záhonu:", e));
+
+    fetch(SERVER_URL, {
+      method: "POST",
+      body: params
+    })
+    .then(res => res.text())
+    .then(text => {
+      console.log("Odezva deleteZahon:", text);
+      loadZahony();
+    })
+    .catch(e => console.error("Chyba mazání záhonu:", e));
   });
 }
 
