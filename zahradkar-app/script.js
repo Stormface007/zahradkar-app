@@ -339,20 +339,3 @@ function nakresliZahonCanvas(delka, sirka) {
  * Toto je vaše serverová funkce, která skutečně smaže řádek ze
  * sheetu „Zahony“. Volá ji klient s parametrem action=deleteZahon.
  */
-function deleteZahon(e) {
-  const zahonID = parseInt(e.parameter.ZahonID, 10);
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Zahony");
-  const data  = sheet.getDataRange().getValues();
-
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][0] === zahonID) {
-      sheet.deleteRow(i + 1);
-      return ContentService
-        .createTextOutput("OK")
-        .setMimeType(ContentService.MimeType.TEXT);
-    }
-  }
-  return ContentService
-    .createTextOutput("Zahon not found")
-    .setMimeType(ContentService.MimeType.TEXT);
-}
