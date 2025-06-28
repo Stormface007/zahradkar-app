@@ -1,5 +1,5 @@
 const SERVER_URL =
-  "https://script.google.com/macros/s/AKfycbwli7nJo-ZnrV_24d3oQRjoa8Wzz9PRYyvUeA9MhOwxf9oASZckHjYlBUhUaDYcaA6D/exec";
+  "https://script.google.com/macros/s/AKfycbxCrckJkVtg6lmDOPOXfTyr69ORTaOQ581-r9Xo7CJW7I0fDxE6wRHTMh7NqKCgsbYW/exec";
 
 let aktualniZahon = null;
 
