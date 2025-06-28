@@ -331,7 +331,7 @@ function onIconClick(typ) {
   showUdalostForm(typ);
 }
 function setActiveIcon(activeTyp) {
-  ['seti','hnojeni','sklizen'].forEach(t => {
+  ['Zasej/Zasaď','Nahnoj','Skliď'].forEach(t => {
     const el = document.getElementById(`icon-${t}`);
     if (!el) return;
     if (t === activeTyp) el.classList.add('active');
