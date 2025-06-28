@@ -78,7 +78,6 @@ function loadZahony() {
 }
 
 function deleteSelected() {
-  Logger.log("Volám deleteZahon s ID: " + e.parameter.ZahonID);
   const checks = document.querySelectorAll(
     '#zahonyTable tbody input[type="checkbox"]:checked'
   );
@@ -86,8 +85,10 @@ function deleteSelected() {
     console.warn("Žádné zaškrtnuté záhony k odstranění");
     return;
   }
+
   checks.forEach(cb => {
-    const zahonID = cb.getAttribute("data-id");
+    // čteme přímo z data-id
+    const zahonID = cb.dataset.id;
     console.log("Mazání záhonu ID:", zahonID);
 
     const params = new URLSearchParams();
@@ -101,7 +102,11 @@ function deleteSelected() {
     .then(res => res.text())
     .then(text => {
       console.log("Odezva deleteZahon:", text);
-      loadZahony();
+      if (text.trim() === "OK") {
+        loadZahony();
+      } else {
+        console.error("Smazání neproběhlo OK, odpověď:", text);
+      }
     })
     .catch(e => console.error("Chyba mazání záhonu:", e));
   });
