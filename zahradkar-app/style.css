@@ -95,6 +95,8 @@ button {
 }
 
 .modal-body {
+ max-height: 80vh;
+ owerflow--y: auto
   /* obsah modálu se díky padding-left v modal-content již odsune */
 }
 
@@ -174,7 +176,7 @@ button {
   border: 1px solid #ccc;
   margin: 0.5rem 0;
   padding: 0.5rem;
-  text-align: left;
+  text-align: left;
 }
 
 /* Zmenšená šířka polí v modálu pro události */
