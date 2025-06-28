@@ -81,34 +81,30 @@ function deleteSelected() {
   const checks = document.querySelectorAll(
     '#zahonyTable tbody input[type="checkbox"]:checked'
   );
-  if (!checks.length) {
-    console.warn("Žádné zaškrtnuté záhony k odstranění");
-    return;
-  }
+  console.log("Zaškrtnuté checkboxy:", checks);
 
   checks.forEach(cb => {
-    // čteme přímo z data-id
-    const zahonID = cb.dataset.id;
-    console.log("Mazání záhonu ID:", zahonID);
+    const zahonID = cb.dataset.id || cb.getAttribute('data-id');
+    console.log("— chci mazat ZahonID:", zahonID);
 
-    const params = new URLSearchParams();
-    params.append("action", "deleteZahon");
-    params.append("ZahonID", zahonID);
+    const params = new URLSearchParams({ action: "deleteZahon", ZahonID: zahonID });
+    console.log("— tělo POSTu:", params.toString());
 
-    fetch(SERVER_URL, {
-      method: "POST",
-      body: params
-    })
-    .then(res => res.text())
-    .then(text => {
-      console.log("Odezva deleteZahon:", text);
-      if (text.trim() === "OK") {
-        loadZahony();
-      } else {
-        console.error("Smazání neproběhlo OK, odpověď:", text);
-      }
-    })
-    .catch(e => console.error("Chyba mazání záhonu:", e));
+    fetch(SERVER_URL, { method: "POST", body: params })
+      .then(res => {
+        console.log("— raw response:", res);
+        return res.text();
+      })
+      .then(text => {
+        console.log("— response.text():", text);
+        if (text.trim() === "OK") {
+          console.log(" → OK, načítám záhony znovu");
+          loadZahony();
+        } else {
+          console.error(" → chyba serveru při deleteZahon:", text);
+        }
+      })
+      .catch(e => console.error("Chyba fetch deleteZahon:", e));
   });
 }
 
