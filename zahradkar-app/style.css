@@ -89,7 +89,7 @@ button {
   background-color: #ffffff;     /* bílé pozadí */
   margin: 5% auto;
   padding: 20px;                 /* horní, pravý a spodní odsazení */
-  padding-left: 160px;            /* levé odsazení – rezervuje místo pro panel ikon */
+  padding-left: 95px;            /* levé odsazení – rezervuje místo pro panel ikon */
   width: 90%;
   max-width: 600px;
   border-radius: 8px;
