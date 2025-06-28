@@ -86,11 +86,14 @@ button {
   z-index: 999;
 }
 
-.modal-content {
-  position: relative; /* nutné pro boční panel ikon */
+..modal-content {
+  position: relative;   /* už tam máte */
+  padding-left: 80px;   /* ← nově: rezervujeme místo pro panel ikon */
   background: white;
   margin: 5% auto;
-  padding: 20px;
+  padding-top: 20px;    /* oddělíme ti dvě části paddingu, aby se levou částí nezasáhlo horní odsazení */
+  padding-right: 20px;
+  padding-bottom: 20px;
   width: 90%;
   max-width: 600px;
   border-radius: 8px;
@@ -127,18 +130,16 @@ button {
   background-color: white;
 }
 
-/* Boční panel ikon v modálním okně */
+/* Boční panel ikon */
 .side-icons {
   position: absolute;
   top: 50%;
-  left: 0;                       /* debug: vidíme panel uvnitř modálu */
+  left: 0;                       /* vracíme na 0 */
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  z-index: 1000;                 /* nad obsahem modalu */
-  background: rgba(255,255,255,0.7); /* debug pozadí pro viditelnost */
-  padding: 0.5rem;               /* debug padding */
+  z-index: 1000;
 }
 
 .side-icon {
@@ -146,7 +147,6 @@ button {
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
   opacity: 0.7;
-  border: 1px solid #333;        /* debug okraj */
 }
 
 .side-icon:hover {
