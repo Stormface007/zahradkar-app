@@ -42,69 +42,79 @@ function logout() {
 function loadZahony() {
   const userID = localStorage.getItem("userID");
   if (!userID) return;
+
   fetch(`${SERVER_URL}?action=getZahony&userID=${userID}`)
-    .then((r) => r.json())
-    .then((data) => {
+    .then(r => r.json())
+    .then(data => {
       const tbody = document.querySelector("#zahonyTable tbody");
       tbody.innerHTML = "";
-      data.forEach((z) => {
+
+      data.forEach(z => {
         const row = document.createElement("tr");
-        // checkbox
+
+        // 1) Checkbox
         const tdCheck = document.createElement("td");
         const check = document.createElement("input");
         check.type = "checkbox";
-        check.dataset.id = z.ZahonID;
+        check.dataset.id = z.ZahonID;      // ← tady se ukládá ID
         tdCheck.appendChild(check);
-        // název
+
+        // 2) Název záhonu
         const tdName = document.createElement("td");
         const nameLink = document.createElement("a");
         nameLink.href = "#";
         nameLink.textContent = z.NazevZahonu;
         nameLink.onclick = () => otevriModal(z);
         tdName.appendChild(nameLink);
-        // velikost
+
+        // 3) Velikost
         const plocha = z.Velikost_m2
           ? z.Velikost_m2
           : ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
         const tdSize = document.createElement("td");
         tdSize.textContent = `${plocha} m²`;
+
+        // Přidáme všechny buňky do řádku
         row.appendChild(tdCheck);
         row.appendChild(tdName);
         row.appendChild(tdSize);
         tbody.appendChild(row);
       });
     })
-    .catch((e) => console.error("Chyba načtení záhonů:", e));
+    .catch(e => console.error("Chyba načtení záhonů:", e));
 }
 
 function deleteSelected() {
   const checks = document.querySelectorAll(
     '#zahonyTable tbody input[type="checkbox"]:checked'
   );
-  console.log("Zaškrtnuté checkboxy:", checks);
+  if (!checks.length) {
+    console.warn("Žádné zaškrtnuté záhony k odstranění");
+    return;
+  }
 
   checks.forEach(cb => {
-    const zahonID = cb.dataset.id || cb.getAttribute('data-id');
-    console.log("— chci mazat ZahonID:", zahonID);
+    const zahonID = cb.dataset.id;
+    console.log("Mazání záhonu ID:", zahonID);
 
-    const params = new URLSearchParams({ action: "deleteZahon", ZahonID: zahonID });
-    console.log("— tělo POSTu:", params.toString());
+    const params = new URLSearchParams();
+    params.append("action", "deleteZahon");
+    params.append("ZahonID", zahonID);
 
-    fetch(SERVER_URL, { method: "POST", body: params })
-      .then(res => {
-        console.log("— raw response:", res);
-        return res.text();
-      })
-      .then(text => {
-        console.log("— response.text():", text);
-        if (text.trim() === "OK") {
-          console.log(" → OK, načítám záhony znovu");
-          loadZahony();
-        } else {
-          console.error(" → chyba serveru při deleteZahon:", text);
-        }
-      })
-      .catch(e => console.error("Chyba fetch deleteZahon:", e));
+    fetch(SERVER_URL, {
+      method: "POST",
+      body: params
+    })
+    .then(r => r.text())
+    .then(text => {
+      console.log("Odezva deleteZahon:", text);
+      if (text.trim() === "OK") {
+        loadZahony();  // po smazání refresh tabulky
+      } else {
+        console.error("Smazání neproběhlo OK, odpověď:", text);
+      }
+    })
+    .catch(e => console.error("Chyba mazání záhonu:", e));
   });
 }
 
