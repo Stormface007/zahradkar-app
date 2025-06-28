@@ -162,3 +162,8 @@ button {
   width: 90%;
   box-sizing: border-box;
 }
+/* Zmenšení pole pro název záhonu o 10 % v default modal view */
+#modalViewDefault input#editNazev {
+  width: 90%;
+  box-sizing: border-box;
+}
