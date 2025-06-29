@@ -192,19 +192,7 @@ function saveZahon() {
 }
 
 // ----------------------
-// Boční ikony
-// ----------------------
-function setActiveIcon(activeTyp) {
-  ["seti","hnojeni","sklizen","analyza"].forEach(t => {
-    const el = document.getElementById("icon-"+t);
-    if (!el) return;
-    el.classList.toggle("active", t===activeTyp);
-  });
-}
-function onIconClick(typ) {
-  setActiveIcon(typ);
-  showUdalostForm(typ);
-}
+
 
 // ----------------------
 // Plodiny / hnojiva (pokud je v modálu <select>)
@@ -323,4 +311,18 @@ function nakresliZahonCanvas(delka,sirka) {
   ctx.fillStyle = "#c2b280";
   ctx.fillRect((200-w)/2,(200-h)/2,w,h);
   cont.appendChild(cv);
+}
+
+// Boční ikony
+// ----------------------
+function setActiveIcon(activeTyp) {
+  ["seti","hnojeni","sklizen","analyza"].forEach(t => {
+    const el = document.getElementById("icon-"+t);
+    if (!el) return;
+    el.classList.toggle("active", t===activeTyp);
+  });
+}
+function onIconClick(typ) {
+  setActiveIcon(typ);
+  showUdalostForm(typ);
 }
