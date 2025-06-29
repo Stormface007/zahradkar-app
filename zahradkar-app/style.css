@@ -191,6 +191,8 @@ button {
 }
 
 .side-icon {
+  border-radius: 2px;     /* zaoblené rohy, volitelné */
+  padding: 2px;
   width: 60px;
   height: auto;
   cursor: pointer;
@@ -210,7 +212,7 @@ button {
 /* Bílé pozadí jen pro ikonu Setí */
 #icon-seti {
   background-color: #fff;
-  border-radius: 4px;     /* zaoblené rohy, volitelné */
+  border-radius: 2px;     /* zaoblené rohy, volitelné */
   padding: 2px;           /* prostor kolem obrázku */
   box-sizing: content-box;
 }
