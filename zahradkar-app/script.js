@@ -1,5 +1,5 @@
-const SERVER_URL =
-  "https://script.google.com/macros/s/AKfycby5Q582sTjMVzHDwInTpUQqQDbMMaZoAT90Lv1hEiB8rcRVs3XX21JUKYNmg16nYsGW/exec";
+// URL vašeho Google Apps Scriptu
+const SERVER_URL = "https://script.google.com/macros/s/AKfycby5Q582sTjMVzHDwInTpUQqQDbMMaZoAT90Lv1hEiB8rcRVs3XX21JUKYNmg16nYsGW/exec";
 
 let aktualniZahon = null;
 
@@ -10,30 +10,29 @@ async function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
   try {
-    const response = await fetch(`${SERVER_URL}?action=login`, {
+    const res = await fetch(`${SERVER_URL}?action=login`, {
       method: "POST",
-      body: new URLSearchParams({ username, password }),
+      body: new URLSearchParams({ username, password })
     });
-    const data = await response.json();
+    const data = await res.json();
     if (data.success) {
       localStorage.setItem("userID", data.userID);
       document.getElementById("loginDiv").style.display = "none";
-      document.getElementById("appDiv").style.display = "block";
+      document.getElementById("appDiv").style.display   = "block";
       loadZahony();
     } else {
-      document.getElementById("loginMsg").innerText =
-        "Neplatné přihlašovací údaje.";
+      document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
     }
-  } catch (e) {
-    console.error("Login error:", e);
+  } catch (err) {
+    console.error("Login error:", err);
     document.getElementById("loginMsg").innerText = "Chyba při přihlášení.";
   }
 }
 
 function logout() {
   localStorage.removeItem("userID");
+  document.getElementById("appDiv").style.display   = "none";
   document.getElementById("loginDiv").style.display = "block";
-  document.getElementById("appDiv").style.display = "none";
 }
 
 // ----------------------
@@ -50,32 +49,27 @@ function loadZahony() {
       tbody.innerHTML = "";
 
       data.forEach(z => {
-        const row = document.createElement("tr");
+        const row    = document.createElement("tr");
+        const tdChk  = document.createElement("td");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.dataset.id = z.ZahonID;
+        tdChk.appendChild(checkbox);
 
-        // 1) Checkbox
-        const tdCheck = document.createElement("td");
-        const check = document.createElement("input");
-        check.type = "checkbox";
-        check.dataset.id = z.ZahonID;      // ← tady se ukládá ID
-        tdCheck.appendChild(check);
-
-        // 2) Název záhonu
         const tdName = document.createElement("td");
-        const nameLink = document.createElement("a");
-        nameLink.href = "#";
-        nameLink.textContent = z.NazevZahonu;
-        nameLink.onclick = () => otevriModal(z);
-        tdName.appendChild(nameLink);
+        const link   = document.createElement("a");
+        link.href    = "#";
+        link.textContent = z.NazevZahonu;
+        link.onclick = () => otevriModal(z);
+        tdName.appendChild(link);
 
-        // 3) Velikost
-        const plocha = z.Velikost_m2
+        const plocha = z.Velikost_m2 != null
           ? z.Velikost_m2
           : ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
         const tdSize = document.createElement("td");
         tdSize.textContent = `${plocha} m²`;
 
-        // Přidáme všechny buňky do řádku
-        row.appendChild(tdCheck);
+        row.appendChild(tdChk);
         row.appendChild(tdName);
         row.appendChild(tdSize);
         tbody.appendChild(row);
@@ -88,64 +82,53 @@ function deleteSelected() {
   const checks = document.querySelectorAll(
     '#zahonyTable tbody input[type="checkbox"]:checked'
   );
-  if (!checks.length) {
-    console.warn("Žádné zaškrtnuté záhony k odstranění");
+  if (checks.length === 0) {
+    console.warn("Žádné označené záhony k smazání");
     return;
   }
-
   checks.forEach(cb => {
-    const zahonID = cb.dataset.id;
-    console.log("Mazání záhonu ID:", zahonID);
-
+    const id = cb.dataset.id;
     const params = new URLSearchParams();
     params.append("action", "deleteZahon");
-    params.append("ZahonID", zahonID);
+    params.append("ZahonID", id);
 
-    fetch(SERVER_URL, {
-      method: "POST",
-      body: params
-    })
-    .then(r => r.text())
-    .then(text => {
-      console.log("Odezva deleteZahon:", text);
-      if (text.trim() === "OK") {
-        loadZahony();  // po smazání refresh tabulky
-      } else {
-        console.error("Smazání neproběhlo OK, odpověď:", text);
-      }
-    })
-    .catch(e => console.error("Chyba mazání záhonu:", e));
+    fetch(SERVER_URL, { method: "POST", body: params })
+      .then(r => r.text())
+      .then(txt => {
+        if (txt.trim() === "OK") loadZahony();
+        else console.error("Mazání se nepovedlo:", txt);
+      })
+      .catch(e => console.error("Chyba mazání záhonu:", e));
   });
 }
 
 function addZahon() {
   const userID = localStorage.getItem("userID");
-  const nazev = document.getElementById("newNazev").value.trim();
-  const delka = parseFloat(document.getElementById("newDelka").value) || 0;
-  const sirka = parseFloat(document.getElementById("newSirka").value) || 0;
+  const nazev  = document.getElementById("newNazev").value.trim();
+  const delka  = parseFloat(document.getElementById("newDelka").value) || 0;
+  const sirka  = parseFloat(document.getElementById("newSirka").value) || 0;
   if (!nazev || delka <= 0 || sirka <= 0) {
     alert("Vyplňte správně název, délku a šířku záhonu.");
     return;
   }
-  const formData = new URLSearchParams();
-  formData.append("action", "addZahon");
-  formData.append("userID", userID);
-  formData.append("NazevZahonu", nazev);
-  formData.append("Delka", delka);
-  formData.append("Sirka", sirka);
-  fetch(SERVER_URL, { method: "POST", body: formData })
-    .then((r) => r.text())
-    .then((resp) => {
-      if (resp === "OK") {
-        document.getElementById("newNazev").value = "";
-        document.getElementById("newDelka").value = "";
-        document.getElementById("newSirka").value = "";
+  const form = new URLSearchParams();
+  form.append("action", "addZahon");
+  form.append("userID", userID);
+  form.append("NazevZahonu", nazev);
+  form.append("Delka", delka);
+  form.append("Sirka", sirka);
+
+  fetch(SERVER_URL, { method: "POST", body: form })
+    .then(r => r.text())
+    .then(txt => {
+      if (txt.trim() === "OK") {
+        ["newNazev","newDelka","newSirka"].forEach(id => document.getElementById(id).value = "");
         loadZahony();
       } else {
-        alert("Chyba při přidávání záhonu: " + resp);
+        alert("Chyba při přidávání záhonu: " + txt);
       }
     })
-    .catch((e) => console.error("Chyba addZahon:", e));
+    .catch(e => console.error("Chyba addZahon:", e));
 }
 
 // ----------------------
@@ -153,15 +136,14 @@ function addZahon() {
 // ----------------------
 function otevriModal(zahon) {
   aktualniZahon = zahon;
-  // reset ikon
   setActiveIcon(null);
-  // vyplnění polí
+
   document.getElementById("editNazev").value = zahon.NazevZahonu;
   document.getElementById("editDelka").value = zahon.Delka || 0;
   document.getElementById("editSirka").value = zahon.Sirka || 0;
   updatePlocha();
   nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
-  // výchozí pohled
+
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   document.getElementById("modal").style.display = "flex";
@@ -172,6 +154,9 @@ function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
 
+// ----------------------
+// Úprava záhonu
+// ----------------------
 function updatePlocha() {
   const d = parseFloat(document.getElementById("editDelka").value) || 0;
   const s = parseFloat(document.getElementById("editSirka").value) || 0;
@@ -186,72 +171,71 @@ function saveZahon() {
     alert("Vyplňte správně název, délku a šířku.");
     return;
   }
-  const params = new URLSearchParams();
-  params.append("action", "updateZahon");
-  params.append("ZahonID", aktualniZahon.ZahonID);
-  params.append("NazevZahonu", nazev);
-  params.append("Delka", delka);
-  params.append("Sirka", sirka);
-  fetch(SERVER_URL, { method: "POST", body: params })
-    .then((r) => r.text())
-    .then((resp) => {
-      if (resp === "OK") {
-        alert("Záhon uložen.");
+  const p = new URLSearchParams();
+  p.append("action","updateZahon");
+  p.append("ZahonID", aktualniZahon.ZahonID);
+  p.append("NazevZahonu", nazev);
+  p.append("Delka", delka);
+  p.append("Sirka", sirka);
+
+  fetch(SERVER_URL, { method: "POST", body: p })
+    .then(r => r.text())
+    .then(txt => {
+      if (txt.trim()==="OK") {
         closeModal();
         loadZahony();
       } else {
-        alert("Chyba při ukládání záhonu: " + resp);
+        alert("Chyba při ukládání: "+txt);
       }
     })
-    .catch((e) => console.error("Chyba saveZahon:", e));
-}
-// --- Správa aktivních ikon ---
-function setActiveIcon(activeTyp) {
-  ['seti','hnojeni','sklizen','analyza']
-    .forEach(t => {
-      const el = document.getElementById(`icon-${t}`);
-      if (!el) return;
-      if (t === activeTyp) el.classList.add('active');
-      else                 el.classList.remove('active');
-    });
+    .catch(e => console.error("Chyba saveZahon:", e));
 }
 
+// ----------------------
+// Boční ikony
+// ----------------------
+function setActiveIcon(activeTyp) {
+  ["seti","hnojeni","sklizen","analyza"].forEach(t => {
+    const el = document.getElementById("icon-"+t);
+    if (!el) return;
+    el.classList.toggle("active", t===activeTyp);
+  });
+}
 function onIconClick(typ) {
   setActiveIcon(typ);
   showUdalostForm(typ);
 }
 
 // ----------------------
-// Plodiny / hnojiva
+// Plodiny / hnojiva (pokud je v modálu <select>)
 // ----------------------
 function loadPlodiny() {
   fetch(`${SERVER_URL}?action=getPlodiny`)
-    .then((r) => r.json())
-    .then((data) => {
+    .then(r=>r.json())
+    .then(data=>{
       const sel = document.getElementById("plodinaSelect");
       if (!sel) return;
       sel.innerHTML = "";
-      data.forEach((p) => {
-        const opt = document.createElement("option");
-        opt.value = p.nazev;
-        opt.textContent = p.nazev;
-        sel.appendChild(opt);
+      data.forEach(p => {
+        const o = document.createElement("option");
+        o.value = p.nazev;
+        o.textContent = p.nazev;
+        sel.appendChild(o);
       });
     });
 }
-
 function loadHnojiva() {
   fetch(`${SERVER_URL}?action=getHnojiva`)
-    .then((r) => r.json())
-    .then((data) => {
+    .then(r=>r.json())
+    .then(data=>{
       const sel = document.getElementById("hnojivoSelect");
       if (!sel) return;
       sel.innerHTML = "";
-      data.forEach((h) => {
-        const opt = document.createElement("option");
-        opt.value = h.nazev;
-        opt.textContent = h.nazev;
-        sel.appendChild(opt);
+      data.forEach(h => {
+        const o = document.createElement("option");
+        o.value = h.nazev;
+        o.textContent = h.nazev;
+        sel.appendChild(o);
       });
     });
 }
@@ -263,84 +247,80 @@ function showUdalostForm(typ) {
   document.getElementById("modalViewDefault").style.display = "none";
   document.getElementById("modalViewUdalost").style.display = "block";
   const c = document.getElementById("udalostFormContainer");
-  c.innerHTML = `<h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>`;
-  c.innerHTML += `
-    <label>Datum: <input type="date" id="udalostDatum" /></label><br>
-    <label>Plodina: <input type="text" id="udalostPlodina" /></label><br>
-    <label>Poznámka: <input type="text" id="udalostPoznamka" /></label><br>
-    <button onclick="ulozUdalost('${typ}')">Uložit</button>
-  `;
+  c.innerHTML = `<h4>${typ[0].toUpperCase()+typ.slice(1)}</h4>`+
+                `<label>Datum: <input type="date" id="udalostDatum"/></label><br>`+
+                `<label>Plodina: <input type="text" id="udalostPlodina"/></label><br>`+
+                `<label>Poznámka: <input type="text" id="udalostPoznamka"/></label><br>`+
+                `<button onclick="ulozUdalost('${typ}')">Uložit</button>`;
 }
-
 function zpetNaDetailZahonu() {
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   setActiveIcon(null);
 }
-
 function ulozUdalost(typ) {
-  const datum = document.getElementById("udalostDatum").value;
-  const plodina = document.getElementById("udalostPlodina").value;
-  const poznamka = document.getElementById("udalostPoznamka").value;
-  alert(`Ukládám ${typ}: ${datum}, ${plodina}, ${poznamka}`);
+  const d = document.getElementById("udalostDatum").value;
+  const p = document.getElementById("udalostPlodina").value;
+  const n = document.getElementById("udalostPoznamka").value;
+  alert(`Ukládám ${typ}: ${d}, ${p}, ${n}`);
   zpetNaDetailZahonu();
 }
 
+// ----------------------
+// Zobrazení seznamu událostí
+// ----------------------
 function zobrazUdalosti(zahonID) {
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`)
-    .then((r) => r.json())
-    .then((data) => {
+    .then(r=>r.json())
+    .then(arr=>{
       const c = document.getElementById("udalostSeznamContainer");
       c.innerHTML = "";
-      if (data.length === 0) { c.textContent = "Žádné události."; return; }
-      data.forEach((u) => {
-        const div = document.createElement("div");
-        div.className = "udalost-item";
-        div.innerHTML = `
+      if (!arr.length) {
+        c.textContent = "Žádné události.";
+        return;
+      }
+      arr.forEach(u => {
+        const d = document.createElement("div");
+        d.className = "udalost-item";
+        d.innerHTML = `
           <strong>${u.Typ}</strong> (${u.Datum})<br>
-          ${u.Plodina || ""} ${u.Hnojivo || ""}<br>
-          Množství: ${u.Mnozstvi || "-"} kg<br>
-          Výnos: ${u.Vynos || "-"} kg<br>
-          <em>${u.Poznamka || ""}</em><br>
-          <button onclick="smazUdalost(${u.UdalostID}, ${zahonID})">🗑️</button>
+          ${u.Plodina||""} ${u.Hnojivo||""}<br>
+          Množství: ${u.Mnozstvi||"-"} kg<br>
+          Výnos: ${u.Vynos||"-"} kg<br>
+          <em>${u.Poznamka||""}</em><br>
+          <button onclick="smazUdalost(${u.UdalostID},${zahonID})">🗑️</button>
         `;
-        c.appendChild(div);
+        c.appendChild(d);
       });
     })
-    .catch((e) => console.error("Chyba načtení událostí:", e));
+    .catch(e=>console.error("Chyba načtení událostí:",e));
 }
 
-function smazUdalost(udalostID, zahonID) {
-  const params = new URLSearchParams();
-  params.append("action", "deleteUdalost");
-  params.append("udalostID", udalostID);
-  fetch(SERVER_URL, { method: "POST", body: params })
-    .then((r) => r.text())
-    .then((resp) => {
-      if (resp === "OK") zobrazUdalosti(zahonID);
-      else alert("Chyba mazání události: " + resp);
+function smazUdalost(udalostID,zID) {
+  const p = new URLSearchParams();
+  p.append("action","deleteUdalost");
+  p.append("udalostID",udalostID);
+  fetch(SERVER_URL,{method:"POST",body:p})
+    .then(r=>r.text())
+    .then(txt=>{
+      if(txt.trim()==="OK") zobrazUdalosti(zID);
+      else alert("Chyba při mazání události: "+txt);
     })
-    .catch((e) => console.error("Chyba smazUdalost:", e));
+    .catch(e=>console.error("Chyba smazUdalost:",e));
 }
 
 // ----------------------
 // Vizualizace záhonu
 // ----------------------
-function nakresliZahonCanvas(delka, sirka) {
-  const container = document.getElementById("zahonVizualizace");
-  container.innerHTML = "";
-  const canvas = document.createElement("canvas");
-  canvas.width = 200;
-  canvas.height = 200;
-  const ctx = canvas.getContext("2d");
-  const scale = Math.min(canvas.width / (delka || 1), canvas.height / (sirka || 1));
-  const w = (delka || 1) * scale;
-  const h = (sirka || 1) * scale;
+function nakresliZahonCanvas(delka,sirka) {
+  const cont = document.getElementById("zahonVizualizace");
+  cont.innerHTML = "";
+  const cv = document.createElement("canvas");
+  cv.width = cv.height = 200;
+  const ctx = cv.getContext("2d");
+  const scale = Math.min(200/(delka||1), 200/(sirka||1));
+  const w = (delka||1)*scale, h = (sirka||1)*scale;
   ctx.fillStyle = "#c2b280";
-  ctx.fillRect((canvas.width - w)/2, (canvas.height - h)/2, w, h);
-  container.appendChild(canvas);
+  ctx.fillRect((200-w)/2,(200-h)/2,w,h);
+  cont.appendChild(cv);
 }
-/**
- * Toto je vaše serverová funkce, která skutečně smaže řádek ze
- * sheetu „Zahony“. Volá ji klient s parametrem action=deleteZahon.
- */
