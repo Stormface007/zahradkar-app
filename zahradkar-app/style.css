@@ -202,14 +202,16 @@ button {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.side-icon:hover {
-  opacity: 1;
-}
+
 
 .side-icon.active {
   transform: translateX(15px);
   opacity: 1;
   z-index: 1001;
+  
+.side-icon:hover {
+  opacity: 1;
+}
 }
 /* Bílé pozadí jen pro ikonu Setí */
 #icon-seti {
