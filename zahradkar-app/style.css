@@ -211,7 +211,7 @@ button {
 #icon-seti {
   background-color: #fff;
   border-radius: 4px;     /* zaoblené rohy, volitelné */
-  padding: 4px;           /* prostor kolem obrázku */
+  padding: 2px;           /* prostor kolem obrázku */
   box-sizing: content-box;
 }
 
