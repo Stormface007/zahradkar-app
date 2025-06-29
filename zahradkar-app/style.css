@@ -86,7 +86,7 @@ button {
   background: #009900;
   margin: 5% auto;
   padding: 20px 20px 20px 100px;  /* odsazení zleva na 140px */
-  width: 80%;
+  width: 90%;
   max-width: 600px;
   border-radius: 8px;
   overflow: visible;
@@ -220,4 +220,10 @@ button {
   padding: 0.5rem;
   border: 2px solid black;
   border-radius: 4px;
+}
+
+/* Zmenšení pole pro název záhonu o 10 % v default modal view */
+#modalViewDefault input#editNazev {
+  width: 80%;
+  box-sizing: border-box;
 }
