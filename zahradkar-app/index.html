@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- Přihlášení -->
+  <!-- Přihlašovací formulář -->
   <div id="loginDiv">
     <img src="img/icon_trimmed_transparent_customcolor.png" alt="Logo" class="logo-small" />
     <input type="text" id="username" placeholder="Uživatelské jméno" />
@@ -50,15 +50,15 @@
   <div id="modal" class="modal">
     <div class="modal-content">
 
-      <!-- boční panel ikon -->
+      <!-- BOČNÍ PANEL IKON -->
       <div class="side-icons">
-        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"      onclick="onIconClick('seti')"    />
-        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení"   onclick="onIconClick('hnojeni')" />
-        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň"   onclick="onIconClick('sklizen')" />
-        <img id="icon-analyza" class="side-icon" src="img/analyza.png" alt="Analýza"   onclick="onIconClick('analyza')" />
+        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"     onclick="onIconClick('seti')"    />
+        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení" onclick="onIconClick('hnojeni')" />
+        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň" onclick="onIconClick('sklizen')" />
+        <img id="icon-analyza" class="side-icon" src="img/analyza.png" alt="Analýza" onclick="onIconClick('analyza')" />
       </div>
 
-      <!-- výchozí režim úpravy záhonu -->
+      <!-- Výchozí režim úpravy záhonu -->
       <div id="modalViewDefault">
         <h3>Úprava záhonu</h3>
         <input type="text" id="editNazev" placeholder="Název záhonu" />
@@ -75,9 +75,12 @@
         <button onclick="closeModal()">Zavřít</button>
       </div>
 
-      <!-- režim událostí i analýzy -->
-      <div id="modalViewUdalost" style="display: none;">
+      <!-- Režim práce s událostmi / analýzou -->
+      <div id="modalViewUdalost">
+        <!-- Pro klasické události: -->
         <div id="udalostFormContainer"></div>
+        <div id="udalostSeznamContainer"></div>
+        <!-- Pro analýzu přibude třída "analysis" a JS sem vykreslí -->
         <button id="btnZpet" onclick="zpetNaDetailZahonu()">Zpět</button>
       </div>
 
