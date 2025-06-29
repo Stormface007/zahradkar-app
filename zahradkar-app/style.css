@@ -26,7 +26,8 @@ body {
 
 input[type="text"],
 input[type="password"],
-input[type="number"] {
+input[type="number"],
+input[type="date"] {
   width: 100%;
   max-width: 300px;
   padding: 0.75rem;
@@ -135,48 +136,40 @@ button {
   box-sizing: border-box;
 }
 
-/* Úprava pole pro datum v modalViewUdalost */
+/* Pole pro datum */
 #modalViewUdalost #udalostFormContainer input[type="date"] {
-  width: 50%;                  /* 1/2 šířky kontejneru */
-  height: 1.5em;               /* 1,5× výšky */
-  font-size: 1rem;             /* velikost písma */
-  color: #000;                 /* černá barva textu */
-  background-color: #fff;      /* bílý podklad */
-  border: 1px solid #000;      /* černý rámeček */
-  border-radius: 4px;          /* zaoblené rohy */
-  padding: 0.2em 0.4em;         /* vnitřní odsazení */
-  box-sizing: border-box;      /* zahrnuje padding i border */
-  margin-bottom: 0.5rem;       /* prostor pod */
+  width: 50%;
+  height: 1.5em;
+  font-size: 1rem;
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
 }
 
 /* Modal */
 .modal {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   overflow: visible;
   z-index: 999;
 }
 
 .modal-content {
-  position: relative;          /* pro absolutní umístění ikon */
-  background:  #009900;
+  position: relative;
+  background: #009900;
   margin: 5% auto;
-  padding: 20px;
-  padding-left: 100px;         /* odsazení obsahu pro ikony */
+  padding: 20px 20px 20px 100px;
   width: 90%;
   max-width: 600px;
   border-radius: 8px;
   overflow: visible;
-}
-
-.modal-body {
-  max-height: 80vh;
-  overflow-y: auto;
 }
 
 /* Boční panel ikon */
@@ -192,78 +185,57 @@ button {
 
 .side-icon {
   background-color: #fff;
-  border-radius: 2px;     /* zaoblené rohy, volitelné */
-  padding: 1px;           /* prostor kolem obrázku */
+  border-radius: 4px;
+  padding: 4px;
   box-sizing: content-box;
   width: 60px;
-  height: auto;
   cursor: pointer;
   opacity: 0.7;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-
+.side-icon:hover {
+  opacity: 1;
+}
 
 .side-icon.active {
   transform: translateX(15px);
   opacity: 1;
   z-index: 1001;
-  
-.side-icon:hover {
-  opacity: 1;
 }
-}
-/* Bílé pozadí jen pro ikonu Setí */
-#icon-seti {
-  background-color: #fff;
-  border-radius: 2px;     /* zaoblené rohy, volitelné */
-  padding: 1px;           /* prostor kolem obrázku */
-  box-sizing: content-box;
-}
-/* … váš stávající CSS … */
 
-/* … vaše ostatní pravidla … */
+/* Bílé pozadí jen pro Setí (ostatní si dle potřeby) */
+#icon-seti { background-color: #fff; }
 
-/* speciálně pro analytický režim */
+/* Analytický režim: pH/N v řádku, P/K v dalším */
 #modalViewUdalost.analysis label {
   font-weight: bold;
   display: block;
   margin-bottom: 0.25rem;
 }
-/* pole pH, N, P, K vedle sebe, 24% šířky + odsazení */
-#modalViewUdalost.analysis #analPH,
-#modalViewUdalost.analysis #analN,
-#modalViewUdalost.analysis #analP,
-#modalViewUdalost.analysis #analK {
+
+#modalViewUdalost.analysis .nutrients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1%;
+}
+
+#modalViewUdalost.analysis .nutrients input {
   width: 24%;
-  display: inline-block;
-  margin-right: 1%;
-  margin-bottom: 1rem;
   box-sizing: border-box;
+  margin-bottom: 0.5rem;
 }
-/* poslední v řadě bez margin-right */
-#modalViewUdalost.analysis #analK {
-  margin-right: 0;
-}
-/* skupina typ/barva půdy pod sebou */
+
 #modalViewUdalost.analysis .soil-info {
   margin-top: 1rem;
 }
+
 #modalViewUdalost.analysis .soil-info label {
-  margin-top: 0.5rem;
+  display: block;
+  margin-bottom: 0.25rem;
 }
+
 #modalViewUdalost.analysis .soil-info input {
   width: 100%;
   box-sizing: border-box;
-}
-
-/* Typ půdy a barva půdy pod sebou */
-#modalViewUdalost.analysis .soil-info {
-  margin-top: 1rem;
-}
-#modalViewUdalost.analysis .soil-info label {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 0.5rem;
 }
