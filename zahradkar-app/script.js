@@ -225,40 +225,78 @@ function smazUdalost(ud,zID){
 }
 
 // -------- Analýza --------
-function onIconClick(typ){
+// … vaše SERVER_URL, login/logout, loadZahony, atd. …
+
+// přepnutí ikon a zobrazení buď “událostí” nebo “analýzy”
+function onIconClick(typ) {
   setActiveIcon(typ);
-  if(typ==="analyza") openAnalysisForm();
-  else showUdalostForm(typ);
+  if (typ === 'analyza') {
+    showAnalysisForm();
+  } else {
+    showUdalostForm(typ);
+  }
 }
 
-function openAnalysisForm(){
-  document.getElementById("modalViewDefault").style.display="none";
-  const mv = document.getElementById("modalViewUdalost");
-  mv.style.display="block";
-  mv.classList.add("analysis");
-  const c = document.getElementById("udalostFormContainer");
-  c.innerHTML = `<h4>Analýza</h4>
-    <label>Datum:<input type="date" id="analDatum"/></label>
-    <label>pH:<input type="number" step="0.1" id="analPH"/></label>
-    <label>N (g/m²):<input type="number" step="0.1" id="analN"/></label>
-    <label>P (g/m²):<input type="number" step="0.1" id="analP"/></label>
-    <label>K (g/m²):<input type="number" step="0.1" id="analK"/></label>
+// vykreslí analytický formulář do #modalViewUdalost
+function showAnalysisForm() {
+  // schováme detail záhonu
+  document.getElementById("modalViewDefault").style.display = "none";
+
+  const container = document.getElementById("modalViewUdalost");
+  container.classList.add("analysis");
+  container.innerHTML = `
+    <label for="analDatum">Datum analýzy:</label>
+    <input type="date" id="analDatum" />
+
+    <label for="analPH">pH (–):</label>
+    <input type="number" step="0.1" id="analPH" />
+
+    <label for="analN">N (ppm):</label>
+    <input type="number" id="analN" />
+
+    <label for="analP">P (ppm):</label>
+    <input type="number" id="analP" />
+
+    <label for="analK">K (ppm):</label>
+    <input type="number" id="analK" />
+
     <div class="soil-info">
-      <label>Typ půdy:<input type="text" id="analTyp"/></label>
-      <label>Barva půdy:<input type="text" id="analBarva"/></label>
+      <label for="soilType">Typ půdy:</label>
+      <input type="text" id="soilType" />
+
+      <label for="soilColor">Barva půdy:</label>
+      <input type="text" id="soilColor" />
     </div>
-    <button onclick="saveAnalysis()">Uložit analýzu</button>`;
+
+    <button onclick="saveAnalysis()">Uložit analýzu</button>
+    <button onclick="zpetNaDetailZahonu()">Zpět</button>
+  `;
+
+  // a zobrazíme modál
+  document.getElementById("modalViewUdalost").style.display = "block";
 }
 
-function saveAnalysis(){
-  const d  = document.getElementById("analDatum").value;
-  const ph = document.getElementById("analPH").value;
-  const n  = document.getElementById("analN").value;
-  const p  = document.getElementById("analP").value;
-  const k  = document.getElementById("analK").value;
-  const t  = document.getElementById("analTyp").value;
-  const b  = document.getElementById("analBarva").value;
-  alert(`Ukládám analýzu:\n${d}\npH=${ph}, N=${n}, P=${p}, K=${k}\nTyp=${t}, Barva=${b}`);
+// návrat z analýzy zpět na úpravu záhonu
+function zpetNaDetailZahonu() {
+  document.getElementById("modalViewUdalost").style.display = "none";
+  document.getElementById("modalViewUdalost").classList.remove("analysis");
+  document.getElementById("modalViewDefault").style.display = "block";
+  setActiveIcon(null);
+}
+
+// placeholder uložení analýzy
+function saveAnalysis() {
+  const datum      = document.getElementById("analDatum").value;
+  const ph         = document.getElementById("analPH").value;
+  const n          = document.getElementById("analN").value;
+  const p          = document.getElementById("analP").value;
+  const k          = document.getElementById("analK").value;
+  const type       = document.getElementById("soilType").value;
+  const color      = document.getElementById("soilColor").value;
+
+  // tady zavolat fetch(... action=addAnalysis ...) podle vašeho backendu
+  console.log("Ukládám analýzu:", {datum, ph, n, p, k, type, color});
+  // pak se vrátíme zpět
   zpetNaDetailZahonu();
 }
 
