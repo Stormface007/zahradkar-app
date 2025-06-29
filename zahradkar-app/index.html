@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
@@ -58,12 +58,24 @@
       </div>
 
       <!-- OBSAH MODÁLU -->
+   div id="modal" class="modal">
+    <div class="modal-content">
+
+      <!-- 1) PANEL IKON -->
+      <div class="side-icons">
+        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"    onclick="onIconClick('seti')"/>
+        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení" onclick="onIconClick('hnojeni')"/>
+        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň" onclick="onIconClick('sklizen')"/>
+        <img id="icon-analyza" class="side-icon" src="img/analyza.png"  alt="Analýza"/>
+      </div>
+
+      <!-- 2) ROLL-OVATELNÝ OBSAH MODÁLU -->
       <div class="modal-body">
 
-        <!-- default view -->
+        <!-- a) Default view – úprava záhonu -->
         <div id="modalViewDefault">
           <h3>Úprava záhonu</h3>
-          <input type="text"   id="editNazev" placeholder="Název záhonu"/>
+          <input type="text" id="editNazev" placeholder="Název záhonu"/>
           <div class="dimensions">
             <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()"/>
             <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()"/>
@@ -74,16 +86,17 @@
           <button onclick="closeModal()">Zavřít</button>
         </div>
 
-        <!-- událostní view -->
+        <!-- b) Udalost view – seti/hnojeni/sklizen -->
         <div id="modalViewUdalost" style="display:none">
           <div id="udalostFormContainer"></div>
           <div id="udalostSeznamContainer"></div>
           <button onclick="zpetNaDetailZahonu()">Zpět</button>
         </div>
 
-      </div>
-    </div>
-  </div>
+      </div><!-- /.modal-body -->
+
+    </div><!-- /.modal-content -->
+  </div><!-- /#modal -->
 
   <script src="script.js"></script>
 </body>
