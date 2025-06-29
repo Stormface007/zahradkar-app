@@ -232,7 +232,7 @@ function showUdalostForm(typ) {
   const c = document.getElementById("udalostFormContainer");
   c.innerHTML = "";
 
-  if (typ === "analyza") {
+  if (typ === "Analýza") {
     c.innerHTML = `
       <h4>Analýza půdy</h4>
       <label>Datum:        <input type="date"   id="analyzaDatum"    /></label><br>
