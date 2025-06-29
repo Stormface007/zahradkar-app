@@ -220,4 +220,32 @@ button {
   padding: 1px;           /* prostor kolem obrázku */
   box-sizing: content-box;
 }
+/* … váš stávající CSS … */
 
+/* Analýza – vedle sebe pH, N, P, K */
+#modalViewUdalost.analysis #analPH,
+#modalViewUdalost.analysis #analN,
+#modalViewUdalost.analysis #analP,
+#modalViewUdalost.analysis #analK {
+  width: 24%;
+  box-sizing: border-box;
+  display: inline-block;
+  margin-right: 1%;
+}
+
+/* Odstraňujeme margin-bottom u těchto řádků, aby lépe seděly vedle sebe */
+#modalViewUdalost.analysis #analPH,
+#modalViewUdalost.analysis #analN {
+  margin-bottom: 0.5rem;
+}
+
+/* Typ půdy a barva půdy pod sebou */
+#modalViewUdalost.analysis .soil-info {
+  margin-top: 1rem;
+}
+#modalViewUdalost.analysis .soil-info label {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+}
