@@ -191,8 +191,10 @@ button {
 }
 
 .side-icon {
+  background-color: #fff;
   border-radius: 2px;     /* zaoblené rohy, volitelné */
-  padding: 2px;
+  padding: 1px;           /* prostor kolem obrázku */
+  box-sizing: content-box;
   width: 60px;
   height: auto;
   cursor: pointer;
