@@ -351,6 +351,11 @@ function nakresliZahonCanvas(delka,sirka) {
 // ----------------------
 // Boční ikony
 // ----------------------
+
+function onIconClick(typ) {
+  setActiveIcon(typ);
+  showUdalostForm(typ);
+}
 function setActiveIcon(activeTyp) {
   ["seti","hnojeni","sklizen","analyza"].forEach(t => {
     const el = document.getElementById(`icon-${t}`);
@@ -359,7 +364,3 @@ function setActiveIcon(activeTyp) {
   });
 }
 
-function onIconClick(typ) {
-  setActiveIcon(typ);
-  showUdalostForm(typ);
-}
