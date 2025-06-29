@@ -49,18 +49,18 @@ function loadZahony() {
       tbody.innerHTML = "";
 
       data.forEach(z => {
-        const row    = document.createElement("tr");
-        const tdChk  = document.createElement("td");
+        const row      = document.createElement("tr");
+        const tdChk    = document.createElement("td");
         const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
+        checkbox.type      = "checkbox";
         checkbox.dataset.id = z.ZahonID;
         tdChk.appendChild(checkbox);
 
         const tdName = document.createElement("td");
         const link   = document.createElement("a");
-        link.href    = "#";
-        link.textContent = z.NazevZahonu;
-        link.onclick = () => otevriModal(z);
+        link.href           = "#";
+        link.textContent    = z.NazevZahonu;
+        link.onclick        = () => otevriModal(z);
         tdName.appendChild(link);
 
         const plocha = z.Velikost_m2 != null
@@ -138,15 +138,15 @@ function otevriModal(zahon) {
   aktualniZahon = zahon;
   setActiveIcon(null);
 
-  document.getElementById("editNazev").value = zahon.NazevZahonu;
-  document.getElementById("editDelka").value = zahon.Delka || 0;
-  document.getElementById("editSirka").value = zahon.Sirka || 0;
+  document.getElementById("editNazev").value  = zahon.NazevZahonu;
+  document.getElementById("editDelka").value  = zahon.Delka || 0;
+  document.getElementById("editSirka").value  = zahon.Sirka || 0;
   updatePlocha();
   nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
 
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
-  document.getElementById("modal").style.display = "flex";
+  document.getElementById("modal").style.display           = "flex";
 }
 
 function closeModal() {
@@ -192,10 +192,7 @@ function saveZahon() {
 }
 
 // ----------------------
-
-
-// ----------------------
-// Plodiny / hnojiva (pokud je v modálu <select>)
+// Plodiny / hnojiva
 // ----------------------
 function loadPlodiny() {
   fetch(`${SERVER_URL}?action=getPlodiny`)
@@ -204,10 +201,9 @@ function loadPlodiny() {
       const sel = document.getElementById("plodinaSelect");
       if (!sel) return;
       sel.innerHTML = "";
-      data.forEach(p => {
+      data.forEach(p=>{
         const o = document.createElement("option");
-        o.value = p.nazev;
-        o.textContent = p.nazev;
+        o.value = p.nazev; o.textContent = p.nazev;
         sel.appendChild(o);
       });
     });
@@ -219,33 +215,55 @@ function loadHnojiva() {
       const sel = document.getElementById("hnojivoSelect");
       if (!sel) return;
       sel.innerHTML = "";
-      data.forEach(h => {
+      data.forEach(h=>{
         const o = document.createElement("option");
-        o.value = h.nazev;
-        o.textContent = h.nazev;
+        o.value = h.nazev; o.textContent = h.nazev;
         sel.appendChild(o);
       });
     });
 }
 
 // ----------------------
-// Události
+// Události & Analýza
 // ----------------------
 function showUdalostForm(typ) {
   document.getElementById("modalViewDefault").style.display = "none";
   document.getElementById("modalViewUdalost").style.display = "block";
   const c = document.getElementById("udalostFormContainer");
-  c.innerHTML = `<h4>${typ[0].toUpperCase()+typ.slice(1)}</h4>`+
-                `<label>Datum: <input type="date" id="udalostDatum"/></label><br>`+
-                `<label>Plodina: <input type="text" id="udalostPlodina"/></label><br>`+
-                `<label>Poznámka: <input type="text" id="udalostPoznamka"/></label><br>`+
-                `<button onclick="ulozUdalost('${typ}')">Uložit</button>`;
+  c.innerHTML = "";
+
+  if (typ === "analyza") {
+    c.innerHTML = `
+      <h4>Analýza půdy</h4>
+      <label>Datum:        <input type="date"   id="analyzaDatum"    /></label><br>
+      <label>pH:           <input type="number" step="0.1" id="analyzaPH"     /></label><br>
+      <label>N (kg):       <input type="number" step="0.01" id="analyzaN"     /></label><br>
+      <label>P (kg):       <input type="number" step="0.01" id="analyzaP"     /></label><br>
+      <label>K (kg):       <input type="number" step="0.01" id="analyzaK"     /></label><br>
+      <label>Typ půdy:     <input type="text"             id="analyzaTypPudy" /></label><br>
+      <label>Barva půdy:   <input type="text"             id="analyzaBarvaPudy" /></label><br>
+      <button onclick="ulozAnalyza()">Uložit analýzu</button>
+    `;
+  } else {
+    // stávající setí/hnojení/sklizeň
+    c.innerHTML = `<h4>${typ[0].toUpperCase()+typ.slice(1)}</h4>` +
+                  `<label>Datum:   <input type="date" id="udalostDatum"/></label><br>` +
+                  `<label>Plodina: <input type="text" id="udalostPlodina"/></label><br>` +
+                  `<label>Poznámka:<input type="text" id="udalostPoznamka"/></label><br>` +
+                  `<button onclick="ulozUdalost('${typ}')">Uložit</button>`;
+  }
+
+  setActiveIcon(typ);
 }
+
+// vrací zpět z event/analýza režimu
 function zpetNaDetailZahonu() {
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   setActiveIcon(null);
 }
+
+// uložení setí/hnojení/sklizně (zatím jen alert)
 function ulozUdalost(typ) {
   const d = document.getElementById("udalostDatum").value;
   const p = document.getElementById("udalostPlodina").value;
@@ -254,8 +272,25 @@ function ulozUdalost(typ) {
   zpetNaDetailZahonu();
 }
 
+// uložení analýzy (zatím jen alert)
+function ulozAnalyza() {
+  const d  = document.getElementById("analyzaDatum").value;
+  const ph = document.getElementById("analyzaPH").value;
+  const n  = document.getElementById("analyzaN").value;
+  const p  = document.getElementById("analyzaP").value;
+  const k  = document.getElementById("analyzaK").value;
+  const tp = document.getElementById("analyzaTypPudy").value;
+  const bp = document.getElementById("analyzaBarvaPudy").value;
+
+  alert(
+    `Analýza půdy:\nDatum: ${d}\npH: ${ph}\nN: ${n}\nP: ${p}\nK: ${k}` +
+    `\nTyp půdy: ${tp}\nBarva půdy: ${bp}`
+  );
+  zpetNaDetailZahonu();
+}
+
 // ----------------------
-// Zobrazení seznamu událostí
+// Seznam & mazání událostí
 // ----------------------
 function zobrazUdalosti(zahonID) {
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`)
@@ -292,7 +327,7 @@ function smazUdalost(udalostID,zID) {
     .then(r=>r.text())
     .then(txt=>{
       if(txt.trim()==="OK") zobrazUdalosti(zID);
-      else alert("Chyba při mazání události: "+txt);
+      else alert("Chyba mazání události: "+txt);
     })
     .catch(e=>console.error("Chyba smazUdalost:",e));
 }
@@ -306,22 +341,24 @@ function nakresliZahonCanvas(delka,sirka) {
   const cv = document.createElement("canvas");
   cv.width = cv.height = 200;
   const ctx = cv.getContext("2d");
-  const scale = Math.min(200/(delka||1), 200/(sirka||1));
+  const scale = Math.min(200/(delka||1),200/(sirka||1));
   const w = (delka||1)*scale, h = (sirka||1)*scale;
   ctx.fillStyle = "#c2b280";
   ctx.fillRect((200-w)/2,(200-h)/2,w,h);
   cont.appendChild(cv);
 }
 
+// ----------------------
 // Boční ikony
 // ----------------------
 function setActiveIcon(activeTyp) {
   ["seti","hnojeni","sklizen","analyza"].forEach(t => {
-    const el = document.getElementById("icon-"+t);
+    const el = document.getElementById(`icon-${t}`);
     if (!el) return;
     el.classList.toggle("active", t===activeTyp);
   });
 }
+
 function onIconClick(typ) {
   setActiveIcon(typ);
   showUdalostForm(typ);
