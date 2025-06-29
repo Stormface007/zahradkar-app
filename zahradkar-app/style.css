@@ -26,8 +26,7 @@ body {
 
 input[type="text"],
 input[type="password"],
-input[type="number"],
-input[type="date"] {
+input[type="number"] {
   width: 100%;
   max-width: 300px;
   padding: 0.75rem;
@@ -72,10 +71,62 @@ button {
   padding: 0.5rem;
 }
 
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 999;
+}
+
+.modal-content {
+  position: relative;            /* kvůli absolutním ikonám */
+  background: #009900;
+  margin: 5% auto;
+  padding: 20px 20px 20px 140px;  /* odsazení zleva na 140px */
+  width: 90%;
+  max-width: 600px;
+  border-radius: 8px;
+  overflow: visible;
+}
+
+/* Boční panel ikon */
+.side-icons {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 1000;
+}
+
+.side-icon {
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 4px;
+  width: 60px;
+  height: auto;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.side-icon:hover {
+  opacity: 1;
+}
+
+.side-icon.active {
+  transform: translateX(15px);
+  opacity: 1;
+  z-index: 1001;
+}
+
 /* Úprava záhonu */
 .dimensions {
   display: flex;
-  justify-content: space-between;
   gap: 1rem;
   margin: 1rem 0;
 }
@@ -123,119 +174,50 @@ button {
   text-align: left;
 }
 
-/* Zmenšená šířka polí v modálu pro události */
-#modalViewUdalost #udalostFormContainer input,
-#modalViewUdalost #udalostFormContainer textarea {
-  width: 90%;
-  box-sizing: border-box;
+/* Analytický režim – boxy pH/N vedle sebe, P/K na dalším řádku */
+#modalViewUdalost.analysis .nutrients {
+  width: 100%;
+  margin-bottom: 1rem;
 }
-
-/* Zmenšení pole pro název záhonu o 10 % v default modal view */
-#modalViewDefault input#editNazev {
-  width: 90%;
-  box-sizing: border-box;
-}
-
-/* Pole pro datum */
-#modalViewUdalost #udalostFormContainer input[type="date"] {
-  width: 50%;
-  height: 1.5em;
-  font-size: 1rem;
-  color: #000;
-  background-color: #fff;
-  border: 1px solid #000;
-  border-radius: 4px;
-  padding: 0.2em 0.4em;
-  box-sizing: border-box;
-  margin-bottom: 0.5rem;
-}
-
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  overflow: visible;
-  z-index: 999;
-}
-
-.modal-content {
-  position: relative;
-  background: #009900;
-  margin: 5% auto;
-  padding: 20px 20px 20px 100px;
-  width: 90%;
-  max-width: 600px;
-  border-radius: 8px;
-  overflow: visible;
-}
-
-/* Boční panel ikon */
-.side-icons {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  z-index: 1000;
-}
-
-.side-icon {
-  background-color: #fff;
-  border-radius: 4px;
-  padding: 4px;
-  box-sizing: content-box;
-  width: 60px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.side-icon:hover {
-  opacity: 1;
-}
-
-.side-icon.active {
-  transform: translateX(15px);
-  opacity: 1;
-  z-index: 1001;
-}
-
-/* Bílé pozadí jen pro Setí (ostatní si dle potřeby) */
-#icon-seti { background-color: #fff; }
-
-/* Analytický režim: pH/N v řádku, P/K v dalším */
-#modalViewUdalost.analysis label {
+#modalViewUdalost.analysis .nutrients label {
   font-weight: bold;
   display: block;
   margin-bottom: 0.25rem;
 }
-
-#modalViewUdalost.analysis .nutrients {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1%;
-}
-
 #modalViewUdalost.analysis .nutrients input {
-  width: 24%;
   box-sizing: border-box;
   margin-bottom: 0.5rem;
 }
+#analPH, #analN {
+  width: 48%;
+  display: inline-block;
+  margin-right: 2%;
+}
+#analP {
+  clear: left;
+  width: 48%;
+  display: inline-block;
+  margin-right: 2%;
+}
+#analK {
+  width: 48%;
+  display: inline-block;
+  margin-right: 0;
+}
 
+/* Typ a barva půdy pod sebou */
 #modalViewUdalost.analysis .soil-info {
   margin-top: 1rem;
 }
-
 #modalViewUdalost.analysis .soil-info label {
   display: block;
+  font-weight: bold;
   margin-bottom: 0.25rem;
 }
-
 #modalViewUdalost.analysis .soil-info input {
   width: 100%;
   box-sizing: border-box;
+  padding: 0.5rem;
+  border: 2px solid black;
+  border-radius: 4px;
 }
