@@ -85,7 +85,7 @@ button {
   position: relative;            /* kvůli absolutním ikonám */
   background: #009900;
   margin: 5% auto;
-  padding: 20px 20px 20px 140px;  /* odsazení zleva na 140px */
+  padding: 20px 20px 20px 100px;  /* odsazení zleva na 140px */
   width: 90%;
   max-width: 600px;
   border-radius: 8px;
