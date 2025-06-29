@@ -249,16 +249,30 @@ function onIconClick(typ) {
   else showUdalostForm(typ);
 }
 
-// — Vizualizace záhonu —
-function nakresliZahonCanvas(d,s) {
-  const c = document.getElementById('zahonVizualizace');
-  c.innerHTML = '';
-  const cv = document.createElement('canvas');
-  cv.width = cv.height = 200;
-  const ctx = cv.getContext('2d');
-  const scale = Math.min(200/(d||1),200/(s||1));
-  const w = (d||1)*scale, h = (s||1)*scale;
-  ctx.fillStyle = '#c2b280';
-  ctx.fillRect((200-w)/2,(200-h)/2,w,h);
-  c.appendChild(cv);
+function nakresliZahonCanvas(delka, sirka) {
+  const container = document.getElementById("zahonVizualizace");
+  container.innerHTML = "";
+
+  const canvas = document.createElement("canvas");
+  canvas.width  = 200;
+  canvas.height = 200;
+  const ctx = canvas.getContext("2d");
+
+  // 1) zelené "pole" jako pozadí
+  ctx.fillStyle = "#009900";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 2) hnědý záhon uprostřed
+  const scale = Math.min(canvas.width  / (delka || 1),
+                         canvas.height / (sirka  || 1));
+  const w = (delka || 1) * scale;
+  const h = (sirka  || 1) * scale;
+  ctx.fillStyle = "#c2b280";
+  ctx.fillRect(
+    (canvas.width  - w) / 2,
+    (canvas.height - h) / 2,
+    w, h
+  );
+
+  container.appendChild(canvas);
 }
