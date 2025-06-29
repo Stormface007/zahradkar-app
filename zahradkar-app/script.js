@@ -267,12 +267,17 @@ function nakresliZahonCanvas(delka, sirka) {
                          canvas.height / (sirka  || 1));
   const w = (delka || 1) * scale;
   const h = (sirka  || 1) * scale;
+  const x = (canvas.width  - w) / 2;
+  const y = (canvas.height - h) / 2;
+
+  // výplň záhonu
   ctx.fillStyle = "#c2b280";
-  ctx.fillRect(
-    (canvas.width  - w) / 2,
-    (canvas.height - h) / 2,
-    w, h
-  );
+  ctx.fillRect(x, y, w, h);
+
+  // 3) černý obrys kolem záhonu
+  ctx.lineWidth   = 2;        // tloušťka čáry
+  ctx.strokeStyle = "#000000"; // černá barva
+  ctx.strokeRect(x, y, w, h);
 
   container.appendChild(canvas);
 }
