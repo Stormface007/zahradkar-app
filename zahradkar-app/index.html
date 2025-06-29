@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -9,7 +8,7 @@
 </head>
 <body>
 
-  <!-- Přihlašovací formulář -->
+  <!-- Přihlášení -->
   <div id="loginDiv">
     <img src="img/icon_trimmed_transparent_customcolor.png" alt="Logo" class="logo-small" />
     <input type="text" id="username" placeholder="Uživatelské jméno" />
@@ -51,29 +50,32 @@
   <div id="modal" class="modal">
     <div class="modal-content">
 
-      <!-- Boční panel ikon -->
+      <!-- boční panel ikon -->
       <div class="side-icons">
-        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"    onclick="onIconClick('seti')"    />
-        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení" onclick="onIconClick('hnojeni')" />
-        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň" onclick="onIconClick('sklizen')" />
-        <img id="icon-analyza" class="side-icon" src="img/analyza.png" alt="Analýza" onclick="onIconClick('analyza')" />
+        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"      onclick="onIconClick('seti')"    />
+        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení"   onclick="onIconClick('hnojeni')" />
+        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň"   onclick="onIconClick('sklizen')" />
+        <img id="icon-analyza" class="side-icon" src="img/analyza.png" alt="Analýza"   onclick="onIconClick('analyza')" />
       </div>
 
-      <!-- Výchozí režim úpravy záhonu -->
+      <!-- výchozí režim úpravy záhonu -->
       <div id="modalViewDefault">
         <h3>Úprava záhonu</h3>
         <input type="text" id="editNazev" placeholder="Název záhonu" />
+
         <div class="dimensions">
           <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
           <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
         </div>
+
         <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
         <div id="zahonVizualizace"></div>
+
         <button onclick="saveZahon()">Uložit změny</button>
         <button onclick="closeModal()">Zavřít</button>
       </div>
 
-      <!-- Režim práce s událostmi (setí/hnojení/sklizeň) -->
+      <!-- režim událostí i analýzy -->
       <div id="modalViewUdalost" style="display: none;">
         <div id="udalostFormContainer"></div>
         <button id="btnZpet" onclick="zpetNaDetailZahonu()">Zpět</button>
