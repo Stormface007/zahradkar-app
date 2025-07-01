@@ -82,25 +82,23 @@ button {
 }
 
 .modal-content {
-  position: relative;            /* kvůli absolutním ikonám */
-  background: #009900;
-  margin: 5% auto;
-  padding: 20px 20px 20px 100px;  /* odsazení zleva na 140px */
-  width: 90%;
-  max-width: 600px;
-  border-radius: 8px;
-  overflow: visible;
+  /* místo overflow: visible; aby se nic nevysouvalo ven */
+  overflow: hidden;
 }
 
-/* Boční panel ikon */
 .side-icons {
   position: absolute;
   top: 20px;
   left: 20px;
+  /* omezíme panel až k dolnímu okraji modálu */
+  bottom: 20px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  z-index: 1000;
+  /* pokud ikon bude víc, než se vejde, můžeme scrollovat uvnitř panelu */
+  overflow-y: auto;
+  padding-right: 4px; /* malý prostor, aby scrollbar nebyl nalepený na obsah */
+  box-sizing: content-box;
 }
 
 .side-icon {
