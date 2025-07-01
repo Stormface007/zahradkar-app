@@ -16,12 +16,12 @@ body {
   margin: 10vh auto 0;
   text-align: center;
 }
-
 .logo-small {
   width: 80px;
-  height: auto;
-  margin: 0 auto 1rem;
+  margin-bottom: 1rem;
   display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 input[type="text"],
@@ -33,9 +33,7 @@ input[type="number"] {
   margin: 0.5rem 0;
   border: 2px solid black;
   border-radius: 6px;
-  font-size: 1rem;
 }
-
 button {
   padding: 0.6rem 1.2rem;
   background-color: white;
@@ -52,68 +50,58 @@ button {
   padding: 2rem;
   text-align: center;
 }
-
-.table-container {
-  overflow-x: auto;
-}
-
+.table-container { overflow-x: auto; }
 #zahonyTable {
-  border-collapse: collapse;
   width: 100%;
-  background: white;
+  border-collapse: collapse;
   margin-top: 1rem;
+  background: white;
   border: 2px solid black;
 }
-
 #zahonyTable th,
 #zahonyTable td {
   border: 2px solid black;
   padding: 0.5rem;
 }
 
-/* Modal */
-/* Modální pozadí */
+/* MODÁLNÍ OKNO */
 .modal {
   display: none;
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5);
-  overflow: auto;          /* celý modal scrolluje, ne jen panel ikon */
+  background: rgba(0,0,0,0.5);
+  overflow: auto;  /* celé modal-content scrolluje */
   z-index: 999;
 }
-
-/* Vnitřní box modalu */
 .modal-content {
   position: relative;
   background: #009900;
   margin: 5% auto;
   padding: 20px;
-  padding-left: 100px;     /* odsazení pro boční panel */
-  width: 90%;
-  max-width: 600px;
-  max-height: calc(100vh - 40px);  /* ohraničí výšku okna */
-  overflow-y: auto;        /* pokud obsahu bude víc než max-height, objeví se scroll */
+  padding-left: 140px;      /* úzký obsah odsunutý kvůli panelu ikon */
+  width: 90%; max-width: 600px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
   border-radius: 8px;
   box-sizing: border-box;
 }
+.modal-body {
+  /* prázdná wrapperka, scrolluje s modal-content */
+}
 
-/* Boční panel ikon */
+/* BOČNÍ PANEL IKON */
 .side-icons {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 20px; left: 20px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  /* žádné overflow na panelu, rolování řeší celý modal-content */
   z-index: 10;
 }
-
-/* Styl ikon */
 .side-icon {
-  background-color: #fff;
-  border-radius: 2px;
+  background: #fff;
+  border-radius: 4px;
   padding: 4px;
   width: 60px;
   cursor: pointer;
@@ -123,7 +111,7 @@ button {
 .side-icon:hover,
 .side-icon.active {
   opacity: 1;
-  transform: translateX(5px);
+  transform: translateX(8px);
 }
 
 /* Úprava záhonu */
@@ -132,14 +120,12 @@ button {
   gap: 1rem;
   margin: 1rem 0;
 }
-
 .dimensions input {
   flex: 1;
   background: white;
   border: 2px solid black;
   padding: 0.5rem;
 }
-
 .plocha {
   font-weight: bold;
   margin-bottom: 1rem;
@@ -150,11 +136,10 @@ button {
   margin: 1rem auto;
   max-width: 100%;
 }
-
 #zahonVizualizace canvas {
   display: block;
   margin: 0 auto;
-  background-color: transparent;
+  background: transparent;
 }
 
 /* Formulář událostí */
@@ -167,7 +152,6 @@ button {
   border: 2px solid black;
   border-radius: 4px;
 }
-
 #udalostSeznamContainer .udalost-item {
   background: #f9f9f9;
   border: 1px solid #ccc;
@@ -176,45 +160,28 @@ button {
   text-align: left;
 }
 
-/* Analytický režim – boxy pH/N vedle sebe, P/K na dalším řádku */
+/* Analytický režim – rozložení pH/N a P/K */
 #modalViewUdalost.analysis .nutrients {
-  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1%;
   margin-bottom: 1rem;
+}
+#modalViewUdalost.analysis .nutrients .nutrient {
+  flex: 1 1 48%;
 }
 #modalViewUdalost.analysis .nutrients label {
   font-weight: bold;
   display: block;
   margin-bottom: 0.25rem;
 }
-#modalViewUdalost.analysis .nutrients input {
-  box-sizing: border-box;
-  margin-bottom: 0.5rem;
-}
-#analPH, #analN {
-  width: 48%;
-  display: inline-block;
-  margin-right: 2%;
-}
-#analP {
-  clear: left;
-  width: 48%;
-  display: inline-block;
-  margin-right: 2%;
-}
-#analK {
-  width: 48%;
-  display: inline-block;
-  margin-right: 0;
-}
-
-/* Typ a barva půdy pod sebou */
 #modalViewUdalost.analysis .soil-info {
   margin-top: 1rem;
 }
 #modalViewUdalost.analysis .soil-info label {
-  display: block;
   font-weight: bold;
   margin-bottom: 0.25rem;
+  display: block;
 }
 #modalViewUdalost.analysis .soil-info input {
   width: 100%;
@@ -224,8 +191,8 @@ button {
   border-radius: 4px;
 }
 
-/* Zmenšení pole pro název záhonu o 10 % v default modal view */
+/* Zmenšení pole pro název záhonu o 10 % */
 #modalViewDefault input#editNazev {
-  width: 80%;
+  width: 90%;
   box-sizing: border-box;
 }
