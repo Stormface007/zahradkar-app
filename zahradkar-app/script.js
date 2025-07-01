@@ -245,8 +245,20 @@ function setActiveIcon(active) {
 }
 function onIconClick(typ) {
   setActiveIcon(typ);
-  if (typ==='analyza') showAnalysisForm();
-  else showUdalostForm(typ);
+
+  // skryjeme všechny view
+  document.getElementById("modalViewDefault").style.display  = "none";
+  document.getElementById("modalViewUdalost").style.display  = "none";
+  document.getElementById("modalViewAnalysis").style.display = "none";
+
+  if (typ === 'analyza') {
+    showAnalysisForm();
+  } else if (typ === 'mereni') {
+    // měření: vrátíme se na defaultní editaci záhonu
+    document.getElementById("modalViewDefault").style.display = "block";
+  } else {
+    showUdalostForm(typ);
+  }
 }
 
 function nakresliZahonCanvas(delka, sirka) {
