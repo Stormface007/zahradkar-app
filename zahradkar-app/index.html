@@ -53,43 +53,44 @@
       <!-- BOČNÍ PANEL IKON -->
       <div class="side-icons">
         <img id="icon-mereni"    class="side-icon" src="img/mereni.png"   alt="Měření"     onclick="onIconClick('mereni')"   />
-        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"     onclick="onIconClick('seti')"    />
-        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení" onclick="onIconClick('hnojeni')" />
-        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň" onclick="onIconClick('sklizen')" />
-        <img id="icon-analyza" class="side-icon" src="img/analyza.png" alt="Analýza" onclick="onIconClick('analyza')" />
-       <!-- nové ikony – zatím pouze pro vysunutí -->
-  <img id="icon-eshop"     class="side-icon" src="img/e-shop.png"   alt="E-shop"     onclick="setActiveIcon('eshop')"    />
-  <img id="icon-sluzba"    class="side-icon" src="img/sluzba.png"   alt="Služba"     onclick="setActiveIcon('sluzba')"   />
-  <img id="icon-market"    class="side-icon" src="img/market.png"   alt="Market"     onclick="setActiveIcon('market')"   />
-  <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png"alt="Nastavení" onclick="setActiveIcon('nastaveni')" />
-</div>
+        <img id="icon-seti"      class="side-icon" src="img/seti.png"     alt="Setí"      onclick="onIconClick('seti')"      />
+        <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"  alt="Hnojení"   onclick="onIconClick('hnojeni')"   />
+        <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"  alt="Sklizeň"   onclick="onIconClick('sklizen')"   />
+        <img id="icon-analyza"   class="side-icon" src="img/analyza.png"  alt="Analýza"   onclick="onIconClick('analyza')"   />
+        <img id="icon-eshop"     class="side-icon" src="img/e-shop.png"   alt="E-shop"    onclick="setActiveIcon('eshop')"    />
+        <img id="icon-sluzba"    class="side-icon" src="img/sluzba.png"   alt="Služba"    onclick="setActiveIcon('sluzba')"   />
+        <img id="icon-market"    class="side-icon" src="img/market.png"   alt="Market"    onclick="setActiveIcon('market')"   />
+        <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png"alt="Nastavení" onclick="setActiveIcon('nastaveni')" />
+      </div>
 
-      <!-- Výchozí režim úpravy záhonu -->
-      <div id="modalViewDefault">
-        <h3>Úprava záhonu</h3>
-        <input type="text" id="editNazev" placeholder="Název záhonu" />
+      <!-- OBSAH MODÁLU (scrolluje se) -->
+      <div class="modal-body">
 
-        <div class="dimensions">
-          <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
-          <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
+        <!-- Výchozí režim úpravy záhonu -->
+        <div id="modalViewDefault">
+          <h3>Úprava záhonu</h3>
+          <input type="text" id="editNazev" placeholder="Název záhonu" />
+
+          <div class="dimensions">
+            <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
+            <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
+          </div>
+
+          <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
+          <div id="zahonVizualizace"></div>
+
+          <button onclick="saveZahon()">Uložit změny</button>
+          <button onclick="closeModal()">Zavřít</button>
         </div>
 
-        <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
-        <div id="zahonVizualizace"></div>
+        <!-- Režim událostí / analýzy -->
+        <div id="modalViewUdalost" style="display:none;">
+          <div id="udalostFormContainer"></div>
+          <div id="udalostSeznamContainer"></div>
+          <button id="btnZpet" onclick="zpetNaDetailZahonu()">Zpět</button>
+        </div>
 
-        <button onclick="saveZahon()">Uložit změny</button>
-        <button onclick="closeModal()">Zavřít</button>
       </div>
-
-      <!-- Režim práce s událostmi / analýzou -->
-      <div id="modalViewUdalost">
-        <!-- Pro klasické události: -->
-        <div id="udalostFormContainer"></div>
-        <div id="udalostSeznamContainer"></div>
-        <!-- Pro analýzu přibude třída "analysis" a JS sem vykreslí -->
-        <button id="btnZpet" onclick="zpetNaDetailZahonu()">Zpět</button>
-      </div>
-
     </div>
   </div>
 
