@@ -238,7 +238,7 @@ function smazUdalost(uID,zID) { /* ...pokud potřebujete */ }
 
 // — Boční ikony —
 function setActiveIcon(active) {
-  ['seti','hnojeni','sklizen','analyza'].forEach(t => {
+  ['seti','hnojeni','sklizen','analyza','eshop','sluzba','mereni','market','nastaveni'].forEach(t => {
     const el = document.getElementById(`icon-${t}`);
     el && el.classList.toggle('active', t===active);
   });
