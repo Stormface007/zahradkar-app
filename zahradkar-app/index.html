@@ -21,11 +21,9 @@
   <div id="appDiv" style="display: none;">
     <h2>Moje záhony</h2>
     <button onclick="logout()">Odhlásit se</button>
-
     <div class="table-actions">
       <button onclick="deleteSelected()">🗑️ Smazat označené</button>
     </div>
-
     <div class="table-container">
       <table id="zahonyTable">
         <thead>
@@ -38,7 +36,6 @@
         <tbody></tbody>
       </table>
     </div>
-
     <h3>Přidat nový záhon</h3>
     <input type="text" id="newNazev" placeholder="Název záhonu" />
     <input type="number" id="newDelka" placeholder="Délka (m)" />
@@ -63,28 +60,25 @@
         <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png"alt="Nastavení" onclick="setActiveIcon('nastaveni')" />
       </div>
 
-      <!-- OBSAH MODÁLU (scrolluje se) -->
+      <!-- VLASTNÍ OBSAH MODÁLU (scrolluje celé okno) -->
       <div class="modal-body">
 
         <!-- Výchozí režim úpravy záhonu -->
         <div id="modalViewDefault">
           <h3>Úprava záhonu</h3>
           <input type="text" id="editNazev" placeholder="Název záhonu" />
-
           <div class="dimensions">
             <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
             <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
           </div>
-
           <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
           <div id="zahonVizualizace"></div>
-
           <button onclick="saveZahon()">Uložit změny</button>
           <button onclick="closeModal()">Zavřít</button>
         </div>
 
         <!-- Režim událostí / analýzy -->
-        <div id="modalViewUdalost" style="display:none;">
+        <div id="modalViewUdalost" style="display: none;">
           <div id="udalostFormContainer"></div>
           <div id="udalostSeznamContainer"></div>
           <button id="btnZpet" onclick="zpetNaDetailZahonu()">Zpět</button>
