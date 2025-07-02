@@ -333,8 +333,7 @@ function makeCanvasClickable() {
     }
   });
 }
-  });
-}
+
 
 // V závěru funkce otevriModal(zahon) **přidejte**:
 function otevriModal(zahon) {
