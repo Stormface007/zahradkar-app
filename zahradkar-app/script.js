@@ -325,3 +325,9 @@ function makeCanvasClickable() {
 
 // 2) V závěru funkce otevriModal(zahon) přidejte:
 makeCanvasClickable();
+
+  // … již vykreslený základ…
+  document.getElementById("modal").style.display = "flex";
+
+  // ZDE přidáme:
+  makeCanvasClickable();
