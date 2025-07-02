@@ -208,18 +208,40 @@ function zpetNaDetailZahonu() {
   setActiveIcon(null);
 }
 
-// — Boční ikony —
+// … <ostatní funkce beze změny> …
+
+// — Boční ikony — 
 function setActiveIcon(active) {
-  ["seti","hnojeni","sklizen"].forEach(t => {
-    const el = document.getElementById(`icon-${t}`);
-    el && el.classList.toggle("active", t === active);
-  });
-}
-function onIconClick(typ) {
-  setActiveIcon(typ);
-  showUdalostForm(typ);
+  // seznam všech ID ikon:
+  ["mereni","seti","hnojeni","sklizen","analyza","eshop","sluzba","market","nastaveni"]
+    .forEach(t => {
+      const el = document.getElementById(`icon-${t}`);
+      if (!el) return;
+      el.classList.toggle("active", t === active);
+    });
 }
 
+// onIconClick teď umí všechna tlačítka:
+function onIconClick(typ) {
+  setActiveIcon(typ);
+
+  // skryjeme všechny view
+  document.getElementById("modalViewDefault").style.display  = "none";
+  document.getElementById("modalViewUdalost").style.display  = "none";
+
+  // a podle typu zavoláme tu správnou funkci:
+  if (typ === "seti" || typ === "hnojeni" || typ === "sklizen") {
+    showUdalostForm(typ);
+  }
+  else if (typ === "mereni") {
+    // u měření vrátíme výchozí editaci záhonu
+    document.getElementById("modalViewDefault").style.display = "block";
+  }
+  else if (typ === "analyza") {
+    showAnalysisForm();
+  }
+  // pro ostatní (eshop, sluzba, market, nastaveni) zatím nic neděláme
+}
 // — Kreslení záhonu —
 function nakresliZahonCanvas(d,s) {
   const c = document.getElementById("zahonVizualizace");
