@@ -214,3 +214,16 @@ button {
   background-position: right 0.75rem center;
   background-size: 8px 5px;
 }
+
+/* Zoom-modal: dědí třídu .modal */
+#zoomModal .modal-content {
+  max-width: none;
+  width: auto;
+  padding: 1rem;
+}
+
+#zoomCanvas {
+  display: block;
+  margin: 0 auto 1rem;
+  background: transparent;
+}
