@@ -196,3 +196,21 @@ button {
   width: 90%;
   box-sizing: border-box;
 }
+
+/* Udělá select stejného vzhledu jako textové/početní inputy */
+#plodinaSelect {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 2px solid black;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: white;
+  box-sizing: border-box;
+  appearance: none;          /* skryje defaultní šipku */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 8px 5px;
+}
