@@ -277,30 +277,27 @@ function saveAnalysis() {
   zpetNaDetailZahonu();
 }
 
-// 1) Přidejte na konec souboru:
-
-// Otevře zoom-modal a vykreslí záhon 5× větší
+// otevře zoom‐modal a nakreslí záhon 5× větší
 function openZoom(delka, sirka) {
   const canvas = document.getElementById("zoomCanvas");
   const scaleFactor = 5;
-  const baseSize    = 100;
+  const baseSize    = 200;
   canvas.width  = baseSize * scaleFactor;
   canvas.height = baseSize * scaleFactor;
-
   const ctx = canvas.getContext("2d");
-  // zelené pozadí
+
+  // 1) zelené pole
   ctx.fillStyle = "#009900";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // hnědý záhon
+  // 2) hnědý záhon
   const plotScale = Math.min(canvas.width/(delka||1), canvas.height/(sirka||1));
-  const w = (delka||1)*plotScale;
-  const h = (sirka||1)*plotScale;
-  const x = (canvas.width - w)/2;
-  const y = (canvas.height - h)/2;
+  const w = (delka||1)*plotScale, h = (sirka||1)*plotScale;
+  const x = (canvas.width - w)/2, y = (canvas.height - h)/2;
   ctx.fillStyle   = "#c2b280";
   ctx.fillRect(x, y, w, h);
-  // černý obrys
+
+  // 3) černý obrys
   ctx.lineWidth   = 2;
   ctx.strokeStyle = "#000";
   ctx.strokeRect(x, y, w, h);
@@ -308,26 +305,29 @@ function openZoom(delka, sirka) {
   document.getElementById("zoomModal").style.display = "flex";
 }
 
-// Zavře zoom-modal
+// zavře zoom‐modal
 function closeZoom() {
   document.getElementById("zoomModal").style.display = "none";
 }
 
-// Po vykreslení primárního záhonu připojíme klikací handler:
+// zaváže klikací handler **jen když** je primární modal otevřený
 function makeCanvasClickable() {
+  const primaryModal = document.getElementById("modal");
   const cont = document.getElementById("zahonVizualizace");
-  cont.style.cursor = "zoom-in";  // ukáže lupičku
-  cont.onclick = () => {
-    if (!aktualniZahon) return;
-    openZoom(aktualniZahon.Delka, aktualniZahon.Sirka);
-  };
+  // vždy před novým bindem odstraníme starý
+  cont.onclick = null;
+  cont.addEventListener("click", () => {
+    // kontrola, že jsme opravdu ve view Default (modal otevřený)
+    if (primaryModal.style.display === "flex" && aktualniZahon) {
+      openZoom(aktualniZahon.Delka, aktualniZahon.Sirka);
+    }
+  });
 }
 
-// 2) V závěru funkce otevriModal(zahon) přidejte:
-makeCanvasClickable();
-
-  // … již vykreslený základ…
+// V závěru funkce otevriModal(zahon) **přidejte**:
+function otevriModal(zahon) {
+  // … existující kód …
   document.getElementById("modal").style.display = "flex";
-
-  // ZDE přidáme:
+  // nový bind
   makeCanvasClickable();
+}
