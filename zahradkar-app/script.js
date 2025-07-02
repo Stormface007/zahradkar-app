@@ -283,7 +283,7 @@ function saveAnalysis() {
 function openZoom(delka, sirka) {
   const canvas = document.getElementById("zoomCanvas");
   const scaleFactor = 5;
-  const baseSize    = 200;
+  const baseSize    = 100;
   canvas.width  = baseSize * scaleFactor;
   canvas.height = baseSize * scaleFactor;
 
