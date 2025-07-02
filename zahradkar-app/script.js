@@ -97,15 +97,24 @@ function addZahon() {
 }
 
 // — Modální okno —
-function otevriModal(z) {
-  aktualniZahon = z;
+function otevriModal(zahon) {
+  aktualniZahon = zahon;
   setActiveIcon(null);
-  document.getElementById("editNazev").value = z.NazevZahonu;
-  document.getElementById("editDelka").value = z.Delka||0;
-  document.getElementById("editSirka").value = z.Sirka||0;
+
+  // 1) vyplníme formulář
+  document.getElementById("editNazev").value = zahon.NazevZahonu;
+  document.getElementById("editDelka").value = zahon.Delka || 0;
+  document.getElementById("editSirka").value = zahon.Sirka || 0;
   updatePlocha();
-  nakresliZahonCanvas(z.Delka,z.Sirka);
-  document.getElementById("modalViewDefault").style.display = "block";
+
+  // 2) vykreslíme defaultní canvas (200×200)
+  nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
+
+  // 3) zaregistrujeme klik na ten canvas pro zoom
+  makeCanvasClickable();
+
+  // 4) otevřeme modal
+  document.getElementById("modalViewDefault").style.display  = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   document.getElementById("modal").style.display            = "flex";
 }
@@ -312,15 +321,18 @@ function closeZoom() {
 
 // zaváže klikací handler **jen když** je primární modal otevřený
 function makeCanvasClickable() {
-  const primaryModal = document.getElementById("modal");
-  const cont = document.getElementById("zahonVizualizace");
-  // vždy před novým bindem odstraníme starý
-  cont.onclick = null;
-  cont.addEventListener("click", () => {
-    // kontrola, že jsme opravdu ve view Default (modal otevřený)
-    if (primaryModal.style.display === "flex" && aktualniZahon) {
+  const kont = document.getElementById("zahonVizualizace");
+  // odstraníme všechny dosavadní listenery
+  const fresh = kont.cloneNode(true);
+  kont.parentNode.replaceChild(fresh, kont);
+
+  fresh.addEventListener("click", () => {
+    // jen pokud je modal opravdu otevřený
+    if (document.getElementById("modal").style.display === "flex" && aktualniZahon) {
       openZoom(aktualniZahon.Delka, aktualniZahon.Sirka);
     }
+  });
+}
   });
 }
 
