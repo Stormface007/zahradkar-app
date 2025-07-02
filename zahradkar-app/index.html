@@ -2,23 +2,23 @@
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
   <!-- Přihlašovací formulář -->
   <div id="loginDiv">
-    <img src="img/icon_trimmed_transparent_customcolor.png" alt="Logo" class="logo-small" />
-    <input type="text" id="username" placeholder="Uživatelské jméno" />
-    <input type="password" id="password" placeholder="Heslo" />
+    <img src="img/icon_trimmed_transparent_customcolor.png" alt="Logo" class="logo-small"/>
+    <input type="text" id="username" placeholder="Uživatelské jméno"/>
+    <input type="password" id="password" placeholder="Heslo"/>
     <button onclick="login()">Přihlásit</button>
     <div id="loginMsg"></div>
   </div>
 
   <!-- Hlavní aplikace -->
-  <div id="appDiv" style="display: none;">
+  <div id="appDiv" style="display:none;">
     <h2>Moje záhony</h2>
     <button onclick="logout()">Odhlásit se</button>
     <div class="table-actions">
@@ -27,49 +27,36 @@
     <div class="table-container">
       <table id="zahonyTable">
         <thead>
-          <tr>
-            <th></th>
-            <th>Název záhonu</th>
-            <th class="velikost-column">Velikost</th>
-          </tr>
+          <tr><th></th><th>Název záhonu</th><th>Velikost</th></tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
     <h3>Přidat nový záhon</h3>
-    <input type="text" id="newNazev" placeholder="Název záhonu" />
-    <input type="number" id="newDelka" placeholder="Délka (m)" />
-    <input type="number" id="newSirka" placeholder="Šířka (m)" />
+    <input type="text" id="newNazev" placeholder="Název záhonu"/>
+    <input type="number" id="newDelka" placeholder="Délka (m)"/>
+    <input type="number" id="newSirka" placeholder="Šířka (m)"/>
     <button onclick="addZahon()">Přidat</button>
   </div>
 
   <!-- MODÁLNÍ OKNO -->
   <div id="modal" class="modal">
     <div class="modal-content">
-
-      <!-- BOČNÍ PANEL IKON -->
+      <!-- Boční panel ikon -->
       <div class="side-icons">
-        <img id="icon-mereni"    class="side-icon" src="img/mereni.png"   alt="Měření"     onclick="onIconClick('mereni')"   />
-        <img id="icon-seti"      class="side-icon" src="img/seti.png"     alt="Setí"      onclick="onIconClick('seti')"      />
-        <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"  alt="Hnojení"   onclick="onIconClick('hnojeni')"   />
-        <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"  alt="Sklizeň"   onclick="onIconClick('sklizen')"   />
-        <img id="icon-analyza"   class="side-icon" src="img/analyza.png"  alt="Analýza"   onclick="onIconClick('analyza')"   />
-        <img id="icon-eshop"     class="side-icon" src="img/e-shop.png"   alt="E-shop"    onclick="setActiveIcon('eshop')"    />
-        <img id="icon-sluzba"    class="side-icon" src="img/sluzba.png"   alt="Služba"    onclick="setActiveIcon('sluzba')"   />
-        <img id="icon-market"    class="side-icon" src="img/market.png"   alt="Market"    onclick="setActiveIcon('market')"   />
-        <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png"alt="Nastavení" onclick="setActiveIcon('nastaveni')" />
+        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"    onclick="onIconClick('seti')"/>
+        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení" onclick="onIconClick('hnojeni')"/>
+        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň" onclick="onIconClick('sklizen')"/>
       </div>
 
-      <!-- VLASTNÍ OBSAH MODÁLU (scrolluje celé okno) -->
       <div class="modal-body">
-
-        <!-- Výchozí režim úpravy záhonu -->
+        <!-- Defaultní view -->
         <div id="modalViewDefault">
           <h3>Úprava záhonu</h3>
-          <input type="text" id="editNazev" placeholder="Název záhonu" />
+          <input type="text" id="editNazev" placeholder="Název záhonu"/>
           <div class="dimensions">
-            <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()" />
-            <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()" />
+            <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()"/>
+            <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()"/>
           </div>
           <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
           <div id="zahonVizualizace"></div>
@@ -77,13 +64,11 @@
           <button onclick="closeModal()">Zavřít</button>
         </div>
 
-        <!-- Režim událostí / analýzy -->
-        <div id="modalViewUdalost" style="display: none;">
+        <!-- View pro událost -->
+        <div id="modalViewUdalost" style="display:none;">
           <div id="udalostFormContainer"></div>
-          <div id="udalostSeznamContainer"></div>
-          <button id="btnZpet" onclick="zpetNaDetailZahonu()">Zpět</button>
+          <button onclick="zpetNaDetailZahonu()">Zpět</button>
         </div>
-
       </div>
     </div>
   </div>
