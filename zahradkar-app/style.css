@@ -215,15 +215,14 @@ button {
   background-size: 8px 5px;
 }
 
-/* Zoom-modal: dědí třídu .modal */
+/* Zoom-modal: dědí styl .modal */
 #zoomModal .modal-content {
   max-width: none;
   width: auto;
   padding: 1rem;
+  background: #fff;
 }
-
 #zoomCanvas {
   display: block;
   margin: 0 auto 1rem;
-  background: transparent;
 }
