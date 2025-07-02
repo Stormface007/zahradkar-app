@@ -46,16 +46,19 @@ function loadZahony() {
         const cb = document.createElement("input");
         cb.type = "checkbox"; cb.dataset.id = z.ZahonID;
         c1.appendChild(cb);
+
         const c2 = document.createElement("td");
         const a  = document.createElement("a");
         a.href = "#"; a.textContent = z.NazevZahonu;
         a.onclick = () => otevriModal(z);
         c2.appendChild(a);
+
         const plo = (z.Velikost_m2 != null)
           ? z.Velikost_m2
           : ((z.Delka||0)*(z.Sirka||0)).toFixed(2);
         const c3 = document.createElement("td");
         c3.textContent = plo + " m²";
+
         row.append(c1,c2,c3);
         tb.appendChild(row);
       });
@@ -158,18 +161,14 @@ function loadPlodiny() {
 
 // — Přepínání na formulář události —
 function showUdalostForm(typ) {
-  // 1) schováme defaultní view
   document.getElementById("modalViewDefault").style.display = "none";
-  // 2) zobrazíme událostní view
   const uv = document.getElementById("modalViewUdalost");
   uv.style.display = "block";
-
   const c = document.getElementById("udalostFormContainer");
   c.innerHTML = `
     <h4>${typ[0].toUpperCase()+typ.slice(1)}</h4>
     <label>Datum: <input type="date" id="udalostDatum"/></label><br>
   `;
-
   if (typ === "seti") {
     c.innerHTML += `
       <label>Plodina:
@@ -192,7 +191,6 @@ function showUdalostForm(typ) {
       <label>Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
     `;
   }
-
   c.innerHTML += `
     <label>Poznámka: <input type="text" id="udalostPoznamka"/></label><br>
     <button onclick="ulozUdalost('${typ}')">Uložit</button>
@@ -208,11 +206,8 @@ function zpetNaDetailZahonu() {
   setActiveIcon(null);
 }
 
-// … <ostatní funkce beze změny> …
-
-// — Boční ikony — 
+// — Boční ikony —
 function setActiveIcon(active) {
-  // seznam všech ID ikon:
   ["mereni","seti","hnojeni","sklizen","analyza","eshop","sluzba","market","nastaveni"]
     .forEach(t => {
       const el = document.getElementById(`icon-${t}`);
@@ -220,28 +215,22 @@ function setActiveIcon(active) {
       el.classList.toggle("active", t === active);
     });
 }
-
-// onIconClick teď umí všechna tlačítka:
 function onIconClick(typ) {
   setActiveIcon(typ);
-
-  // skryjeme všechny view
   document.getElementById("modalViewDefault").style.display  = "none";
   document.getElementById("modalViewUdalost").style.display  = "none";
-
-  // a podle typu zavoláme tu správnou funkci:
   if (typ === "seti" || typ === "hnojeni" || typ === "sklizen") {
     showUdalostForm(typ);
   }
   else if (typ === "mereni") {
-    // u měření vrátíme výchozí editaci záhonu
     document.getElementById("modalViewDefault").style.display = "block";
   }
   else if (typ === "analyza") {
     showAnalysisForm();
   }
-  // pro ostatní (eshop, sluzba, market, nastaveni) zatím nic neděláme
+  // ostatní ikony zatím nic dál nedělají
 }
+
 // — Kreslení záhonu —
 function nakresliZahonCanvas(d,s) {
   const c = document.getElementById("zahonVizualizace");
@@ -256,4 +245,34 @@ function nakresliZahonCanvas(d,s) {
   ctx.fillStyle = "#c2b280"; ctx.fillRect(x,y,w,h);
   ctx.lineWidth=2; ctx.strokeStyle="#000"; ctx.strokeRect(x,y,w,h);
   c.appendChild(cv);
+}
+
+// — Analýza —
+function showAnalysisForm() {
+  const c = document.getElementById("modalViewUdalost");
+  c.classList.add("analysis");
+  document.getElementById("modalViewDefault").style.display  = "none";
+  c.style.display = "block";
+  document.getElementById("udalostFormContainer").innerHTML = `
+    <h4>Analýza</h4>
+    <label for="analDatum">Datum:</label>
+    <input type="date" id="analDatum" /><br>
+    <div class="nutrients">
+      <input type="number" step="0.1" id="analPH" placeholder="pH (–)" />
+      <input type="number"      id="analN"  placeholder="N (ppm)" />
+      <input type="number"      id="analP"  placeholder="P (ppm)" />
+      <input type="number"      id="analK"  placeholder="K (ppm)" />
+    </div>
+    <div class="soil-info">
+      <label for="soilType">Typ půdy:</label>
+      <input type="text" id="soilType" /><br>
+      <label for="soilColor">Barva půdy:</label>
+      <input type="text" id="soilColor" />
+    </div>
+    <button onclick="saveAnalysis()">Uložit analýzu</button>
+  `;
+}
+function saveAnalysis() {
+  alert("Analýza uložena");
+  zpetNaDetailZahonu();
 }
