@@ -168,20 +168,69 @@ function saveZahon() {
 }
 
 // — Události —
+// … ostatní kód …
+
+// — Události / Setí / Hnojení / Sklizeň —
 function showUdalostForm(typ) {
-  const c = document.getElementById("modalViewUdalost");
-  c.classList.remove("analysis");
-  document.getElementById("modalViewDefault").style.display = "none";
-  c.style.display = "block";
-  document.getElementById("udalostFormContainer").innerHTML = `
-    <h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
+  const container = document.getElementById('udalostFormContainer');
+  container.innerHTML = ''; // vyčistíme
+
+  // Společné pole datum
+  container.innerHTML += `
     <label>Datum: <input type="date" id="udalostDatum" /></label><br>
-    ${typ==='seti'    ? '<label>Plodina: <input type="text" id="udalostPlodina"/></label><br>' : ''}
-    ${typ==='hnojeni' ? '<label>Hnojivo: <input type="text" id="udalostHnojivo"/></label><br><label>Množství (kg): <input type="number" id="udalostMnozstvi"/></label><br>' : ''}
-    ${typ==='sklizen' ? '<label>Plodina: <input type="text" id="udalostPlodina"/></label><br><label>Výnos (kg): <input type="number" id="udalostVynos"/></label><br>' : ''}
+  `;
+
+  if (typ === 'seti') {
+    // místo textového inputu použijeme SELECT
+    container.innerHTML += `
+      <label>Plodina:
+        <select id="plodinaSelect">
+          <option value="">Načítám...</option>
+        </select>
+      </label><br>
+    `;
+    // po vykreslení SELECT načteme data
+    loadPlodiny();
+  }
+  else if (typ === 'hnojeni') {
+    container.innerHTML += `
+      <label>Hnojivo: <input type="text" id="udalostHnojivo"/></label><br>
+      <label>Množství (kg): <input type="number" id="udalostMnozstvi"/></label><br>
+    `;
+  }
+  else if (typ === 'sklizen') {
+    container.innerHTML += `
+      <label>Plodina: <input type="text" id="udalostPlodina"/></label><br>
+      <label>Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
+    `;
+  }
+
+  // společné poznámky a tlačítko
+  container.innerHTML += `
     <label>Poznámka: <input type="text" id="udalostPoznamka"/></label><br>
     <button onclick="ulozUdalost('${typ}')">Uložit</button>
   `;
+}
+
+// — Funkce pro dynamické načtení plodin do <select id="plodinaSelect"> —
+function loadPlodiny() {
+  fetch(`${SERVER_URL}?action=getPlodiny`)
+    .then(r => r.json())
+    .then(plodiny => {
+      const sel = document.getElementById('plodinaSelect');
+      sel.innerHTML = '<option value="">– vyber plodinu –</option>';
+      plodiny.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.nazev;
+        opt.textContent = p.nazev;
+        sel.appendChild(opt);
+      });
+    })
+    .catch(e => {
+      console.error('Chyba při načítání plodin:', e);
+      const sel = document.getElementById('plodinaSelect');
+      sel.innerHTML = '<option value="">Chyba při načítání</option>';
+    });
 }
 function ulozUdalost(typ) {
   alert("Uloženo " + typ);
