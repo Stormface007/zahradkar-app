@@ -208,7 +208,7 @@ button {
 
 /* Zoom modal */
 #zoomModal .modal-content {
-  background: #fff;
+  background: #009900 !important;
   max-width: none;
   width: auto;
   padding: 1rem;
