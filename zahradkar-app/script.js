@@ -37,7 +37,7 @@ function logout() {
   document.getElementById("loginDiv").style.display = "block";
 }
 
-// — Načtení a správa záhonů —
+// — Záhony —
 function loadZahony() {
   const u = localStorage.getItem("userID");
   if (!u) return;
@@ -117,16 +117,13 @@ function otevriModal(zahon) {
   aktualniZahon = zahon;
   setActiveIcon(null);
 
-  // naplň formulář
   document.getElementById("editNazev").value = zahon.NazevZahonu;
   document.getElementById("editDelka").value = zahon.Delka || 0;
   document.getElementById("editSirka").value = zahon.Sirka || 0;
   updatePlocha();
 
-  // vykresli canvas a přidej click pro zoom
   nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
 
-  // ukaž defaultní view
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   document.getElementById("modal").style.display            = "flex";
@@ -164,6 +161,8 @@ function saveZahon() {
     }})
     .catch(e=>console.error("Chyba uložení záhonu:", e));
 }
+
+// … zbytek funkcí (showUdalostForm, showAnalysisForm, setActiveIcon, onIconClick, nakresliZahonCanvas, openZoom, closeZoom) beze změny …
 
 // — Události (setí/hnojení/sklizeň) —
 function showUdalostForm(typ) {
