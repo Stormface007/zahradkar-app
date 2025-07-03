@@ -3,6 +3,13 @@ const SERVER_URL = "https://script.google.com/macros/s/AKfycby5Q582sTjMVzHDwInTp
 
 let aktualniZahon = null;
 
+function showActionIndicator() {
+  document.getElementById('actionIndicator').classList.add('active');
+}
+function hideActionIndicator() {
+  document.getElementById('actionIndicator').classList.remove('active');
+}
+
 // — Přihlášení / odhlášení —
 async function login() {
   const u = document.getElementById("username").value;
@@ -74,43 +81,71 @@ function loadZahony() {
 }
 
 function deleteSelected() {
-  document.querySelectorAll(
+  const checks = document.querySelectorAll(
     "#zahonyTable tbody input[type='checkbox']:checked"
-  ).forEach(cb => {
+  );
+  if (!checks.length) return;
+
+  showActionIndicator(); // ← start animace
+
+  let pending = checks.length;
+  checks.forEach(cb => {
     const ps = new URLSearchParams();
-    ps.append("action","deleteZahon");
+    ps.append("action", "deleteZahon");
     ps.append("ZahonID", cb.dataset.id);
-    fetch(SERVER_URL, { method:"POST", body:ps })
-      .then(r=>r.text())
-      .then(txt=>{ if(txt.trim()==="OK") loadZahony(); })
-      .catch(e=>console.error("Chyba mazání záhonu:", e));
+
+    fetch(SERVER_URL, { method: "POST", body: ps })
+      .then(r => r.text())
+      .then(txt => {
+        if (txt.trim() === "OK") {
+          // úspěšně smazáno
+        }
+      })
+      .catch(e => console.error("Chyba mazání záhonu:", e))
+      .finally(() => {
+        pending--;
+        if (pending === 0) {
+          loadZahony();
+          hideActionIndicator(); // ← konec animace až po všech mazáních
+        }
+      });
   });
 }
 
 function addZahon() {
-  const u = localStorage.getItem("userID");
-  const n = document.getElementById("newNazev").value.trim();
-  const d = parseFloat(document.getElementById("newDelka").value) || 0;
-  const s = parseFloat(document.getElementById("newSirka").value) || 0;
-  if (!n || d <= 0 || s <= 0) {
-    return alert("Vyplňte správně název, délku i šířku.");
+  const userID = localStorage.getItem("userID");
+  const nazev  = document.getElementById("newNazev").value.trim();
+  const delka  = parseFloat(document.getElementById("newDelka").value) || 0;
+  const sirka  = parseFloat(document.getElementById("newSirka").value) || 0;
+  if (!nazev || delka <= 0 || sirka <= 0) {
+    alert("Vyplňte správně název, délku i šířku.");
+    return;
   }
+
+  showActionIndicator(); // ← start animace
+
   const ps = new URLSearchParams();
-  ps.append("action","addZahon");
-  ps.append("userID",u);
-  ps.append("NazevZahonu",n);
-  ps.append("Delka",d);
-  ps.append("Sirka",s);
-  fetch(SERVER_URL,{ method:"POST", body:ps })
-    .then(r=>r.text())
-    .then(txt=>{ 
-      if (txt.trim()==="OK") {
-        ["newNazev","newDelka","newSirka"].forEach(id=>document.getElementById(id).value="");
+  ps.append("action", "addZahon");
+  ps.append("userID", userID);
+  ps.append("NazevZahonu", nazev);
+  ps.append("Delka", delka);
+  ps.append("Sirka", sirka);
+
+  fetch(SERVER_URL, { method: "POST", body: ps })
+    .then(r => r.text())
+    .then(txt => {
+      if (txt.trim() === "OK") {
+        ["newNazev","newDelka","newSirka"]
+          .forEach(id => document.getElementById(id).value = "");
         loadZahony();
+      } else {
+        alert("Chyba při přidávání záhonu: " + txt);
       }
     })
-    .catch(e=>console.error("Chyba přidání záhonu:", e));
+    .catch(e => console.error("Chyba addZahon:", e))
+    .finally(() => hideActionIndicator()); // ← konec animace
 }
+
 
 // — Modální okno záhonu —
 function otevriModal(zahon) {
