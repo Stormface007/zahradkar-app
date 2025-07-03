@@ -5,8 +5,19 @@ let aktualniZahon = null;
 
 // — Indikátor akce (volitelné) —
 function showActionIndicator() {
-  const el = document.getElementById('actionIndicator');
-  if (el) el.classList.add('active');
+  // seznam možných „rotujících“ obrázků
+  const images = [
+    'Plodina_mrkev.png',
+    'Plodina_rajce.png',
+    'Plodina_petrzel_koren.png'
+  ];
+  // vyber náhodný index
+  const randIdx = Math.floor(Math.random() * images.length);
+  // najdi <img> uvnitř indikátoru a nastav mu src
+  const imgEl = document.querySelector('#actionIndicator img');
+  imgEl.src = `img/${images[randIdx]}`;
+  // pak zobraz
+  document.getElementById('actionIndicator').classList.add('active');
 }
 function hideActionIndicator() {
   const el = document.getElementById('actionIndicator');
