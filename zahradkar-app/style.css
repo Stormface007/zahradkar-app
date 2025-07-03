@@ -353,3 +353,10 @@ button {
   color: #005500;
   /* text-decoration: underline;  -- volitelně */
 }
+.modal-btn {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  margin: 0.5rem;
+}
+
