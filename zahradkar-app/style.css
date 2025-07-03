@@ -80,6 +80,25 @@ button {
   padding: 0.5rem;
 }
 
+/* Vlastní styling odkazu se záhonem + ikonou */
+#zahonyTable tbody td a.zahon-link {
+  display: inline-flex;
+  align-items: center;
+  color: #000;            /* černý text */
+  text-decoration: none;  /* žádné podtržení */
+  font-family: inherit;
+  cursor: pointer;
+}
+#zahonyTable tbody td a.zahon-link .zahon-icon {
+  width: 24px;
+  height: auto;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+#zahonyTable tbody td a.zahon-link:hover .zahon-icon {
+  transform: translateX(4px);
+}
+
 /* Modal */
 .modal {
   display: none;
