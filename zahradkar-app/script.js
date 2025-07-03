@@ -51,35 +51,46 @@ function logout() {
 function loadZahony() {
   const userID = localStorage.getItem("userID");
   if (!userID) return;
+
   fetch(`${SERVER_URL}?action=getZahony&userID=${userID}`)
     .then(r => r.json())
-    .then(data => {
+    .then(arr => {
       const tbody = document.querySelector("#zahonyTable tbody");
       tbody.innerHTML = "";
-      data.forEach(z => {
+
+      arr.forEach(z => {
         const row = document.createElement("tr");
 
-        // checkbox (ID uložené v value)
+        // 1) Checkbox
         const tdChk = document.createElement("td");
-        const check = document.createElement("input");
-        check.type  = "checkbox";
-        check.value = z.ZahonID;
-        tdChk.appendChild(check);
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.value = z.ZahonID;
+        tdChk.appendChild(cb);
 
-        // název
+        // 2) Název záhonu + ikonka
         const tdName = document.createElement("td");
-        const a = document.createElement("a");
-        a.href      = "#";
-        a.textContent = z.NazevZahonu;
-        a.onclick   = () => otevriModal(z);
-        tdName.appendChild(a);
+        const link = document.createElement("a");
+        link.href = "#";
+        link.className = "zahon-link";
+        link.onclick = () => otevriModal(z);
 
-        // plocha
-        const plo = (z.Velikost_m2 != null)
+        // ikonka Freefield.png
+        const ico = document.createElement("img");
+        ico.src = "img/Freefield.png";
+        ico.alt = "";
+        ico.className = "zahon-icon";
+
+        link.appendChild(ico);
+        link.appendChild(document.createTextNode(z.NazevZahonu));
+        tdName.appendChild(link);
+
+        // 3) Velikost
+        const plocha = (z.Velikost_m2 != null)
           ? z.Velikost_m2
           : ((z.Delka||0)*(z.Sirka||0)).toFixed(2);
         const tdSize = document.createElement("td");
-        tdSize.textContent = plo + " m²";
+        tdSize.textContent = plocha + " m²";
 
         row.append(tdChk, tdName, tdSize);
         tbody.appendChild(row);
