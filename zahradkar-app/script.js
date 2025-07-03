@@ -46,35 +46,40 @@ function logout() {
 
 // — Záhony —
 function loadZahony() {
-  const u = localStorage.getItem("userID");
-  if (!u) return;
-  fetch(`${SERVER_URL}?action=getZahony&userID=${u}`)
+  const userID = localStorage.getItem("userID");
+  if (!userID) return;
+  fetch(`${SERVER_URL}?action=getZahony&userID=${userID}`)
     .then(r => r.json())
-    .then(arr => {
-      const tb = document.querySelector("#zahonyTable tbody");
-      tb.innerHTML = "";
-      arr.forEach(z => {
+    .then(data => {
+      const tbody = document.querySelector("#zahonyTable tbody");
+      tbody.innerHTML = "";
+      data.forEach(z => {
         const row = document.createElement("tr");
-        const c1 = document.createElement("td");
-        const cb = document.createElement("input");
-        cb.type = "checkbox"; cb.dataset.id = z.ZahonID;
-        c1.appendChild(cb);
 
-        const c2 = document.createElement("td");
-        const a  = document.createElement("a");
-        a.href     = "#";
+        // checkbox pro výběr s ID v value
+        const tdChk = document.createElement("td");
+        const check = document.createElement("input");
+        check.type  = "checkbox";
+        check.value = z.ZahonID;       // tady
+        tdChk.appendChild(check);
+
+        // název záhonu
+        const tdName = document.createElement("td");
+        const a = document.createElement("a");
+        a.href      = "#";
         a.textContent = z.NazevZahonu;
-        a.onclick  = () => otevriModal(z);
-        c2.appendChild(a);
+        a.onclick   = () => otevriModal(z);
+        tdName.appendChild(a);
 
+        // plocha
         const plo = (z.Velikost_m2 != null)
           ? z.Velikost_m2
           : ((z.Delka||0)*(z.Sirka||0)).toFixed(2);
-        const c3 = document.createElement("td");
-        c3.textContent = plo + " m²";
+        const tdSize = document.createElement("td");
+        tdSize.textContent = plo + " m²";
 
-        row.append(c1, c2, c3);
-        tb.appendChild(row);
+        row.append(tdChk, tdName, tdSize);
+        tbody.appendChild(row);
       });
     })
     .catch(e => console.error("Chyba načtení záhonů:", e));
@@ -84,32 +89,32 @@ function deleteSelected() {
   const checks = document.querySelectorAll(
     "#zahonyTable tbody input[type='checkbox']:checked"
   );
-  if (!checks.length) return;
+  if (!checks.length) return alert("Neoznačili jste žádný záhon.");
 
-  showActionIndicator(); // ← start animace
+  showActionIndicator && showActionIndicator();  // pokud používáte ten indikátor
 
-  let pending = checks.length;
-  checks.forEach(cb => {
+  const promises = Array.from(checks).map(cb => {
     const ps = new URLSearchParams();
     ps.append("action", "deleteZahon");
-    ps.append("ZahonID", cb.dataset.id);
+    ps.append("ZahonID", cb.value);   // z value, ne dataset
 
-    fetch(SERVER_URL, { method: "POST", body: ps })
-      .then(r => r.text())
-      .then(txt => {
-        if (txt.trim() === "OK") {
-          // úspěšně smazáno
-        }
-      })
-      .catch(e => console.error("Chyba mazání záhonu:", e))
-      .finally(() => {
-        pending--;
-        if (pending === 0) {
-          loadZahony();
-          hideActionIndicator(); // ← konec animace až po všech mazáních
-        }
-      });
+    return fetch(SERVER_URL, {
+      method: "POST",
+      body: ps
+    }).then(r => r.text());
   });
+
+  Promise.all(promises)
+    .then(results => {
+      // potvrzení, že všechny odpověděly "OK"
+      const okAll = results.every(txt => txt.trim() === "OK");
+      if (!okAll) console.warn("Některé mazání neproběhlo v pořádku:", results);
+      loadZahony();
+    })
+    .catch(e => console.error("Chyba mazání záhonu:", e))
+    .finally(() => {
+      hideActionIndicator && hideActionIndicator();
+    });
 }
 
 function addZahon() {
