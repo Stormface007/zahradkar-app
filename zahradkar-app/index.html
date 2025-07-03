@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css"/>
@@ -42,21 +42,21 @@
   <!-- MODÁLNÍ OKNO -->
   <div id="modal" class="modal">
     <div class="modal-content">
-   <!-- BOČNÍ PANEL IKON -->
-<div class="side-icons">
-  <img id="icon-mereni"    class="side-icon" src="img/mereni.png"        alt="Měření"     onclick="onIconClick('mereni')"   />
-  <img id="icon-seti"      class="side-icon" src="img/seti.png"          alt="Setí"       onclick="onIconClick('seti')"     />
-  <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"       alt="Hnojení"    onclick="onIconClick('hnojeni')" />
-  <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"       alt="Sklizeň"    onclick="onIconClick('sklizen')" />
-  <img id="icon-analyza"   class="side-icon" src="img/analyza.png"       alt="Analýza"    onclick="onIconClick('analyza')" />
-  <img id="icon-eshop"     class="side-icon" src="img/e-shop.png"        alt="E-shop"     onclick="onIconClick('eshop')"    />
-  <img id="icon-sluzba"    class="side-icon" src="img/sluzba.png"        alt="Služba"     onclick="onIconClick('sluzba')"   />
-  <img id="icon-market"    class="side-icon" src="img/market.png"        alt="Market"     onclick="onIconClick('market')"   />
-  <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png"     alt="Nastavení"  onclick="onIconClick('nastaveni')" />
-</div>
+      <!-- boční panel ikon -->
+      <div class="side-icons">
+        <img id="icon-mereni"    class="side-icon" src="img/mereni.png"    alt="Měření"    onclick="onIconClick('mereni')"/>
+        <img id="icon-seti"      class="side-icon" src="img/seti.png"      alt="Setí"      onclick="onIconClick('seti')"/>
+        <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"   alt="Hnojení"   onclick="onIconClick('hnojeni')"/>
+        <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"   alt="Sklizeň"   onclick="onIconClick('sklizen')"/>
+        <img id="icon-analyza"   class="side-icon" src="img/analyza.png"   alt="Analýza"   onclick="onIconClick('analyza')"/>
+        <img id="icon-eshop"     class="side-icon" src="img/e-shop.png"    alt="E-shop"    onclick="onIconClick('eshop')"/>
+        <img id="icon-sluzba"    class="side-icon" src="img/sluzba.png"    alt="Služba"    onclick="onIconClick('sluzba')"/>
+        <img id="icon-market"    class="side-icon" src="img/market.png"    alt="Market"    onclick="onIconClick('market')"/>
+        <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png" alt="Nastavení" onclick="onIconClick('nastaveni')"/>
+      </div>
 
       <div class="modal-body">
-        <!-- Defaultní view -->
+        <!-- defaultní úprava záhonu -->
         <div id="modalViewDefault">
           <h3>Úprava záhonu</h3>
           <input type="text" id="editNazev" placeholder="Název záhonu"/>
@@ -70,22 +70,23 @@
           <button onclick="closeModal()">Zavřít</button>
         </div>
 
-        <!-- View pro událost -->
+        <!-- režim událostí / analýzy -->
         <div id="modalViewUdalost" style="display:none;">
           <div id="udalostFormContainer"></div>
+          <div id="udalostSeznamContainer"></div>
           <button onclick="zpetNaDetailZahonu()">Zpět</button>
         </div>
       </div>
     </div>
   </div>
-  
-<!-- ZOOM MODAL -->
-<div id="zoomModal" class="modal" style="display: none;">
-  <div class="modal-content zoom-content">
-    <canvas id="zoomCanvas"></canvas>
-    <button onclick="closeZoom()">Zavřít</button>
+
+  <!-- ZOOM MODAL -->
+  <div id="zoomModal" class="modal" style="display:none;">
+    <div class="modal-content zoom-content">
+      <canvas id="zoomCanvas"></canvas>
+      <button onclick="closeZoom()">Zavřít</button>
+    </div>
   </div>
-</div>
 
   <script src="script.js"></script>
 </body>
