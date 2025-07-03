@@ -1,6 +1,5 @@
-// ← Nahraďte svou URL
+// ← Nahraď svou URL
 const SERVER_URL = "https://script.google.com/macros/s/AKfycby5Q582sTjMVzHDwInTpUQqQDbMMaZoAT90Lv1hEiB8rcRVs3XX21JUKYNmg16nYsGW/exec";
-
 let aktualniZahon = null;
 
 // — Přihlášení / odhlášení —
@@ -31,7 +30,7 @@ function logout() {
   document.getElementById("loginDiv").style.display = "block";
 }
 
-// — Načtení a správa záhonů —
+// — Záhony —
 function loadZahony() {
   const u = localStorage.getItem("userID");
   if (!u) return;
@@ -42,23 +41,24 @@ function loadZahony() {
       tb.innerHTML = "";
       arr.forEach(z => {
         const row = document.createElement("tr");
+        // checkbox
         const c1 = document.createElement("td");
         const cb = document.createElement("input");
         cb.type = "checkbox"; cb.dataset.id = z.ZahonID;
         c1.appendChild(cb);
-
+        // název
         const c2 = document.createElement("td");
         const a  = document.createElement("a");
         a.href = "#"; a.textContent = z.NazevZahonu;
         a.onclick = () => otevriModal(z);
         c2.appendChild(a);
-
-        const plo = (z.Velikost_m2 != null)
+        // plocha
+        const plo = z.Velikost_m2 != null
           ? z.Velikost_m2
           : ((z.Delka||0)*(z.Sirka||0)).toFixed(2);
         const c3 = document.createElement("td");
         c3.textContent = plo + " m²";
-
+        // append
         row.append(c1,c2,c3);
         tb.appendChild(row);
       });
@@ -81,7 +81,7 @@ function addZahon() {
   const n = document.getElementById("newNazev").value.trim();
   const d = parseFloat(document.getElementById("newDelka").value)||0;
   const s = parseFloat(document.getElementById("newSirka").value)||0;
-  if (!n||d<=0||s<=0) return alert("Vyplňte správně název, délku i šířku.");
+  if (!n||d<=0||s<=0) return alert("Vyplňte správně názvě, délku i šířku.");
   const ps = new URLSearchParams();
   ps.append("action","addZahon");
   ps.append("userID",u);
@@ -100,23 +100,18 @@ function addZahon() {
 function otevriModal(zahon) {
   aktualniZahon = zahon;
   setActiveIcon(null);
-
-  // 1) vyplníme formulář
+  // vyplnění default view
   document.getElementById("editNazev").value = zahon.NazevZahonu;
   document.getElementById("editDelka").value = zahon.Delka || 0;
   document.getElementById("editSirka").value = zahon.Sirka || 0;
   updatePlocha();
-
-  // 2) vykreslíme defaultní canvas (200×200)
   nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
-
-  // 3) zaregistrujeme klik na ten canvas pro zoom
+  // bind zoom handler
   makeCanvasClickable();
-
-  // 4) otevřeme modal
+  // zobrazit modal
   document.getElementById("modalViewDefault").style.display  = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
-  document.getElementById("modal").style.display            = "flex";
+  document.getElementById("modal").style.display             = "flex";
 }
 function closeModal() {
   aktualniZahon = null;
@@ -133,7 +128,7 @@ function saveZahon() {
   const n = document.getElementById("editNazev").value.trim();
   const d = parseFloat(document.getElementById("editDelka").value)||0;
   const s = parseFloat(document.getElementById("editSirka").value)||0;
-  if (!n||d<=0||s<=0) return alert("Vyplňte správně všechno.");
+  if (!n||d<=0||s<=0) return alert("Vyplňte správně vše.");
   const ps = new URLSearchParams();
   ps.append("action","updateZahon");
   ps.append("ZahonID",aktualniZahon.ZahonID);
@@ -147,7 +142,7 @@ function saveZahon() {
     }});
 }
 
-// — Dynamické načtení plodin —
+// — Dynamické plodiny —
 function loadPlodiny() {
   fetch(`${SERVER_URL}?action=getPlodiny`)
     .then(r=>r.json())
@@ -168,42 +163,30 @@ function loadPlodiny() {
     });
 }
 
-// — Přepínání na formulář události —
+// — Události (setí/hnojení/sklizeň) —
 function showUdalostForm(typ) {
   document.getElementById("modalViewDefault").style.display = "none";
   const uv = document.getElementById("modalViewUdalost");
   uv.style.display = "block";
   const c = document.getElementById("udalostFormContainer");
-  c.innerHTML = `
-    <h4>${typ[0].toUpperCase()+typ.slice(1)}</h4>
-    <label>Datum: <input type="date" id="udalostDatum"/></label><br>
-  `;
+  c.innerHTML = `<h4>${typ[0].toUpperCase()+typ.slice(1)}</h4>
+    <label>Datum: <input type="date" id="udalostDatum"/></label><br>`;
   if (typ === "seti") {
-    c.innerHTML += `
-      <label>Plodina:
-        <select id="plodinaSelect">
-          <option>Načítám…</option>
-        </select>
-      </label><br>
-    `;
+    c.innerHTML += `<label>Plodina:
+        <select id="plodinaSelect"><option>Načítám…</option></select>
+      </label><br>`;
     loadPlodiny();
-  }
-  else if (typ === "hnojeni") {
+  } else if (typ === "hnojeni") {
     c.innerHTML += `
       <label>Hnojivo: <input type="text" id="udalostHnojivo"/></label><br>
-      <label>Množství (kg): <input type="number" id="udalostMnozstvi"/></label><br>
-    `;
-  }
-  else if (typ === "sklizen") {
+      <label>Množství (kg): <input type="number" id="udalostMnozstvi"/></label><br>`;
+  } else if (typ === "sklizen") {
     c.innerHTML += `
       <label>Plodina: <input type="text" id="udalostPlodina"/></label><br>
-      <label>Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
-    `;
+      <label>Výnos (kg): <input type="number" id="udalostVynos"/></label><br>`;
   }
-  c.innerHTML += `
-    <label>Poznámka: <input type="text" id="udalostPoznamka"/></label><br>
-    <button onclick="ulozUdalost('${typ}')">Uložit</button>
-  `;
+  c.innerHTML += `<label>Poznámka: <input type="text" id="udalostPoznamka"/></label><br>
+    <button onclick="ulozUdalost('${typ}')">Uložit</button>`;
 }
 function ulozUdalost(typ) {
   alert("Uloženo " + typ);
@@ -215,130 +198,78 @@ function zpetNaDetailZahonu() {
   setActiveIcon(null);
 }
 
-// — Boční ikony —
-function setActiveIcon(active) {
-  ["mereni","seti","hnojeni","sklizen","analyza","eshop","sluzba","market","nastaveni"]
-    .forEach(t => {
-      const el = document.getElementById(`icon-${t}`);
-      if (!el) return;
-      el.classList.toggle("active", t === active);
-    });
-}
-function onIconClick(typ) {
-  setActiveIcon(typ);
-  document.getElementById("modalViewDefault").style.display  = "none";
-  document.getElementById("modalViewUdalost").style.display  = "none";
-  if (typ === "seti" || typ === "hnojeni" || typ === "sklizen") {
-    showUdalostForm(typ);
-  }
-  else if (typ === "mereni") {
-    document.getElementById("modalViewDefault").style.display = "block";
-  }
-  else if (typ === "analyza") {
-    showAnalysisForm();
-  }
-  // ostatní ikony zatím nic dál nedělají
-}
-
-// — Kreslení záhonu —
-function nakresliZahonCanvas(d,s) {
-  const c = document.getElementById("zahonVizualizace");
-  c.innerHTML = "";
-  const cv = document.createElement("canvas");
-  cv.width = cv.height = 200;
-  const ctx = cv.getContext("2d");
-  ctx.fillStyle = "#009900"; ctx.fillRect(0,0,200,200);
-  const scale = Math.min(200/(d||1),200/(s||1));
-  const w = (d||1)*scale, h = (s||1)*scale;
-  const x = (200-w)/2, y = (200-h)/2;
-  ctx.fillStyle = "#c2b280"; ctx.fillRect(x,y,w,h);
-  ctx.lineWidth=2; ctx.strokeStyle="#000"; ctx.strokeRect(x,y,w,h);
-  c.appendChild(cv);
-}
-
 // — Analýza —
 function showAnalysisForm() {
   const c = document.getElementById("modalViewUdalost");
   c.classList.add("analysis");
-  document.getElementById("modalViewDefault").style.display  = "none";
+  document.getElementById("modalViewDefault").style.display = "none";
   c.style.display = "block";
   document.getElementById("udalostFormContainer").innerHTML = `
     <h4>Analýza</h4>
     <label for="analDatum">Datum:</label>
     <input type="date" id="analDatum" /><br>
     <div class="nutrients">
-      <input type="number" step="0.1" id="analPH" placeholder="pH (–)" />
-      <input type="number"      id="analN"  placeholder="N (ppm)" />
-      <input type="number"      id="analP"  placeholder="P (ppm)" />
-      <input type="number"      id="analK"  placeholder="K (ppm)" />
+      <div class="nutrient"><label for="analPH">pH (–):</label><input type="number" step="0.1" id="analPH"/></div>
+      <div class="nutrient"><label for="analN">N (ppm):</label><input type="number" id="analN"/></div>
+      <div class="nutrient"><label for="analP">P (ppm):</label><input type="number" id="analP"/></div>
+      <div class="nutrient"><label for="analK">K (ppm):</label><input type="number" id="analK"/></div>
     </div>
     <div class="soil-info">
-      <label for="soilType">Typ půdy:</label>
-      <input type="text" id="soilType" /><br>
-      <label for="soilColor">Barva půdy:</label>
-      <input type="text" id="soilColor" />
+      <label for="soilType">Typ půdy:</label><input type="text" id="soilType"/><br>
+      <label for="soilColor">Barva půdy:</label><input type="text" id="soilColor"/>
     </div>
-    <button onclick="saveAnalysis()">Uložit analýzu</button>
-  `;
+    <button onclick="saveAnalysis()">Uložit analýzu</button>`;
 }
 function saveAnalysis() {
   alert("Analýza uložena");
   zpetNaDetailZahonu();
 }
 
-// otevře zoom‐modal a nakreslí záhon 5× větší
-function openZoom(delka, sirka) {
-  const canvas = document.getElementById("zoomCanvas");
-  const scaleFactor = 5;
-  const baseSize    = 200;
-  canvas.width  = baseSize * scaleFactor;
-  canvas.height = baseSize * scaleFactor;
-  const ctx = canvas.getContext("2d");
-
-  // 1) zelené pole
-  ctx.fillStyle = "#009900";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // 2) hnědý záhon
-  const plotScale = Math.min(canvas.width/(delka||1), canvas.height/(sirka||1));
-  const w = (delka||1)*plotScale, h = (sirka||1)*plotScale;
-  const x = (canvas.width - w)/2, y = (canvas.height - h)/2;
-  ctx.fillStyle   = "#c2b280";
-  ctx.fillRect(x, y, w, h);
-
-  // 3) černý obrys
-  ctx.lineWidth   = 2;
-  ctx.strokeStyle = "#000";
-  ctx.strokeRect(x, y, w, h);
-
-  document.getElementById("zoomModal").style.display = "flex";
-}
-
-// zavře zoom‐modal
-function closeZoom() {
-  document.getElementById("zoomModal").style.display = "none";
-}
-
-// zaváže klikací handler **jen když** je primární modal otevřený
+// — Zoom záhonu —
 function makeCanvasClickable() {
   const kont = document.getElementById("zahonVizualizace");
-  // odstraníme všechny dosavadní listenery
   const fresh = kont.cloneNode(true);
   kont.parentNode.replaceChild(fresh, kont);
-
   fresh.addEventListener("click", () => {
-    // jen pokud je modal opravdu otevřený
-    if (document.getElementById("modal").style.display === "flex" && aktualniZahon) {
+    if (document.getElementById("modal").style.display==="flex" && aktualniZahon) {
       openZoom(aktualniZahon.Delka, aktualniZahon.Sirka);
     }
   });
 }
+function openZoom(d,s) {
+  const canvas = document.getElementById("zoomCanvas");
+  const sf = 5, bs = 200;
+  canvas.width = bs*sf; canvas.height = bs*sf;
+  const ctx = canvas.getContext("2d");
+  // pozadí
+  ctx.fillStyle = "#009900";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  // záhon
+  const scale = Math.min(canvas.width/(d||1),canvas.height/(s||1));
+  const w = (d||1)*scale, h = (s||1)*scale;
+  const x=(canvas.width-w)/2, y=(canvas.height-h)/2;
+  ctx.fillStyle="#c2b280";
+  ctx.fillRect(x,y,w,h);
+  ctx.lineWidth=2;ctx.strokeStyle="#000";ctx.strokeRect(x,y,w,h);
+  document.getElementById("zoomModal").style.display="flex";
+}
+function closeZoom() {
+  document.getElementById("zoomModal").style.display="none";
+}
 
-
-// V závěru funkce otevriModal(zahon) **přidejte**:
-function otevriModal(zahon) {
-  // … existující kód …
-  document.getElementById("modal").style.display = "flex";
-  // nový bind
-  makeCanvasClickable();
+// — Ikony —
+function setActiveIcon(active) {
+  ["mereni","seti","hnojeni","sklizen","analyza","eshop","sluzba","market","nastaveni"]
+    .forEach(t => {
+      const el = document.getElementById(`icon-${t}`);
+      if (el) el.classList.toggle("active", t===active);
+    });
+}
+function onIconClick(typ) {
+  setActiveIcon(typ);
+  document.getElementById("modalViewDefault").style.display  = "none";
+  document.getElementById("modalViewUdalost").style.display  = "none";
+  if (typ==="seti"||typ==="hnojeni"||typ==="sklizen") showUdalostForm(typ);
+  else if (typ==="mereni") document.getElementById("modalViewDefault").style.display="block";
+  else if (typ==="analyza") showAnalysisForm();
 }
