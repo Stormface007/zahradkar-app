@@ -363,7 +363,20 @@ button {
   opacity: 0.5; /* 0 = plně průhledné, 1 = plně kryté */
 }
 
+/* zajistí, že ikony budou nad plátnem */
+.zoom-content {
+  position: relative;
+}
+.zoom-content canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* kontejner s ikonami musí být nad canvasem */
 .zoom-actions {
+  position: relative;   /* nebo absolute, pokud chcete ikonám pevnou pozici */
+  z-index: 2;           /* musí být vyšší než z-index plátna */
   display: flex;
   justify-content: center;
   gap: 1rem;
@@ -371,6 +384,9 @@ button {
 }
 .zoom-actions img {
   cursor: pointer;
+  z-index: 2;
 }
-
+.zoom-content canvas {
+  z-index: 1;
+}
 
