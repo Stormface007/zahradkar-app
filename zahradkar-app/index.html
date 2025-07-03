@@ -110,24 +110,27 @@
  <!-- ZOOM MODAL -->
 <div id="zoomModal" class="modal" style="display:none;">
   <div class="modal-content zoom-content">
-    <canvas id="zoomCanvas"></canvas>
-    <!-- místo buttonů: -->
-    <div class="zoom-actions">
+
+    <!-- nový horní panel s akcemi -->
+    <div class="zoom-header">
       <img
         src="img/Safe.png"
         alt="Uložit změny"
+        class="zoom-action-icon"
         onclick="saveZahon()"
-        width="50"
-        height="50"
+        width="50" height="50"
       />
       <img
         src="img/Goback.png"
         alt="Zpět"
+        class="zoom-action-icon"
         onclick="closeZoom()"
-        width="50"
-        height="50"
+        width="50" height="50"
       />
     </div>
+
+    <!-- samotné plátno -->
+    <canvas id="zoomCanvas"></canvas>
   </div>
 </div>
 
