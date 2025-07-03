@@ -363,30 +363,44 @@ button {
   opacity: 0.5; /* 0 = plně průhledné, 1 = plně kryté */
 }
 
-/* zajistí, že ikony budou nad plátnem */
-.zoom-content {
+/* Zoom-modal */
+#zoomModal .modal-content {
   position: relative;
+  background: #009900;
+  margin: 2% auto;
+  width: 90%;
+  max-width: 600px;
+  max-height: calc(100vh - 40px);
+  padding: 0;                /* padding se rozdělí mezi header a canvas */
+  overflow: hidden;
+  border-radius: 8px;
+  box-sizing: border-box;
 }
-.zoom-content canvas {
+
+/* Horní panel akcí v zoom-modalu */
+.zoom-header {
+  display: flex;
+  justify-content: flex-end;  /* ikony vpravo */
+  align-items: center;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.1); /* lehce průhledné pozadí */
+  z-index: 2;
+}
+
+/* Styl ikon v horním panelu */
+.zoom-action-icon {
+  cursor: pointer;
+  margin-left: 1rem;
+  z-index: 2;
+}
+
+/* Canvas se posune pod header */
+#zoomCanvas {
   display: block;
   width: 100%;
   height: auto;
-}
-
-/* kontejner s ikonami musí být nad canvasem */
-.zoom-actions {
-  position: relative;   /* nebo absolute, pokud chcete ikonám pevnou pozici */
-  z-index: 2;           /* musí být vyšší než z-index plátna */
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-.zoom-actions img {
-  cursor: pointer;
-  z-index: 2;
-}
-.zoom-content canvas {
+  background: transparent;
+  position: relative;
   z-index: 1;
 }
 
