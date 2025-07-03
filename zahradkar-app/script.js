@@ -280,7 +280,7 @@ function nakresliZahonCanvas(d, s) {
 // — Zoom modal —
 function openZoom(d, s) {
   const cv = document.getElementById("zoomCanvas");
-  const factor = 5, base = 200;
+  const factor = 5, base = 80;
   cv.width = base * factor;
   cv.height = base * factor;
   const ctx = cv.getContext("2d");
