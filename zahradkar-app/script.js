@@ -7,7 +7,7 @@ let aktualniZahon = null;
 function showActionIndicator() {
   // seznam možných „rotujících“ obrázků
   const images = [
-    'Plodina_mrkev.png',
+    'Plodina_mrkev .png',
     'Plodina_rajce.png',
     'Plodina_petrzel_koren.png'
   ];
