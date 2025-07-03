@@ -241,11 +241,11 @@ button {
 
 /* Zmenší rotující mrkev na 10×10 px */
 .action-indicator img {
-  width: 10px;
-  height: 10px;
+  width: 30px;
+  height: 30px;
 }
 
 .action-indicator {
-  width: 10px;
-  height: 10px;
+  width: 30px;
+  height: 30px;
 }
