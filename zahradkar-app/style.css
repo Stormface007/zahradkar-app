@@ -18,22 +18,36 @@ body {
 }
 .logo-small {
   width: 80px;
-  margin-bottom: 1rem;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 1rem;
 }
 
+/* Vstupní pole */
 input[type="text"],
 input[type="password"],
-input[type="number"] {
+input[type="number"],
+select {
   width: 100%;
   max-width: 300px;
   padding: 0.75rem;
   margin: 0.5rem 0;
   border: 2px solid black;
   border-radius: 6px;
+  font-size: 1rem;
+  background-color: white;
+  box-sizing: border-box;
 }
+
+/* Přizpůsobení select */
+#plodinaSelect {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 8px 5px;
+}
+
+/* Tlačítka */
 button {
   padding: 0.6rem 1.2rem;
   background-color: white;
@@ -50,7 +64,9 @@ button {
   padding: 2rem;
   text-align: center;
 }
-.table-container { overflow-x: auto; }
+.table-container {
+  overflow-x: auto;
+}
 #zahonyTable {
   width: 100%;
   border-collapse: collapse;
@@ -64,33 +80,31 @@ button {
   padding: 0.5rem;
 }
 
-/* MODÁLNÍ OKNO */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
   background: rgba(0,0,0,0.5);
-  overflow: auto;  /* celé modal-content scrolluje */
+  overflow: auto;
   z-index: 999;
 }
 .modal-content {
   position: relative;
   background: #009900;
   margin: 5% auto;
-  padding: 20px;
-  padding-left: 140px;      /* úzký obsah odsunutý kvůli panelu ikon */
   width: 90%; max-width: 600px;
   max-height: calc(100vh - 40px);
+  padding: 20px;
+  padding-left: 140px;
   overflow-y: auto;
   border-radius: 8px;
   box-sizing: border-box;
 }
-.modal-body {
-  /* prázdná wrapperka, scrolluje s modal-content */
-}
+.modal-body {}
 
-/* BOČNÍ PANEL IKON */
+/* Boční panel ikon */
 .side-icons {
   position: absolute;
   top: 20px; left: 20px;
@@ -122,33 +136,27 @@ button {
 }
 .dimensions input {
   flex: 1;
-  background: white;
-  border: 2px solid black;
-  padding: 0.5rem;
 }
 .plocha {
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
-/* Vizualizace */
-/* aby byl původní canvas pod ikonami */
+/* Canvas záhon */
 #zahonVizualizace {
   position: relative;
   z-index: 1;
 }
-
 #zahonVizualizace canvas {
   display: block;
   margin: 0 auto;
   background: transparent;
 }
 
-/* Formulář událostí */
+/* Události / analýza */
 #udalostFormContainer input,
 #udalostFormContainer textarea {
   width: 100%;
-  box-sizing: border-box;
   margin-bottom: 0.5rem;
   padding: 0.5rem;
   border: 2px solid black;
@@ -162,7 +170,7 @@ button {
   text-align: left;
 }
 
-/* Analytický režim – rozložení pH/N a P/K */
+/* Analytický režim – pH/N vedle sebe, P/K pod nimi */
 #modalViewUdalost.analysis .nutrients {
   display: flex;
   flex-wrap: wrap;
@@ -174,8 +182,8 @@ button {
 }
 #modalViewUdalost.analysis .nutrients label {
   font-weight: bold;
-  display: block;
   margin-bottom: 0.25rem;
+  display: block;
 }
 #modalViewUdalost.analysis .soil-info {
   margin-top: 1rem;
@@ -187,42 +195,23 @@ button {
 }
 #modalViewUdalost.analysis .soil-info input {
   width: 100%;
-  box-sizing: border-box;
   padding: 0.5rem;
   border: 2px solid black;
   border-radius: 4px;
 }
 
-/* Zmenšení pole pro název záhonu o 10 % */
+/* Zmenšení pole názvu o 10 % */
 #modalViewDefault input#editNazev {
   width: 90%;
   box-sizing: border-box;
 }
 
-/* Udělá select stejného vzhledu jako textové/početní inputy */
-#plodinaSelect {
-  width: 100%;
-  max-width: 300px;
-  padding: 0.75rem;
-  margin: 0.5rem 0;
-  border: 2px solid black;
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: white;
-  box-sizing: border-box;
-  appearance: none;          /* skryje defaultní šipku */
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 8px 5px;
-}
-
-/* Zoom-modal: dědí styl .modal */
+/* Zoom modal */
 #zoomModal .modal-content {
+  background: #fff;
   max-width: none;
   width: auto;
   padding: 1rem;
-  background: #fff;
 }
 #zoomCanvas {
   display: block;
