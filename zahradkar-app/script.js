@@ -189,27 +189,42 @@ function updatePlocha() {
   document.getElementById("vypocetPlochy").textContent = (d*s).toFixed(2);
 }
 function saveZahon() {
-  const n = document.getElementById("editNazev").value.trim();
-  const d = parseFloat(document.getElementById("editDelka").value) || 0;
-  const s = parseFloat(document.getElementById("editSirka").value) || 0;
-  if (!n || d <= 0 || s <= 0) {
-    return alert("Vyplňte správně všechno.");
+  const nazev = document.getElementById("editNazev").value.trim();
+  const delka = parseFloat(document.getElementById("editDelka").value) || 0;
+  const sirka = parseFloat(document.getElementById("editSirka").value) || 0;
+  if (!nazev || delka <= 0 || sirka <= 0) {
+    return alert("Vyplňte správně název, délku a šířku.");
   }
+
+  // zapneme indikátor
+  showActionIndicator();
+
   const ps = new URLSearchParams();
-  ps.append("action","updateZahon");
+  ps.append("action", "updateZahon");
   ps.append("ZahonID", aktualniZahon.ZahonID);
-  ps.append("NazevZahonu", n);
-  ps.append("Delka", d);
-  ps.append("Sirka", s);
-  fetch(SERVER_URL, { method:"POST", body:ps })
-    .then(r=>r.text())
-    .then(txt=>{
-      if (txt.trim()==="OK") {
+  ps.append("NazevZahonu", nazev);
+  ps.append("Delka", delka);
+  ps.append("Sirka", sirka);
+
+  fetch(SERVER_URL, { method: "POST", body: ps })
+    .then(r => r.text())
+    .then(txt => {
+      if (txt.trim() === "OK") {
+        // zavřeme modal a znovu načteme tabulku
         closeModal();
         loadZahony();
+      } else {
+        alert("Chyba při ukládání: " + txt);
       }
     })
-    .catch(e=>console.error("Chyba saveZahon:", e));
+    .catch(e => {
+      console.error("Chyba saveZahon:", e);
+      alert("Chyba při ukládání záhonu.");
+    })
+    .finally(() => {
+      // vypneme indikátor
+      hideActionIndicator();
+    });
 }
 
 // — Načtení plodin pro setí —
