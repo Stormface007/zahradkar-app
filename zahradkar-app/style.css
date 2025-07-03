@@ -302,3 +302,17 @@ button {
   width: 80px;
   height: 80px;
 }
+
+/* Odkazy v seznamu záhonů jako obyčejný text */
+#zahonyTable tbody td a {
+  color: #000;             /* černá barva */
+  text-decoration: none;   /* žádné podtržení */
+  font-family: 'Verdana', sans-serif; /* nebo jiný font dle vkusu */
+  font-weight: normal;     /* normální řez */
+}
+
+/* Na hover můžeš přidat jemnou změnu pro lepší UX */
+#zahonyTable tbody td a:hover {
+  color: #005500;
+  /* text-decoration: underline;  -- volitelně */
+}
