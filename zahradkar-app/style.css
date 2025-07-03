@@ -370,4 +370,8 @@ button {
   margin-top: 1rem;
 }
 
+.modal-btn {
+  cursor: pointer;
+}
+
 
