@@ -86,8 +86,15 @@
           </div>
           <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
           <div id="zahonVizualizace"></div>
-          <button onclick="saveZahon()">Uložit změny</button>
-          <button onclick="closeModal()">Zavřít</button>
+           <img src="img/Safe.png"
+       alt="Uložit" 
+       class="modal-btn"
+       onclick="saveZahon()" />
+
+  <img src="img/Goback.png"
+       alt="Zavřít" 
+       class="modal-btn"
+       onclick="closeModal()" />
         </div>
 
         <!-- režim událostí / analýzy -->
@@ -101,12 +108,23 @@
   </div>
 
   <!-- ZOOM MODAL -->
-  <div id="zoomModal" class="modal" style="display:none;">
-    <div class="modal-content zoom-content">
-      <canvas id="zoomCanvas"></canvas>
-      <button onclick="closeZoom()">Zavřít</button>
-    </div>
+<div id="zoomModal" class="modal" style="display:none;">
+  <div class="modal-content zoom-content">
+    <canvas id="zoomCanvas"></canvas>
+
+    <!-- Safe.png spustí případnou save-funkci, tady zatím volá closeZoom() -->
+    <img src="img/Safe.png"
+         alt="Uložit" 
+         class="modal-btn"
+         onclick="closeZoom()" />
+
+    <!-- Goback.png vrátí zpět ze zoomu -->
+    <img src="img/Goback.png"
+         alt="Zpět" 
+         class="modal-btn"
+         onclick="closeZoom()" />
   </div>
+</div>
 
   <script src="script.js"></script>
 </body>
