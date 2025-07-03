@@ -217,3 +217,24 @@ button {
   display: block;
   margin: 0 auto 1rem;
 }
+/* rotating carrot indicator */
+.action-indicator {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+}
+.action-indicator.active {
+  display: block;
+  animation: rotate 1s linear infinite;
+}
+@keyframes rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
