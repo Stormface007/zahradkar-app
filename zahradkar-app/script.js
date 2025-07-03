@@ -16,7 +16,7 @@ async function login() {
     if (data.success) {
       localStorage.setItem("userID", data.userID);
       document.getElementById("loginDiv").style.display = "none";
-      document.getElementById("appDiv").style.display = "block";
+      document.getElementById("appDiv").style.display   = "block";
       loadZahony();
     } else {
       document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
@@ -29,7 +29,7 @@ async function login() {
 
 function logout() {
   localStorage.removeItem("userID");
-  document.getElementById("appDiv").style.display = "none";
+  document.getElementById("appDiv").style.display   = "none";
   document.getElementById("loginDiv").style.display = "block";
 }
 
@@ -117,11 +117,10 @@ function otevriModal(zahon) {
   updatePlocha();
 
   nakresliZahonCanvas(zahon.Delka, zahon.Sirka);
-  makeCanvasClickable();
 
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
-  document.getElementById("modal").style.display = "flex";
+  document.getElementById("modal").style.display            = "flex";
 }
 
 function closeModal() {
@@ -265,7 +264,6 @@ function onIconClick(typ) {
   } else if (typ === "analyza") {
     showAnalysisForm();
   }
-  // ostatní ikony zatím nic
 }
 
 // — Vizualizace záhonu —
@@ -275,25 +273,22 @@ function nakresliZahonCanvas(d, s) {
   const cv = document.createElement("canvas");
   cv.width = cv.height = 200;
   const ctx = cv.getContext("2d");
+  // pozadí pole
   ctx.fillStyle = "#009900"; ctx.fillRect(0, 0, 200, 200);
+  // tvar záhonu
   const scale = Math.min(200/(d||1), 200/(s||1));
   const w = (d||1)*scale, h = (s||1)*scale;
   const x = (200 - w)/2, y = (200 - h)/2;
   ctx.fillStyle = "#c2b280"; ctx.fillRect(x, y, w, h);
   ctx.lineWidth = 2; ctx.strokeStyle = "#000"; ctx.strokeRect(x, y, w, h);
-  cont.appendChild(cv);
-}
-
-// — Klikací canvas pro zoom —
-function makeCanvasClickable() {
-  const cont = document.getElementById("zahonVizualizace");
-  const newCont = cont.cloneNode(false);
-  cont.parentNode.replaceChild(newCont, cont);
-  newCont.addEventListener("click", () => {
+  // po přidání canvasu zřetězte i click handler
+  cv.style.cursor = "pointer";
+  cv.onclick = () => {
     if (document.getElementById("modal").style.display === "flex" && aktualniZahon) {
       openZoom(aktualniZahon.Delka, aktualniZahon.Sirka);
     }
-  });
+  };
+  cont.appendChild(cv);
 }
 
 // — Zoom modal —
@@ -316,11 +311,11 @@ function closeZoom() {
   document.getElementById("zoomModal").style.display = "none";
 }
 
-// — Auto-login pokud už je v localStorage —
+// — Auto-login při reloadu —
 document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("userID")) {
     document.getElementById("loginDiv").style.display = "none";
-    document.getElementById("appDiv").style.display = "block";
+    document.getElementById("appDiv").style.display   = "block";
     loadZahony();
   }
 });
