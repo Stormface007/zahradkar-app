@@ -22,9 +22,27 @@
   </div>
 
   <!-- Hlavní aplikace -->
-  <div id="appDiv" style="display:none;">
+<div id="appDiv" style="display:none;">
+
+  <!-- Horní panel s ikonami -->
+  <div class="top-panel">
+    <img
+      id="exitIcon"
+      class="icon-button"
+      src="img/Exit.png"
+      alt="Odhlásit se"
+      onclick="logout()"
+    />
+    <img
+      id="userIcon"
+      class="icon-button"
+      src="img/User.png"
+      alt="Uživatel"
+    />
+  </div>
+
     <h2>Moje záhony</h2>
-    <button onclick="logout()">Odhlásit se</button>
+    
     <div class="table-actions">
       <button onclick="deleteSelected()">🗑️ Smazat označené</button>
     </div>
