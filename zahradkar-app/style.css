@@ -98,6 +98,22 @@ button {
 #zahonyTable tbody td a.zahon-link:hover .zahon-icon {
   transform: translateX(4px);
 }
+/* Horní panel ikon místo “Odhlásit se” */
+.top-panel {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Styl ikon */
+.icon-button {
+  width: 32px;
+  height: auto;
+  cursor: pointer;
+}
+
 
 /* Modal */
 .modal {
