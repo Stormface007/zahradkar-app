@@ -238,3 +238,14 @@ button {
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
+
+/* Zmenší rotující mrkev na 10×10 px */
+.action-indicator img {
+  width: 10px;
+  height: 10px;
+}
+
+.action-indicator {
+  width: 10px;
+  height: 10px;
+}
