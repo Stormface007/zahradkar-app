@@ -97,18 +97,36 @@ function loadZahony(){
 }
 
 // — Mazání záhonů —
-function deleteSelected(){
-  const checks=document.querySelectorAll("#zahonyTable tbody input:checked");
-  if(!checks.length) return alert("Neoznačili jste žádný záhon.");
-  const prom=Array.from(checks).map(cb=>{
-    const ps=new URLSearchParams();
-    ps.append("action","deleteZahon");
-    ps.append("ZahonID",cb.value);
-    return fetch(SERVER_URL,{method:"POST",body:ps}).then(r=>r.text());
+function deleteSelected() {
+  const checks = document.querySelectorAll(
+    "#zahonyTable tbody input[type='checkbox']:checked"
+  );
+  if (!checks.length) {
+    alert("Neoznačili jste žádný záhon.");
+    return;
+  }
+
+  // ► spustíme rotující mrkev
+  showActionIndicator();
+
+  const promises = Array.from(checks).map(cb => {
+    const ps = new URLSearchParams();
+    ps.append("action", "deleteZahon");
+    ps.append("ZahonID", cb.value);
+    return fetch(SERVER_URL, { method: "POST", body: ps }).then(r => r.text());
   });
-  Promise.all(prom).then(res=>{
-    loadZahony();
-  }).catch(e=>console.error("Chyba mazání:",e));
+
+  Promise.all(promises)
+    .then(results => {
+      const okAll = results.every(txt => txt.trim() === "OK");
+      if (!okAll) console.warn("Některé mazání neproběhlo:", results);
+      loadZahony();
+    })
+    .catch(e => console.error("Chyba mazání záhonu:", e))
+    .finally(() => {
+      // ► zastavíme rotující mrkev
+      hideActionIndicator();
+    });
 }
 
 // — Přidání záhonu —
