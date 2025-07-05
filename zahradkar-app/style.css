@@ -236,3 +236,21 @@ button {
   from {transform: translate(-50%,-50%) rotate(0deg);}
   to   {transform: translate(-50%,-50%) rotate(360deg);}
 }
+
+/* Záhony – menší ikonka a vyrovnání textu */
+#zahonyTable tbody td a.zahon-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.zahon-icon {
+  width: 24px;    /* uprav podle potřeby */
+  height: auto;
+  margin-right: 0.5rem;
+}
+
+/* případně omez výšku řádku tak, aby se nevešel přebytečný padding */
+#zahonyTable tbody td {
+  vertical-align: middle;
+  padding: 0.5rem;
+}
