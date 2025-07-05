@@ -1,6 +1,59 @@
 // ← Nahraďte svou URL
 const SERVER_URL = "https://script.google.com/macros/s/AKfycby5Q582sTjMVzHDwInTpUQqQDbMMaZoAT90Lv1hEiB8rcRVs3XX21JUKYNmg16nYsGW/exec";
+// — Počasí podle geolokace —
+function loadWeatherByGeolocation() {
+  const container = document.getElementById("weatherContainer");
+  container.innerHTML = "Zjišťuji polohu…";
+  if (!navigator.geolocation) {
+    container.innerHTML = "Geolokace v tomto prohlížeči není podporována.";
+    return;
+  }
 
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude: lat, longitude: lon } = pos.coords;
+    container.innerHTML = "Načítám počasí…";
+
+    // Použijeme API wttr.in (jiný free server, vrací JSON podle IP nebo souřadnic)
+    fetch(`https://wttr.in/${lat},${lon}?format=j1`)
+      .then(r => r.json())
+      .then(data => {
+        const cur = data.current_condition[0];
+        container.innerHTML = `
+          <strong>Počasí</strong><br>
+          Teplota: ${cur.temp_C} °C<br>
+          Pocit: ${cur.FeelsLikeC} °C<br>
+          Stav: ${cur.weatherDesc[0].value}<br>
+          Vítr: ${cur.windspeedKmph} km/h
+        `;
+      })
+      .catch(err => {
+        console.error("Chyba počasí:", err);
+        container.innerHTML = "Počasí nelze načíst.";
+      });
+
+  }, err => {
+    console.warn("Geolokace selhala:", err);
+    container.innerHTML = "Polohu nelze zjistit – povolte geolokaci.";
+  }, {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 300000
+  });
+}
+
+// Po stisknutí tlačítka…
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("btnLoadWeather");
+  btn.addEventListener("click", loadWeatherByGeolocation);
+
+  // pokud už jste přihlášeni, můžete rovnou nabídnout tlačítko:
+  if (localStorage.getItem("userID")) {
+    document.getElementById("weatherContainer").innerHTML =
+      `<button id="btnLoadWeather">Načíst počasí dle polohy 🌐</button>`;
+    document.getElementById("btnLoadWeather")
+      .addEventListener("click", loadWeatherByGeolocation);
+  }
+});
 let aktualniZahon = null;
 
 // — Indikátor akce (volitelné) —
