@@ -26,6 +26,12 @@
 
   <!-- Horní panel s ikonami -->
   <div class="top-panel">
+    
+      <!-- místo dosavadního weatherContainer -->
+  <div id="weatherContainer" class="toolbar-weather">
+    <img id="weatherIcon" alt="Počasí" />
+    <div id="weatherTemp"></div>
+  </div>
     <img
       id="exitIcon"
       class="icon-button"
@@ -41,10 +47,7 @@
     />
   </div>
   
-  <!-- Počasí podle polohy -->
-<div id="weatherContainer" class="weather-widget">
-  <button id="btnLoadWeather">Načíst počasí dle polohy 🌐</button>
-</div>
+  
     
     <div class="table-actions">
       <button onclick="deleteSelected()">🗑️ Smazat označené</button>
