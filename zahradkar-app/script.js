@@ -250,24 +250,41 @@ function ulozUdalost(typ){
   zpetNaDetailZahonu();
 }
 function showAnalysisForm(){
-  document.getElementById("modalViewDefault").style.display="none";
-  const uv=document.getElementById("modalViewUdalost");
+  document.getElementById("modalViewDefault").style.display = "none";
+  const uv = document.getElementById("modalViewUdalost");
   uv.classList.add("analysis");
-  uv.style.display="block";
-  document.getElementById("udalostFormContainer").innerHTML=`
+  uv.style.display = "block";
+
+  document.getElementById("udalostFormContainer").innerHTML = `
     <h4>Analýza</h4>
-    <label>Datum:<input type="date" id="analDatum"/></label><br>
+    <label>Datum: <input type="date" id="analDatum"/></label>
+
     <div class="nutrients">
-      <div class="nutrient"><label>pH:</label><input type="number" step="0.1" id="analPH"/></div>
-      <div class="nutrient"><label>N (ppm):</label><input type="number" id="analN"/></div>
-      <div class="nutrient"><label>P (ppm):</label><input type="number" id="analP"/></div>
-      <div class="nutrient"><label>K (ppm):</label><input type="number" id="analK"/></div>
+      <div class="nutrient">
+        <label for="analPH">pH (–):</label>
+        <input type="number" step="0.1" id="analPH"/>
+      </div>
+      <div class="nutrient">
+        <label for="analN">N (ppm):</label>
+        <input type="number" id="analN"/>
+      </div>
+      <div class="nutrient">
+        <label for="analP">P (ppm):</label>
+        <input type="number" id="analP"/>
+      </div>
+      <div class="nutrient">
+        <label for="analK">K (ppm):</label>
+        <input type="number" id="analK"/>
+      </div>
     </div>
+
     <div class="soil-info">
-      <label>Typ půdy:<input type="text" id="soilType"/></label><br>
-      <label>Barva půdy:<input type="text" id="soilColor"/></label>
+      <label>Typ půdy: <input type="text" id="soilType"/></label>
+      <label>Barva půdy: <input type="text" id="soilColor"/></label>
     </div>
-    <button onclick="saveAnalysis()">Uložit analýzu</button>`;
+
+    <button onclick="saveAnalysis()">Uložit analýzu</button>
+  `;
 }
 function saveAnalysis(){
   alert("Analýza uložena");
