@@ -13,7 +13,7 @@ body {
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
-  margin: 10vh auto 0;
+  margin: 10vh auto;
   text-align: center;
 }
 .logo-small {
@@ -22,7 +22,7 @@ body {
   margin: 0 auto 1rem;
 }
 
-/* Vstupní pole & select */
+/* Vstupní pole a select */
 input[type="text"],
 input[type="password"],
 input[type="number"],
@@ -33,12 +33,15 @@ select {
   margin: 0.5rem 0;
   border: 2px solid black;
   border-radius: 6px;
-  background: white;
+  font-size: 1rem;
+  background-color: white;
   box-sizing: border-box;
 }
 #plodinaSelect {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,\
+<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'>\
+<path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 8px 5px;
@@ -56,42 +59,9 @@ button {
   margin: 0.5rem;
 }
 
-/* Horní panel */
-.top-panel {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: #006600;
-}
-.icon-button {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-  cursor: pointer;
-}
-/* počasí v toolbaru */
-.toolbar-weather {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: auto;
-}
-#weatherContainer img {
-  width: 32px;
-  height: 32px;
-}
-#weatherTemp {
-  font-size: 0.8rem;
-  color: white;
-  text-shadow: 0 0 2px black;
-}
-
-/* Seznam záhonů */
+/* Aplikace */
 #appDiv {
   padding: 2rem;
-  text-align: center;
 }
 .table-container { overflow-x: auto; }
 #zahonyTable {
@@ -106,17 +76,47 @@ button {
   border: 2px solid black;
   padding: 0.5rem;
 }
-/* odkaz na záhon jako obyčejný text + ikonka */
-#zahonyTable tbody td a.zahon-link {
-  display: inline-flex;
-  align-items: center;
+/* Odkazy se záhony jako černý text */
+#zahonyTable tbody td a {
   color: #000;
   text-decoration: none;
   font-family: Verdana, sans-serif;
 }
-.zahon-icon {
-  width: 45px;
-  margin-right: 0.5rem;
+#zahonyTable tbody td a:hover {
+  color: #005500;
+}
+
+/* Top panel */
+.top-panel {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.icon-button {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+/* Počasí */
+.toolbar-weather {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-right: auto;
+}
+.toolbar-weather img {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+#weatherTemp {
+  font-size: 0.8rem;
+  color: white;
+  text-shadow: 0 0 2px black;
 }
 
 /* Modal */
@@ -141,8 +141,9 @@ button {
   border-radius: 8px;
   box-sizing: border-box;
 }
+.modal-body {}
 
-/* Boční ikonový panel */
+/* Boční panel ikon */
 .side-icons {
   position: absolute;
   top: 20px; left: 20px;
@@ -152,13 +153,13 @@ button {
   z-index: 2;
 }
 .side-icon {
-  background: white;
+  background: #fff;
   border-radius: 4px;
   padding: 4px;
   width: 60px;
   cursor: pointer;
   opacity: 0.7;
-  transition: transform 0.2s, opacity 0.2s;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 .side-icon:hover,
 .side-icon.active {
@@ -172,12 +173,13 @@ button {
   gap: 1rem;
   margin: 1rem 0;
 }
+.dimensions input { flex: 1; }
 .plocha {
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
-/* Canvas vizualizace */
+/* Canvas záhon – bílý podklad */
 #zahonVizualizace {
   position: relative;
   z-index: 1;
@@ -185,55 +187,40 @@ button {
 #zahonVizualizace canvas {
   display: block;
   margin: 0 auto;
+  background-color: white;
+}
+
+/* Modal-tlačítka */
+.modal-btn {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  margin: 0.5rem;
+}
+
+/* Zoom-modal */
+.zoom-header {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.zoom-action-icon {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}
+.zoom-content canvas {
+  width: 100%;
+  height: auto;
   background: transparent;
 }
 
-/* Události / analýza */
-/* … tvé původní styly zůstávají beze změny … */
-
-/* Zoom-modal – responzivně celé okno */
-#zoomModal.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#zoomModal .zoom-content {
-  background: #009900;
-  position: relative;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-@media (min-width: 768px) {
-  #zoomModal .zoom-content {
-    width: 80vw; height: 80vh; border-radius: 8px; padding: 1rem;
-  }
-}
-@media (max-width: 767px) {
-  #zoomModal .zoom-content {
-    width: 100vw; height: 100vh; border-radius: 0; padding: 0.5rem;
-  }
-}
-.zoom-header {
-  display: flex; justify-content: flex-end; align-items: center;
-  padding: 0.5rem; background: rgba(255,255,255,0.1); z-index: 2;
-}
-.zoom-action-icon {
-  cursor: pointer; margin-left: 1rem; z-index: 2;
-}
-#zoomCanvas {
-  width: 100%; height: auto; display: block; background: transparent;
-  position: relative; z-index: 1;
-}
-
-/* rotating carrot indicator */
+/* Rotující indikátor */
 .action-indicator {
   display: none;
-  position: fixed; top: 50%; left: 50%;
+  position: fixed;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10000;
 }
@@ -241,10 +228,11 @@ button {
   display: block;
   animation: rotate 1s linear infinite;
 }
-@keyframes rotate {
-  from { transform: translate(-50%,-50%) rotate(0deg); }
-  to   { transform: translate(-50%,-50%) rotate(360deg); }
-}
 .action-indicator img {
-  width: 80px; height: 80px;
+  width: 10px;
+  height: 10px;
+}
+@keyframes rotate {
+  from {transform: translate(-50%,-50%) rotate(0deg);}
+  to   {transform: translate(-50%,-50%) rotate(360deg);}
 }
