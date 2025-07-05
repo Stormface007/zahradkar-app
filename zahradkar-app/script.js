@@ -1,45 +1,56 @@
 // ← Nahraďte svou URL
 const SERVER_URL = "https://script.google.com/macros/s/AKfycby5Q582sTjMVzHDwInTpUQqQDbMMaZoAT90Lv1hEiB8rcRVs3XX21JUKYNmg16nYsGW/exec";
 // — Počasí podle geolokace —
-function loadWeatherByGeolocation() {
-  const container = document.getElementById("weatherContainer");
-  container.innerHTML = "Zjišťuji polohu…";
-  if (!navigator.geolocation) {
-    container.innerHTML = "Geolokace v tomto prohlížeči není podporována.";
+function loadWeatherByGeolocation(){
+  const contIcon = document.getElementById("weatherIcon");
+  const contTemp = document.getElementById("weatherTemp");
+
+  if(!navigator.geolocation){
+    contTemp.textContent = "–";
     return;
   }
-
-  navigator.geolocation.getCurrentPosition(pos => {
-    const { latitude: lat, longitude: lon } = pos.coords;
-    container.innerHTML = "Načítám počasí…";
-
-    // Použijeme API wttr.in (jiný free server, vrací JSON podle IP nebo souřadnic)
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const {latitude:lat,longitude:lon} = pos.coords;
     fetch(`https://wttr.in/${lat},${lon}?format=j1`)
-      .then(r => r.json())
-      .then(data => {
+      .then(r=>r.json())
+      .then(data=>{
         const cur = data.current_condition[0];
-        container.innerHTML = `
-          <strong>Počasí</strong><br>
-          Teplota: ${cur.temp_C} °C<br>
-          Pocit: ${cur.FeelsLikeC} °C<br>
-          Stav: ${cur.weatherDesc[0].value}<br>
-          Vítr: ${cur.windspeedKmph} km/h
-        `;
-      })
-      .catch(err => {
-        console.error("Chyba počasí:", err);
-        container.innerHTML = "Počasí nelze načíst.";
-      });
+        const desc = cur.weatherDesc[0].value.toLowerCase();
+        const hour = new Date().getHours();
+        let iconFile = "cloudy.png";
 
-  }, err => {
-    console.warn("Geolokace selhala:", err);
-    container.innerHTML = "Polohu nelze zjistit – povolte geolokaci.";
-  }, {
-    enableHighAccuracy: true,
-    timeout: 10000,
-    maximumAge: 300000
+        // rozhodnutí den/noc
+        const isNight = hour < 6 || hour >= 18;
+        if(isNight){
+          iconFile = "moon.png";
+        } else if(desc.includes("sunny")){
+          iconFile = "sunny.png";
+        } else if(desc.includes("partly") || desc.includes("fair")){
+          iconFile = "partly_cloudy.png";
+        } else if(desc.includes("cloud") || desc.includes("overcast")){
+          iconFile = "cloudy.png";
+        } else {
+          iconFile = isNight ? "moon.png" : "sunny.png";
+        }
+
+        contIcon.src = `img/${iconFile}`;
+        contTemp.textContent = `${cur.temp_C} °C`;
+      })
+      .catch(err=>{
+        console.error("Počasí:", err);
+        contTemp.textContent = "–";
+      });
+  }, err=>{
+    console.warn("Geolokace:", err);
+    document.getElementById("weatherTemp").textContent = "–";
   });
 }
+
+// zavolat jednou při startu
+document.addEventListener("DOMContentLoaded", ()=>{
+  // pokud už je povolena poloha hned načíst
+  loadWeatherByGeolocation();
+});
 
 // Po stisknutí tlačítka…
 document.addEventListener("DOMContentLoaded", () => {
