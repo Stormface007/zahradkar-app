@@ -254,3 +254,15 @@ button {
   vertical-align: middle;
   padding: 0.5rem;
 }
+
+/* Analytický režim – pH/N vedle sebe, P/K vedle sebe na dalším řádku */
+#modalViewUdalost.analysis .nutrients {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+#modalViewUdalost.analysis .nutrient {
+  display: flex;
+  flex-direction: column;
+}
