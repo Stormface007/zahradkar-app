@@ -22,33 +22,29 @@
   </div>
 
   <!-- Hlavní aplikace -->
-<div id="appDiv" style="display:none;">
+  <div id="appDiv" style="display:none;">
 
-  <!-- Horní panel s ikonami -->
-  <div class="top-panel">
-    
-      <!-- místo dosavadního weatherContainer -->
-  <div id="weatherContainer" class="toolbar-weather">
-    <img id="weatherIcon" alt="Počasí" />
-    <div id="weatherTemp"></div>
-  </div>
-    <img
-      id="exitIcon"
-      class="icon-button"
-      src="img/Exit.png"
-      alt="Odhlásit se"
-      onclick="logout()"
-    />
-    <img
-      id="userIcon"
-      class="icon-button"
-      src="img/User.png"
-      alt="Uživatel"
-    />
-  </div>
-  
-  
-    
+    <!-- Horní panel s ikonami a počasím -->
+    <div class="top-panel">
+      <div id="weatherContainer" class="toolbar-weather">
+        <img id="weatherIcon" alt="Počasí" />
+        <div id="weatherTemp"></div>
+      </div>
+      <img
+        id="exitIcon"
+        class="icon-button"
+        src="img/Exit.png"
+        alt="Odhlásit se"
+        onclick="logout()"
+      />
+      <img
+        id="userIcon"
+        class="icon-button"
+        src="img/User.png"
+        alt="Uživatel"
+      />
+    </div>
+
     <div class="table-actions">
       <button onclick="deleteSelected()">🗑️ Smazat označené</button>
     </div>
@@ -70,7 +66,6 @@
   <!-- MODÁLNÍ OKNO -->
   <div id="modal" class="modal">
     <div class="modal-content">
-      <!-- boční panel ikon -->
       <div class="side-icons">
         <img id="icon-mereni"    class="side-icon" src="img/mereni.png"    alt="Měření"    onclick="onIconClick('mereni')"/>
         <img id="icon-seti"      class="side-icon" src="img/seti.png"      alt="Setí"      onclick="onIconClick('seti')"/>
@@ -94,15 +89,20 @@
           </div>
           <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
           <div id="zahonVizualizace"></div>
-           <img src="img/Safe.png"
-       alt="Uložit" 
-       class="modal-btn"
-       onclick="saveZahon()" />
-
-  <img src="img/Goback .png"
-       alt="Zavřít" 
-       class="modal-btn"
-       onclick="closeModal()" />
+          <img
+            src="img/Safe.png"
+            alt="Uložit"
+            class="modal-btn"
+            onclick="saveZahon()"
+            width="50" height="50"
+          />
+          <img
+            src="img/Goback .png"
+            alt="Zavřít"
+            class="modal-btn"
+            onclick="closeModal()"
+            width="50" height="50"
+          />
         </div>
 
         <!-- režim událostí / analýzy -->
@@ -115,32 +115,28 @@
     </div>
   </div>
 
- <!-- ZOOM MODAL -->
-<div id="zoomModal" class="modal" style="display:none;">
-  <div class="modal-content zoom-content">
-
-    <!-- nový horní panel s akcemi -->
-    <div class="zoom-header">
-      <img
-        src="img/Safe.png"
-        alt="Uložit změny"
-        class="zoom-action-icon"
-        onclick="saveZahon()"
-        width="60" height="60"
-      />
-      <img
-        src="img/Goback .png"
-        alt="Zpět"
-        class="zoom-action-icon"
-        onclick="closeZoom()"
-        width="60" height="60"
-      />
+  <!-- ZOOM MODAL -->
+  <div id="zoomModal" class="modal" style="display:none;">
+    <div class="modal-content zoom-content">
+      <div class="zoom-header">
+        <img
+          src="img/Safe.png"
+          alt="Uložit změny"
+          class="zoom-action-icon"
+          onclick="saveZahon()"
+          width="60" height="60"
+        />
+        <img
+          src="img/Goback .png"
+          alt="Zpět"
+          class="zoom-action-icon"
+          onclick="closeZoom()"
+          width="60" height="60"
+        />
+      </div>
+      <canvas id="zoomCanvas"></canvas>
     </div>
-
-    <!-- samotné plátno -->
-    <canvas id="zoomCanvas"></canvas>
   </div>
-</div>
 
   <script src="script.js"></script>
 </body>
