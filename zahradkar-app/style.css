@@ -229,8 +229,8 @@ button {
   animation: rotate 1s linear infinite;
 }
 .action-indicator img {
-  width: 10px;
-  height: 10px;
+  width: 45px;
+  height: 45px;
 }
 @keyframes rotate {
   from {transform: translate(-50%,-50%) rotate(0deg);}
