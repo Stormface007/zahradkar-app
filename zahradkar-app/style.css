@@ -404,18 +404,20 @@ button {
   z-index: 1;
 }
 
-.weather-widget {
-  background: white;
-  border: 2px solid black;
-  border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: black;
+/* počasí v toolbaru */
+.toolbar-weather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 1rem;
 }
-.weather-widget button {
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
+.toolbar-weather img {
+  width: 32px;
+  height: 32px;
+}
+#weatherTemp {
+  font-size: 0.8rem;
+  color: white;
+  text-shadow: 0 0 2px black;
 }
 
