@@ -10,30 +10,14 @@ function loadWeatherByGeolocation(){
     return;
   }
   navigator.geolocation.getCurrentPosition(pos=>{
-    const {latitude:lat,longitude:lon} = pos.coords;
+    const {latitude:lat, longitude:lon} = pos.coords;
     fetch(`https://wttr.in/${lat},${lon}?format=j1`)
-      .then(r=>r.json())
-      .then(data=>{
+      .then(r => r.json())
+      .then(data => {
         const cur = data.current_condition[0];
-        const desc = cur.weatherDesc[0].value.toLowerCase();
-        const hour = new Date().getHours();
-        let iconFile = "cloudy.png";
-
-        // rozhodnutí den/noc
-        const isNight = hour < 6 || hour >= 18;
-        if(isNight){
-          iconFile = "moon.png";
-        } else if(desc.includes("sunny")){
-          iconFile = "sunny.png";
-        } else if(desc.includes("partly") || desc.includes("fair")){
-          iconFile = "partly_cloudy.png";
-        } else if(desc.includes("cloud") || desc.includes("overcast")){
-          iconFile = "cloudy.png";
-        } else {
-          iconFile = isNight ? "moon.png" : "sunny.png";
-        }
-
-        contIcon.src = `img/${iconFile}`;
+        // wttr.in dává URL ikonky v cur.weatherIconUrl[0].value
+        contIcon.src       = cur.weatherIconUrl[0].value;
+        contIcon.alt       = cur.weatherDesc[0].value;
         contTemp.textContent = `${cur.temp_C} °C`;
       })
       .catch(err=>{
@@ -41,8 +25,8 @@ function loadWeatherByGeolocation(){
         contTemp.textContent = "–";
       });
   }, err=>{
-    console.warn("Geolokace:", err);
-    document.getElementById("weatherTemp").textContent = "–";
+    console.warn("Geolokace selhala:", err);
+    contTemp.textContent = "–";
   });
 }
 
