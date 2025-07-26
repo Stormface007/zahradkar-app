@@ -317,42 +317,58 @@ function loadHnojeniHistory() {
 
 // — Přepínání formulářů v modalu —
 function showUdalostForm(typ) {
+  // skryjeme defaultní úpravu záhonu
   document.getElementById("modalViewDefault").style.display = "none";
+  // zobrazíme kontejner událostí
   const uv = document.getElementById("modalViewUdalost");
   uv.classList.remove("analysis");
   uv.style.display = "block";
+
+  // začneme skládat HTML pro formulář
   const c = document.getElementById("udalostFormContainer");
-  let html = `<h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
-    <label>Datum: <input type="date" id="udalostDatum"/></label><br>`;
+  let html = `<h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>
+    <label>Datum:
+      <input type="date" id="udalostDatum"/>
+    </label><br>`;
+
   if (typ === "seti") {
     html += `<label>Plodina:
-        <select id="plodinaSelect"><option>Načítám…</option></select>
+        <select id="plodinaSelect">
+          <option>Načítám…</option>
+        </select>
       </label><br>`;
   }
+
   if (typ === "hnojeni") {
     html += `<label>Hnojivo:
-        <select id="hnojivoSelect"><option>Načítám…</option></select>
+        <select id="hnojivoSelect">
+          <option>Načítám…</option>
+        </select>
       </label><br>
       <label>Množství (kg):
         <input type="number" id="udalostMnozstvi"/>
       </label><br>
       <div id="hnojeniHistory" class="hnojeni-history">
         <em>Načítám historii hnojení…</em>
-      </div>
-    `;
+      </div>`;
   }
+
   if (typ === "sklizen") {
     html += `<label>Plodina:
         <input type="text" id="udalostPlodina"/>
       </label><br>
       <label>Výnos (kg):
         <input type="number" id="udalostVynos"/>
-      </label><br>
-    `;
+      </label><br>`;
   }
 
-  // načíst data
-  if (typ === "seti")    loadPlodiny();
+  // vložíme vygenerované HTML
+  c.innerHTML = html;
+
+  // načteme dynamická data
+  if (typ === "seti") {
+    loadPlodiny();
+  }
   if (typ === "hnojeni") {
     loadHnojiva();
     loadHnojeniHistory();
