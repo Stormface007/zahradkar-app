@@ -5,23 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css"/>
-  <!-- defer zajišťuje, že se skript provede až po parsování celé stránky,
-       ale před DOMContentLoaded, takže inline onclick už najde funkce -->
+  <!-- defer zajistí, že funkce budou k dispozici před kliky na onclick -->
   <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- Indikátor akce (mrkev) -->
+  <!-- Indikátor akce (točící se mrkev) -->
   <div id="actionIndicator" class="action-indicator">
     <img src="img/Plodina_mrkev .png" alt="Vizualizace akce"/>
   </div>
 
   <!-- Přihlašovací formulář -->
   <div id="loginDiv">
-    <img src="img/icon_trimmed_transparent_customcolor.png"
-         alt="Logo" class="logo-small"/>
+    <img src="img/icon_trimmed_transparent_customcolor.png" alt="Logo" class="logo-small"/>
     <input type="text" id="username" placeholder="Uživatelské jméno"/>
     <input type="password" id="password" placeholder="Heslo"/>
-    <!-- Tady voláme login(), které už bude definované -->
     <button onclick="login()">Přihlásit</button>
     <div id="loginMsg"></div>
   </div>
@@ -39,6 +36,7 @@
       <img id="userIcon" class="icon-button" src="img/User.png" alt="Uživatel"/>
     </div>
 
+    <!-- Tabulka záhonů -->
     <div class="table-actions">
       <button onclick="deleteSelected()">🗑️ Smazat označené</button>
     </div>
@@ -51,6 +49,7 @@
       </table>
     </div>
 
+    <!-- Formulář pro nový záhon -->
     <h3>Přidat nový záhon</h3>
     <input type="text" id="newNazev" placeholder="Název záhonu"/>
     <input type="number" id="newDelka" placeholder="Délka (m)"/>
@@ -62,14 +61,13 @@
   <div id="modal" class="modal">
     <div class="modal-content">
       <!-- Boční panel ikon -->
-           <!-- Boční panel ikon -->
       <div class="side-icons">
-        <img id="icon-mereni"    class="side-icon" src="img/mereni.png"    alt="Měření"    onclick="onIconClick('mereni')"/>
-        <img id="icon-seti"      class="side-icon" src="img/seti.png"      alt="Setí"      onclick="onIconClick('seti')"/>
-        <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"   alt="Hnojení"   onclick="onIconClick('hnojeni')"/>
-        <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"   alt="Sklizeň"   onclick="onIconClick('sklizen')"/>
-        <img id="icon-analyza"   class="side-icon" src="img/analyza.png"   alt="Analýza"   onclick="onIconClick('analyza')"/>
-        <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png" alt="Nastavení" onclick="onIconClick('nastaveni')"/>
+        <img id="icon-mereni"  class="side-icon" src="img/mereni.png"  alt="Měření"  onclick="onIconClick('mereni')"/>
+        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"    onclick="onIconClick('seti')"/>
+        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení" onclick="onIconClick('hnojeni')"/>
+        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň" onclick="onIconClick('sklizen')"/>
+        <img id="icon-analyza" class="side-icon" src="img/analyza.png" alt="Analýza" onclick="onIconClick('analyza')"/>
+        <img id="icon-nastaveni"class="side-icon" src="img/nastaveni.png"alt="Nastavení"onclick="onIconClick('nastaveni')"/>
       </div>
 
       <div class="modal-body">
@@ -84,13 +82,14 @@
           <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
           <div id="zahonVizualizace"></div>
           <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="saveZahon()"/>
-          <img src="img/Goback .png"  alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
+          <img src="img/Goback .png" alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
         </div>
 
-        <!-- Režim událostí / analýzy -->
+        <!-- Formulář událostí / analýzy -->
         <div id="modalViewUdalost" style="display:none;">
           <div id="udalostFormContainer"></div>
-          <div id="udalostSeznamContainer"></div>
+          <!-- historie hnojení -->
+          <div id="hnojeniHistory" class="hnojeni-history"></div>
         </div>
       </div>
     </div>
@@ -100,13 +99,11 @@
   <div id="zoomModal" class="modal" style="display:none;">
     <div class="modal-content zoom-content">
       <div class="zoom-header">
-        <img src="img/Safe.png"   alt="Uložit změny" class="zoom-action-icon" onclick="saveZahon()"/>
+        <img src="img/Safe.png"    alt="Uložit změny" class="zoom-action-icon" onclick="saveZahon()"/>
         <img src="img/Goback .png" alt="Zpět"         class="zoom-action-icon" onclick="closeZoom()"/>
       </div>
       <canvas id="zoomCanvas"></canvas>
     </div>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
