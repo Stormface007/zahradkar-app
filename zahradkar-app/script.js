@@ -391,3 +391,21 @@ document.addEventListener("DOMContentLoaded",()=>{
   if(zm) zm.querySelector("button")?.addEventListener("click",closeZoom);
   if(localStorage.getItem("userID")) onLoginSuccess();
 });
+
+function syncHistoryScroll() {
+  const header = document.querySelector('.hnojeni-history .history-header');
+  const body   = document.querySelector('.hnojeni-history .history-body');
+  if (!header || !body) return;
+  
+  // když scrolluje tělo, posuneme hlavičku vodorovně
+  body.addEventListener('scroll', () => {
+    header.scrollLeft = body.scrollLeft;
+  });
+  // (volitelné) když scrolluje hlavička, posune se i tělo
+  header.addEventListener('scroll', () => {
+    body.scrollLeft = header.scrollLeft;
+  });
+}
+
+// Zavolejte to hned po vložení řádků do history-body:
+syncHistoryScroll();
