@@ -1,5 +1,5 @@
 // URL vašeho Google Apps Scriptu
-const SERVER_URL = "https://script.google.com/macros/s/AKfycbzUM-kd2LhJxwepMWzVFfPhkPVk7qKErWtbPhcSRW0iNXti0itu4YvFXeVCC80rUCPz/exec";
+const SERVER_URL = "https://script.google.com/macros/s/AKfycbzIbLz5PiesOcF13vJFU84YBL7duwEMpoXJF9Ha8jxqrJBRAWiR8B8qnVhOeS3O1om3/exec";
 
 
 let aktualniZahon = null;
@@ -267,7 +267,7 @@ function showUdalostForm(typ) {
 function ulozUdalost(typ) {
   const datum = document.getElementById("udalostDatum").value;
   const hnoj   = document.getElementById("udalostHnojivo").value;
-  const mnoz   = document.getElementById("udalostMnozstvi").value;
+  const mnoz   = parseFloat(document.getElementById("udalostHnojivo").value || 0;
   if (!datum||!hnoj||!mnoz) {
     return alert("Vyplňte datum, hnojivo i množství.");
   }
