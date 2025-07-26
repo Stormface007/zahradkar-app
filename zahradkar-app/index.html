@@ -9,7 +9,7 @@
 <body>
   <!-- Indikátor akce: točící se mrkev -->
   <div id="actionIndicator" class="action-indicator">
-    <img src="img/Plodina_mrkev .png" alt="Vizualizace akce"/>
+    <img src="img/Plodina_mrkev.png" alt="Vizualizace akce"/>
   </div>
 
   <!-- Přihlašovací formulář -->
@@ -27,7 +27,7 @@
     <!-- Horní panel s počasím a ikonami -->
     <div class="top-panel">
       <div id="weatherContainer" class="toolbar-weather">
-        <img id="weatherIcon" alt="Počasí"/>
+        <img id="weatherIcon" src="" alt="Počasí"/>
         <div id="weatherTemp">–</div>
       </div>
       <img id="exitIcon" class="icon-button" src="img/Exit.png" alt="Odhlásit se" onclick="logout()"/>
@@ -80,8 +80,8 @@
           </div>
           <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
           <div id="zahonVizualizace"></div>
-          <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="saveZahon()"/>
-          <img src="img/Goback.png"  alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
+          <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="saveZahon()"/>
+          <img src="img/Goback.png" alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
         </div>
 
         <!-- Režim událostí / analýzy -->
@@ -99,7 +99,7 @@
     <div class="modal-content zoom-content">
       <div class="zoom-header">
         <img src="img/Safe.png"   alt="Uložit změny" class="zoom-action-icon" onclick="saveZahon()"/>
-        <img src="img/Goback .png" alt="Zpět"         class="zoom-action-icon" onclick="closeZoom()"/>
+        <img src="img/Goback.png" alt="Zpět"         class="zoom-action-icon" onclick="closeZoom()"/>
       </div>
       <canvas id="zoomCanvas"></canvas>
     </div>
