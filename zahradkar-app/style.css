@@ -22,46 +22,44 @@ body {
   margin: 0 auto 1rem;
 }
 
-/* Vstupní pole */
-input[type="text"],
-input[type="password"],
-input[type="number"],
-select {
+/* Input / select */
+input, select {
   width: 100%;
   max-width: 300px;
-  padding: 0.75rem;
-  margin: 0.5rem 0;
+  padding: .75rem;
+  margin: .5rem 0;
   border: 2px solid black;
   border-radius: 6px;
   font-size: 1rem;
-  background-color: white;
+  background: white;
   box-sizing: border-box;
 }
-/* Vzhled select */
-#plodinaSelect {
+#plodinaSelect,
+#hnojivoSelect {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,\
+<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'>\
+<path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 0.75rem center;
+  background-position: right .75rem center;
   background-size: 8px 5px;
 }
 
 /* Tlačítka */
 button {
-  padding: 0.6rem 1.2rem;
-  background-color: white;
+  padding: .6rem 1.2rem;
+  background: white;
   color: #009900;
   border: 2px solid #009900;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  margin: 0.5rem;
+  margin: .5rem;
 }
 
 /* Aplikace */
 #appDiv {
   padding: 2rem;
-  text-align: center;
 }
 .table-container {
   overflow-x: auto;
@@ -69,29 +67,25 @@ button {
 #zahonyTable {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
   background: white;
   border: 2px solid black;
 }
 #zahonyTable th,
 #zahonyTable td {
   border: 2px solid black;
-  padding: 0.5rem;
+  padding: .5rem;
 }
-/* Odkazy jako obyčejný text + ikona */
-#zahonyTable tbody td a.zahon-link {
-  display: inline-flex;
-  align-items: center;
+/* odkazy jako obyčejný text + ikona */
+.zahon-link {
   color: #000;
   text-decoration: none;
   font-family: Verdana, sans-serif;
+  display: inline-flex;
+  align-items: center;
 }
-#zahonyTable tbody td a.zahon-link .zahon-icon {
+.zahon-icon {
   width: 45px;
   margin-right: .5rem;
-}
-#zahonyTable tbody td a.zahon-link:hover .zahon-icon {
-  transform: translateX(4px);
 }
 
 /* Horní panel */
@@ -113,11 +107,10 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 1rem;
+  margin-right: auto;
 }
 .toolbar-weather img {
-  width: 32px;
-  height: 32px;
+  width: 32px; height: 32px;
 }
 #weatherTemp {
   font-size: .8rem;
@@ -129,173 +122,161 @@ button {
 .modal {
   display: none;
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,.5);
   overflow: auto;
   z-index: 999;
 }
 .modal-content {
   position: relative;
   background: #009900;
-  margin: 5% auto;
-  width: 90%; max-width: 600px;
-  max-height: calc(100vh - 40px);
-  padding: 20px;
-  padding-left: 140px;
-  overflow-y: auto;
-  border-radius: 8px;
-  box-sizing: border-box;
+  margin:5% auto;
+  width:90%; max-width:600px;
+  max-height:calc(100vh - 40px);
+  padding:20px;
+  padding-left:140px;
+  overflow-y:auto;
+  border-radius:8px;
+  box-sizing:border-box;
 }
 .modal-body {}
 
-/* Boční panel ikon */
+/* Boční ikony */
 .side-icons {
-  position: absolute;
-  top: 20px; left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  z-index: 2;
+  position:absolute;
+  top:20px; left:20px;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  z-index:2;
 }
 .side-icon {
-  background: #fff;
-  border-radius: 4px;
-  padding: 4px;
-  width: 60px;
-  cursor: pointer;
-  opacity: .7;
-  transition: transform .2s ease, opacity .2s ease;
+  background:white;
+  border-radius:4px;
+  padding:4px;
+  width:60px;
+  opacity:.7;
+  cursor:pointer;
+  transition:transform .2s,opacity .2s;
 }
 .side-icon:hover,
 .side-icon.active {
-  opacity: 1;
-  transform: translateX(8px);
+  opacity:1;
+  transform:translateX(8px);
 }
 
 /* Úprava záhonu */
 .dimensions {
-  display: flex;
-  gap: 1rem;
-  margin: 1rem 0;
-}
-.dimensions input {
-  flex: 1;
+  display:flex;
+  gap:1rem;
+  margin:1rem 0;
 }
 .plocha {
-  font-weight: bold;
-  margin-bottom: 1rem;
+  font-weight:bold;
+  margin-bottom:1rem;
 }
-
-/* Vizualizace */
 #zahonVizualizace {
-  position: relative;
-  z-index: 1;
+  position:relative;
+  z-index:1;
 }
 #zahonVizualizace canvas {
-  display: block;
-  margin: 0 auto;
-  background: transparent;
+  display:block;
+  margin:0 auto;
+  background:transparent;
 }
 
-/* Události / Analýza */
-#udalostFormContainer input,
-#udalostFormContainer textarea {
-  width: 100%;
-  margin-bottom: .5rem;
-  padding: .5rem;
-  border: 2px solid black;
-  border-radius: 4px;
+/* Události / analýza */
+#udalostFormContainer label {
+  display:block;
+  margin-bottom:.5rem;
 }
 #udalostSeznamContainer .udalost-item {
-  background: #f9f9f9;
-  border: 1px solid #ccc;
-  margin: .5rem 0;
-  padding: .5rem;
+  background:#f9f9f9;
+  border:1px solid #ccc;
+  margin:.5rem 0;
+  padding:.5rem;
+  text-align:left;
 }
 
-/* Analytický režim */
+/* Analýza */
 #modalViewUdalost.analysis .nutrients {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1%;
-  margin-bottom: 1rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:1%;
+  margin-bottom:1rem;
 }
-#modalViewUdalost.analysis .nutrients .nutrient {
-  flex: 1 1 48%;
-  box-sizing: border-box;
+#modalViewUdalost.analysis .nutrient {
+  flex:1 1 48%;
 }
-#modalViewUdalost.analysis .nutrients .nutrient label {
-  font-weight: bold;
-  margin-bottom: .25rem;
-  display: block;
-}
-#modalViewUdalost.analysis .soil-info {
-  margin-top: 1rem;
+#modalViewUdalost.analysis .nutrient label {
+  font-weight:bold;
+  display:block;
+  margin-bottom:.25rem;
 }
 #modalViewUdalost.analysis .soil-info label {
-  font-weight: bold;
-  margin-bottom: .25rem;
-  display: block;
-}
-#modalViewUdalost.analysis .soil-info input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: .5rem;
-  border: 2px solid black;
-  border-radius: 4px;
+  font-weight:bold;
+  display:block;
+  margin: .5rem 0 .25rem;
 }
 
-/* Zmenšení názvu o 10% */
-#modalViewDefault input#editNazev {
-  width: 90%;
-  box-sizing: border-box;
+/* Historie hnojení */
+.hnojeni-history {
+  max-height:30vh;
+  overflow-y:auto;
+  margin-top:1rem;
+  border:2px solid black;
 }
-
-/* Modal-btn */
-.modal-btn {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  margin: .5rem;
+.hnojeni-history table {
+  width:100%;
+  border-collapse:collapse;
 }
-
-/* Zoom-modal (flex-centering a responsivita) */
-#zoomModal {
-  display: none;
-  position: fixed; top:0; left:0;
-  width:100vw; height:100vh;
-  background: rgba(0,0,0,0.5);
-  display:flex; align-items:center; justify-content:center;
-  z-index:10000;
+.hnojeni-history th,
+.hnojeni-history td {
+  border:2px solid black;
+  padding:.5rem;
 }
-#zoomModal .zoom-content {
+.hnojeni-history thead th {
   background:#009900;
-  position:relative; overflow:hidden;
-  box-sizing:border-box;
+  color:black;
 }
-@media (min-width:768px) {
-  #zoomModal .zoom-content {
-    width:80vw; height:80vh; border-radius:8px; padding:1rem;
-  }
+.hnojeni-history tbody td {
+  background:white;
 }
-@media (max-width:767px) {
-  #zoomModal .zoom-content {
-    width:100vw; height:100vh; border-radius:0; padding:.5rem;
-  }
+
+/* tlačítka obrázky v modalu */
+.modal-btn {
+  width:50px; height:50px;
+  margin:.5rem;
+  cursor:pointer;
 }
-#zoomModal .zoom-header {
-  display:flex; justify-content:flex-end; align-items:center;
-  padding:.5rem; background: rgba(255,255,255,.1); z-index:2;
+
+/* Zoom modal */
+.zoom-content {
+  padding:0;
+}
+.zoom-header {
+  display:flex;
+  justify-content:flex-end;
+  background:rgba(255,255,255,0.1);
+  padding:.5rem;
+  z-index:2;
 }
 .zoom-action-icon {
-  cursor:pointer; margin-left:1rem; z-index:2;
+  width:60px; height:60px;
+  margin-left:1rem;
+  cursor:pointer;
+  z-index:2;
 }
 #zoomCanvas {
-  display:block; width:100%; height:auto; background:transparent; z-index:1;
+  display:block;
+  width:100%;
+  background:transparent;
+  position:relative;
+  z-index:1;
 }
 
-/* Rotující indikátor */
+/* Rotující mrkev */
 .action-indicator {
   display:none;
   position:fixed;
@@ -308,31 +289,9 @@ button {
   animation:rotate 1s linear infinite;
 }
 @keyframes rotate {
-  from {transform:translate(-50%,-50%) rotate(0deg);}
-  to   {transform:translate(-50%,-50%) rotate(360deg);}
+  from { transform:translate(-50%,-50%) rotate(0deg) }
+  to   { transform:translate(-50%,-50%) rotate(360deg) }
 }
 .action-indicator img {
-  width:50px;
-  height:50px;
-}
-
-/* --- Přehled historie hnojení --- */
-.hnojeni-history {
-  margin-top: 1rem;
-}
-.hnojeni-history table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-}
-.hnojeni-history th,
-.hnojeni-history td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-  text-align: left;
-  font-size: 0.9rem;
-}
-.hnojeni-history th {
-  background-color: #e0e0e0;
-  font-weight: bold;
+  width:80px; height:80px;
 }
