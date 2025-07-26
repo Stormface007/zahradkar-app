@@ -5,18 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css"/>
+  <!-- defer zajišťuje, že se skript provede až po parsování celé stránky,
+       ale před DOMContentLoaded, takže inline onclick už najde funkce -->
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- Indikátor akce: točící se mrkev -->
+  <!-- Indikátor akce (mrkev) -->
   <div id="actionIndicator" class="action-indicator">
     <img src="img/Plodina_mrkev .png" alt="Vizualizace akce"/>
   </div>
 
   <!-- Přihlašovací formulář -->
   <div id="loginDiv">
-    <img src="img/icon_trimmed_transparent_customcolor.png" alt="Logo" class="logo-small"/>
+    <img src="img/icon_trimmed_transparent_customcolor.png"
+         alt="Logo" class="logo-small"/>
     <input type="text" id="username" placeholder="Uživatelské jméno"/>
     <input type="password" id="password" placeholder="Heslo"/>
+    <!-- Tady voláme login(), které už bude definované -->
     <button onclick="login()">Přihlásit</button>
     <div id="loginMsg"></div>
   </div>
