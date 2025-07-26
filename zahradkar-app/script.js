@@ -311,7 +311,7 @@ function zpetNaDetailZahonu() {
 
 // — Boční ikony —
 function setActiveIcon(active) {
-  ["mereni","seti","hnojeni","sklizen","analyza","eshop","sluzba","market","nastaveni"]
+  ["mereni","seti","hnojeni","sklizen","analyza"]
     .forEach(t => {
       const el = document.getElementById(`icon-${t}`);
       if (el) el.classList.toggle("active", t===active);
