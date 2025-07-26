@@ -239,45 +239,68 @@ function loadHnojiva(){
 
 // — Přepínání formulářů v modalu —
 function showUdalostForm(typ) {
+  // 1) schovej defaultní view
   document.getElementById("modalViewDefault").style.display = "none";
+
+  // 2) připrav modální oblast událostí
   const uv = document.getElementById("modalViewUdalost");
   uv.classList.remove("analysis");
   uv.style.display = "block";
 
+  // 3) vygeneruj formulář podle typu
   const c = document.getElementById("udalostFormContainer");
-  let html = `<h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
-    <label>Datum: <input type="date" id="udalostDatum"/></label><br>`;
+  let html = `
+    <h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
+    <label>Datum:
+      <input type="date" id="udalostDatum"/>
+    </label><br>
+  `;
 
   if (typ === "seti") {
-    html += `<label>Plodina:
-        <select id="plodinaSelect"><option>Načítám…</option></select>
-      </label><br>`;
+    html += `
+      <label>Plodina:
+        <select id="plodinaSelect">
+          <option>Načítám…</option>
+        </select>
+      </label><br>
+    `;
     loadPlodiny();
   }
 
   if (typ === "hnojeni") {
-    html += `<label>Hnojivo:
-        <select id="hnojivoSelect"><option>Načítám…</option></select>
+    html += `
+      <label>Hnojivo:
+        <select id="hnojivoSelect">
+          <option>Načítám…</option>
+        </select>
       </label><br>
       <label>Množství (kg):
         <input type="number" id="udalostMnozstvi"/>
-      </label><br>`;
+      </label><br>
+
+      <!-- historie hnojení se vloží jen pro „hnojení“ -->
+      <div id="hnojeniHistory" class="hnojeni-history">
+        <em>Načítám historii hnojení…</em>
+      </div>
+    `;
     loadHnojiva();
     loadHnojeniHistory();
   }
 
   if (typ === "sklizen") {
-    html += `<label>Plodina:
+    html += `
+      <label>Plodina:
         <input type="text" id="udalostPlodina"/>
       </label><br>
       <label>Výnos (kg):
         <input type="number" id="udalostVynos"/>
-      </label><br>`;
+      </label><br>
+    `;
   }
 
-  // tady doplníme obrázky pro ukládání a návrat
+  // 4) tlačítka „uložit“ a „zpět“
   html += `
-    <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="ulozUdalost('${typ}')"/>
+    <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost('${typ}')"/>
     <img src="img/Goback .png" alt="Zpět"  class="modal-btn" onclick="zpetNaDetailZahonu()"/>
   `;
 
@@ -287,39 +310,54 @@ function showUdalostForm(typ) {
 
 
 // — Načtení historie hnojení —
-function loadHnojeniHistory(){
-  const cont=document.getElementById("hnojeniHistory");
-  if(!aktualniZahon) { cont.innerHTML="<p>Žádný záhon.</p>"; return; }
+function loadHnojeniHistory() {
+  const container = document.getElementById("hnojeniHistory");
+  if (!aktualniZahon) {
+    container.innerHTML = `<p>Žádný výběr záhonu.</p>`;
+    return;
+  }
 
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
-    .then(r=>r.json())
-    .then(arr=>{
-      const hist = arr.filter(u=>u.Typ.toLowerCase()==="hnojení");
-      if(hist.length===0){
-        cont.innerHTML="<p>Žádná historie hnojení.</p>";
+    .then(r => r.json())
+    .then(arr => {
+      // vyber jen Hnojení
+      const hist = arr.filter(u =>
+        u.Typ.toLowerCase() === "hnojení"
+      );
+
+      if (hist.length === 0) {
+        container.innerHTML = `<p>Žádná historie hnojení.</p>`;
         return;
       }
-      let html=`<table><thead>
-        <tr><th>Datum</th><th>Hnojivo</th>
-            <th>Množství (kg)</th><th>N (g/m²)</th>
-            <th>P (g/m²)</th><th>K (g/m²)</th>
-        </tr></thead><tbody>`;
-      hist.forEach(u=>{
-        html+=`<tr>
-          <td>${u.Datum}</td>
-          <td>${u.Hnojivo}</td>
-          <td>${u.Mnozstvi}</td>
-          <td>${u.N_g_m2||""}</td>
-          <td>${u.P_g_m2||""}</td>
-          <td>${u.K_g_m2||""}</td>
-        </tr>`;
+
+      let html = `
+        <table class="hnojeni-table">
+          <thead>
+            <tr>
+              <th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th>
+              <th>N (g/m²)</th><th>P (g/m²)</th><th>K (g/m²)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      hist.forEach(u => {
+        html += `
+          <tr>
+            <td>${u.Datum}</td>
+            <td>${u.Hnojivo}</td>
+            <td>${u.Mnozstvi}</td>
+            <td>${u.N_g_m2||""}</td>
+            <td>${u.P_g_m2||""}</td>
+            <td>${u.K_g_m2||""}</td>
+          </tr>
+        `;
       });
-      html+="</tbody></table>";
-      cont.innerHTML=html;
+      html += `</tbody></table>`;
+      container.innerHTML = html;
     })
-    .catch(e=>{
-      console.error(e);
-      cont.innerHTML="<p>Chyba při načítání historie.</p>";
+    .catch(e => {
+      console.error("Chyba načtení historie hnojení:", e);
+      container.innerHTML = `<p>Chyba při načítání historie.</p>`;
     });
 }
 
