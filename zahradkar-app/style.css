@@ -223,7 +223,8 @@ button {
 /* Historie hnojení */
 .hnojeni-history {
   max-height:30vh;
-  overflow:auto;
+  overflow-y:auto;
+  overflow-x:auto;
   margin-top:1rem;
   border:2px solid black;
 }
