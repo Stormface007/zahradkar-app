@@ -30,7 +30,7 @@ function loadWeatherByGeolocation() {
 /** Rotující mrkev (náhodná) **/
 function showActionIndicator() {
   const images = [
-    'Plodina_mrkev.png',
+    'Plodina_mrkev .png',
     'Plodina_rajce.png',
     'Plodina_petrzel_koren.png'
   ];
