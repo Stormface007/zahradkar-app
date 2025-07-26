@@ -80,44 +80,43 @@ function logout() {
   document.getElementById("loginDiv").style.display = "block";
 }
 
-// — Seznam záhonů —
-function loadZahony() {
+
+// — Načtení záhonů —  
+async function loadZahony() {
   const userID = localStorage.getItem("userID");
   if (!userID) return;
-  fetch(`${SERVER_URL}?action=getZahony&userID=${userID}`)
-    .then(r => r.json())
-    .then(arr => {
-      const tbody = document.querySelector("#zahonyTable tbody");
-      tbody.innerHTML = "";
-      arr.forEach(z => {
-        const row = document.createElement("tr");
-        const tdChk = document.createElement("td");
-        const cb = document.createElement("input");
-        cb.type = "checkbox"; cb.value = z.ZahonID;
-        tdChk.appendChild(cb);
+  const res = await fetch(`${SERVER_URL}?action=getZahony&userID=${userID}`);
+  const arr = await res.json();
+  const tbody = document.querySelector("#zahonyTable tbody");
+  tbody.innerHTML = "";
+  arr.forEach(z => {
+    const row = document.createElement("tr");
 
-        const tdName = document.createElement("td");
-        const link = document.createElement("a");
-        link.href = "#"; link.className = "zahon-link";
-        link.onclick = () => otevriModal(z);
-        const ico = document.createElement("img");
-        ico.src = "img/Freefield.png";
-        ico.className = "zahon-icon";
-        link.appendChild(ico);
-        link.appendChild(document.createTextNode(z.NazevZahonu));
-        tdName.appendChild(link);
+    // checkbox
+    const tdChk = document.createElement("td");
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; 
+    cb.value = z.ZahonID;
+    tdChk.appendChild(cb);
 
-        const plo = (z.Velikost_m2 != null)
-          ? z.Velikost_m2
-          : ((z.Delka||0)*(z.Sirka||0)).toFixed(2);
-        const tdSize = document.createElement("td");
-        tdSize.textContent = plo + " m²";
+    // název záhonu jako odkaz (otevře modal)
+    const tdName = document.createElement("td");
+    const a = document.createElement("a");
+    a.href = "#";
+    a.textContent = z.NazevZahonu;
+    a.onclick = () => otevriModal(z);
+    tdName.appendChild(a);
 
-        row.append(tdChk, tdName, tdSize);
-        tbody.appendChild(row);
-      });
-    })
-    .catch(e => console.error("Chyba načtení záhonů:", e));
+    // plocha
+    const plo = z.Velikost_m2 != null
+      ? z.Velikost_m2
+      : ((z.Delka||0)*(z.Sirka||0)).toFixed(2);
+    const tdSize = document.createElement("td");
+    tdSize.textContent = plo + " m²";
+
+    row.append(tdChk, tdName, tdSize);
+    tbody.appendChild(row);
+  });
 }
 
 // — Mazání záhonů —
