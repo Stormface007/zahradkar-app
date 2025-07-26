@@ -315,3 +315,24 @@ button {
   width:50px;
   height:50px;
 }
+
+/* --- Přehled historie hnojení --- */
+.hnojeni-history {
+  margin-top: 1rem;
+}
+.hnojeni-history table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+.hnojeni-history th,
+.hnojeni-history td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+.hnojeni-history th {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
