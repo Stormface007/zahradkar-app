@@ -337,10 +337,23 @@ function nakresliZahonCanvas(delka,sirka) {
   ctx.lineWidth=2; ctx.strokeStyle="#000"; ctx.strokeRect(x,y,w,h);
   c.appendChild(cv);
 }
-
-// — Zoom modal (nezměněno) —
-function openZoom(d,s){ /* … */ }
-function closeZoom(){ document.getElementById("zoomModal").style.display="none"; }
+// — Zoom modal —
+function openZoom(d,s){
+  const cv=document.getElementById("zoomCanvas");
+  const factor=5, base=80;
+  cv.width=base*factor; cv.height=base*factor;
+  const ctx=cv.getContext("2d");
+  ctx.fillStyle="#009900"; ctx.fillRect(0,0,cv.width,cv.height);
+  const scale=Math.min(cv.width/(d||1),cv.height/(s||1));
+  const w=(d||1)*scale, h=(s||1)*scale;
+  const x=(cv.width-w)/2, y=(cv.height-h)/2;
+  ctx.fillStyle="#c2b280"; ctx.fillRect(x,y,w,h);
+  ctx.lineWidth=2; ctx.strokeStyle="#000"; ctx.strokeRect(x,y,w,h);
+  document.getElementById("zoomModal").style.display="flex";
+}
+function closeZoom(){
+  document.getElementById("zoomModal").style.display="none";
+}
 
 // — Auto-login po načtení —
 document.addEventListener("DOMContentLoaded",()=>{
