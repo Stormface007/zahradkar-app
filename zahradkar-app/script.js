@@ -1,7 +1,7 @@
 // URL vašeho Google Apps Scriptu
 const SERVER_URL = "https://script.google.com/macros/s/AKfycbyJAdUq9ZU_s_OEc-WiAaWsHc5rh4H-jUwo1vrh55dHvQ-xRDuyEKiFaUCikFvowm3y/exec";
 
-
+let aktualniZahon = null;
 // — Počasí podle geolokace —
 function loadWeatherByGeolocation(){
   const contIcon = document.getElementById("weatherIcon");
