@@ -238,43 +238,53 @@ function loadHnojiva(){
 }
 
 // — Přepínání formulářů v modalu —
-function showUdalostForm(typ){
-  document.getElementById("modalViewDefault").style.display="none";
-  const uv=document.getElementById("modalViewUdalost");
+function showUdalostForm(typ) {
+  document.getElementById("modalViewDefault").style.display = "none";
+  const uv = document.getElementById("modalViewUdalost");
   uv.classList.remove("analysis");
-  uv.style.display="block";
+  uv.style.display = "block";
 
-  const c=document.getElementById("udalostFormContainer");
-  let html=`<h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
-    <label>Datum:<input type="date" id="udalostDatum"/></label><br>`;
+  const c = document.getElementById("udalostFormContainer");
+  let html = `<h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
+    <label>Datum: <input type="date" id="udalostDatum"/></label><br>`;
 
-  if(typ==="seti"){
-    html+=`<label>Plodina:
-      <select id="plodinaSelect"><option>Načítám…</option></select>
-    </label><br>`;
+  if (typ === "seti") {
+    html += `<label>Plodina:
+        <select id="plodinaSelect"><option>Načítám…</option></select>
+      </label><br>`;
     loadPlodiny();
   }
-  if(typ==="hnojeni"){
-    html+=`<label>Hnojivo:
-      <select id="hnojivoSelect"><option>Načítám…</option></select>
-    </label><br>
-    <label>Množství (kg):
-      <input type="number" id="udalostMnozstvi"/>
-    </label><br>`;
+
+  if (typ === "hnojeni") {
+    html += `<label>Hnojivo:
+        <select id="hnojivoSelect"><option>Načítám…</option></select>
+      </label><br>
+      <label>Množství (kg):
+        <input type="number" id="udalostMnozstvi"/>
+      </label><br>`;
     loadHnojiva();
     loadHnojeniHistory();
   }
-  if(typ==="sklizen"){
-    html+=`<label>Plodina:
-      <input type="text" id="udalostPlodina"/>
-    </label><br>
-    <label>Výnos (kg):
-      <input type="number" id="udalostVynos"/>
-    </label><br>`;
+
+  if (typ === "sklizen") {
+    html += `<label>Plodina:
+        <input type="text" id="udalostPlodina"/>
+      </label><br>
+      <label>Výnos (kg):
+        <input type="number" id="udalostVynos"/>
+      </label><br>`;
   }
 
-  c.innerHTML=html;
+  // tady doplníme obrázky pro ukládání a návrat
+  html += `
+    <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="ulozUdalost('${typ}')"/>
+    <img src="img/Goback .png" alt="Zpět"  class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+  `;
+
+  c.innerHTML = html;
 }
+
+
 
 // — Načtení historie hnojení —
 function loadHnojeniHistory(){
@@ -313,29 +323,33 @@ function loadHnojeniHistory(){
     });
 }
 
-function showAnalysisForm(){
-  document.getElementById("modalViewDefault").style.display="none";
-  const uv=document.getElementById("modalViewUdalost");
+function showAnalysisForm() {
+  document.getElementById("modalViewDefault").style.display = "none";
+  const uv = document.getElementById("modalViewUdalost");
   uv.classList.add("analysis");
-  uv.style.display="block";
-  document.getElementById("udalostFormContainer").innerHTML=`
+  uv.style.display = "block";
+
+  const c = document.getElementById("udalostFormContainer");
+  c.innerHTML = `
     <h4>Analýza</h4>
-    <label>Datum:<input type="date" id="analDatum"/></label><br>
+    <label>Datum: <input type="date" id="analDatum"/></label><br>
     <div class="nutrients">
-      <div class="nutrient"><label>pH:</label>
-        <input type="number" step="0.1" id="analPH"/></div>
-      <div class="nutrient"><label>N:</label>
-        <input type="number" id="analN"/></div>
-      <div class="nutrient"><label>P:</label>
-        <input type="number" id="analP"/></div>
-      <div class="nutrient"><label>K:</label>
-        <input type="number" id="analK"/></div>
+      <div class="nutrient"><label>pH:</label><input type="number" step="0.1" id="analPH"/></div>
+      <div class="nutrient"><label>N:</label><input type="number" id="analN"/></div>
+      <div class="nutrient"><label>P:</label><input type="number" id="analP"/></div>
+      <div class="nutrient"><label>K:</label><input type="number" id="analK"/></div>
     </div>
     <div class="soil-info">
       <label>Typ půdy:<input type="text" id="soilType"/></label><br>
       <label>Barva půdy:<input type="text" id="soilColor"/></label>
     </div>
-    <button onclick="saveAnalysis()">Uložit analýzu</button>`;
+  `;
+
+  // a teď obrázky
+  c.innerHTML += `
+    <img src="img/Safe.png"    alt="Uložit analýzu" class="modal-btn" onclick="saveAnalysis()"/>
+    <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+  `;
 }
 function saveAnalysis(){
   alert("Analýza uložena");
