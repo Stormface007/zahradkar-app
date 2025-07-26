@@ -188,8 +188,8 @@ function loadHnojeniList() {
         tr.innerHTML = `
           <td>${ev.Hnojivo}</td>
           <td>${ev.Datum}</td>
-          <td>${ev.N_gm2 ?? ""}</td>
-          <td>${ev.P_gm2 ?? ""}</td>
+          <td>${ev.N_g_m2 ?? ""}</td>
+          <td>${ev.P_g_m2 ?? ""}</td>
           <td>${ev.K_g_m2 ?? ""}</td>
         `;
         tb.appendChild(tr);
