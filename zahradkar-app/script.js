@@ -1,7 +1,6 @@
 // URL vašeho Google Apps Scriptu
 const SERVER_URL = "https://script.google.com/macros/s/AKfycbzIbLz5PiesOcF13vJFU84YBL7duwEMpoXJF9Ha8jxqrJBRAWiR8B8qnVhOeS3O1om3/exec";
 
-
 let aktualniZahon = null;
 
 // — Přihlášení / odhlášení —
