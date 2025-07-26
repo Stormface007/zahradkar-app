@@ -312,3 +312,28 @@ button {
 .zoom-header { display:flex; justify-content:flex-end; padding:0.5rem; background:rgba(255,255,255,0.1); }
 .zoom-action-icon { cursor:pointer; margin-left:1rem; z-index:2; }
 #zoomCanvas { display:block; width:100%; height:auto; background:transparent; z-index:1; }
+
+.hnojeni-history {
+  max-height: 200px;         /* chcete-li upravte podle potřeby */
+  overflow: auto;            /* umožní svislé i vodorovné rolování */
+  margin-top: 1rem;
+  background: white;
+  border: 2px solid black;
+}
+.hnojeni-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.hnojeni-table th,
+.hnojeni-table td {
+  border: 1px solid black;
+  padding: 0.25rem 0.5rem;
+  background: white;
+}
+.hnojeni-table th {
+  background: #009900;
+  color: white;
+  position: sticky;
+  top: 0;                    /* hlavička zůstane na vrchu při scrollu */
+  z-index: 1;
+}
