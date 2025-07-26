@@ -253,28 +253,93 @@ function loadHnojiva(){
 }
 
 // — Formuláře událostí / analýzy —
-function showUdalostForm(typ){
-  document.getElementById("modalViewDefault").style.display="none";
-  const uv=document.getElementById("modalViewUdalost");
+function showUdalostForm(typ) {
+  document.getElementById("modalViewDefault").style.display = "none";
+  const uv = document.getElementById("modalViewUdalost");
   uv.classList.remove("analysis");
-  uv.style.display="block";
-  const c=document.getElementById("udalostFormContainer");
-  let html=`<h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
-    <label>Datum:<input type="date" id="udalostDatum"/></label><br>`;
-  if(typ==="seti"){
-    html+=`<label>Plodina:<select id="plodinaSelect"><option>Načítám…</option></select></label><br>`;
+  uv.style.display = "block";
+
+  const c = document.getElementById("udalostFormContainer");
+  let html = `<h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
+    <label>Datum: <input type="date" id="udalostDatum"/></label><br>`;
+
+  if (typ === "seti") {
+    html += `<label>Plodina:
+        <select id="plodinaSelect"><option>Načítám…</option></select>
+      </label><br>`;
     loadPlodiny();
   }
-  if(typ==="hnojeni"){
-    html+=`<label>Hnojivo:<select id="hnojivoSelect"><option>Načítám…</option></select></label><br>
-           <label>Množství (kg):<input type="number" id="udalostMnozstvi"/></label><br>`;
+
+  if (typ === "hnojeni") {
+    html += `<label>Hnojivo:
+        <select id="hnojivoSelect"><option>Načítám…</option></select>
+      </label><br>
+      <label>Množství (kg):
+        <input type="number" id="udalostMnozstvi"/>
+      </label><br>
+      <!-- sem vykreslíme historii -->
+      <div id="hnojeniHistory" class="hnojeni-history">
+        <em>Načítám historii hnojení…</em>
+      </div>`;
     loadHnojiva();
+    loadHnojeniHistory();
   }
-  if(typ==="sklizen"){
-    html+=`<label>Plodina:<input type="text" id="udalostPlodina"/></label><br>
-           <label>Výnos (kg):<input type="number" id="udalostVynos"/></label><br>`;
+
+  if (typ === "sklizen") {
+    html += `<label>Plodina:
+        <input type="text" id="udalostPlodina"/>
+      </label><br>
+      <label>Výnos (kg):
+        <input type="number" id="udalostVynos"/>
+      </label><br>`;
   }
-  c.innerHTML=html;
+
+  c.innerHTML = html;
+}
+
+function loadHnojeniHistory() {
+  const container = document.getElementById("hnojeniHistory");
+  if (!aktualniZahon) return container.innerHTML = `<p>Žádný záhon.</p>`;
+
+  fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
+    .then(r => r.json())
+    .then(arr => {
+      // vyber jen Hnojení
+      const hist = arr.filter(u => u.Typ.toLowerCase() === "hnojení" || u.Typ.toLowerCase() === "hnojeni");
+      if (hist.length === 0) {
+        container.innerHTML = `<p>Žádná historie hnojení.</p>`;
+        return;
+      }
+
+      let html = `<table class="hnojeni-table">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Hnojivo</th>
+            <th>Množství (kg)</th>
+            <th>N (g/m²)</th>
+            <th>P (g/m²)</th>
+            <th>K (g/m²)</th>
+          </tr>
+        </thead>
+        <tbody>`;
+      hist.forEach(u => {
+        html += `<tr>
+          <td>${u.Datum}</td>
+          <td>${u.Hnojivo}</td>
+          <td>${u.Mnozstvi}</td>
+          <td>${u.N_g_m2 || ""}</td>
+          <td>${u.P_g_m2 || ""}</td>
+          <td>${u.K_g_m2 || ""}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      container.innerHTML = html;
+    })
+    .catch(e => {
+      console.error("Chyba načtení historie hnojení:", e);
+      container.innerHTML = `<p>Chyba při načítání historie.</p>`;
+    });
 }
 function ulozUdalost(typ){
   alert("Uloženo: "+typ);
