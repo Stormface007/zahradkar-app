@@ -312,21 +312,36 @@ function zpetNaDetailZahonu(){
   setActiveIcon(null);
 }
 
-// — Boční ikony —
-function setActiveIcon(active){
-  ["mereni","seti","hnojeni","sklizen","analyza","eshop","sluzba","market","nastaveni"]
-    .forEach(t=>{
-      const el=document.getElementById(`icon-${t}`);
-      if(el) el.classList.toggle("active", t===active);
+// — Boční ikony — 
+function setActiveIcon(active) {
+  // teď jen těch 6, které opravdu používáme
+  ["mereni","seti","hnojeni","sklizen","analyza","nastaveni"]
+    .forEach(t => {
+      const el = document.getElementById(`icon-${t}`);
+      if (el) el.classList.toggle("active", t === active);
     });
 }
-function onIconClick(typ){
+
+function onIconClick(typ) {
   setActiveIcon(typ);
-  document.getElementById("modalViewDefault").style.display="none";
-  document.getElementById("modalViewUdalost").style.display="none";
-  if(["seti","hnojeni","sklizen"].includes(typ)) showUdalostForm(typ);
-  else if(typ==="mereni") document.getElementById("modalViewDefault").style.display="block";
-  else if(typ==="analyza") showAnalysisForm();
+
+  // skryjeme obě view
+  document.getElementById("modalViewDefault").style.display  = "none";
+  document.getElementById("modalViewUdalost").style.display = "none";
+
+  if (typ === "seti" || typ === "hnojeni" || typ === "sklizen") {
+    showUdalostForm(typ);
+  }
+  else if (typ === "mereni") {
+    // u měření vrátíme výchozí editaci záhonu
+    document.getElementById("modalViewDefault").style.display = "block";
+  }
+  else if (typ === "analyza") {
+    showAnalysisForm();
+  }
+  else if (typ === "nastaveni") {
+    // tady můžete v budoucnu přidat funkci pro "nastavení"
+  }
 }
 
 // — Kreslení záhonu —
