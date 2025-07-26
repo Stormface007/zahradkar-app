@@ -305,7 +305,7 @@ function loadHnojeniHistory() {
     .then(r => r.json())
     .then(arr => {
       // vyber jen Hnojení
-      const hist = arr.filter(u => u.Typ.toLowerCase() === "hnojení" || u.Typ.toLowerCase() === "hnojeni");
+      const hist = arr.filter(u => u.Typ.toLowerCase() === Hnojení" || u.Typ.toLowerCase() === "Hnojení");
       if (hist.length === 0) {
         container.innerHTML = `<p>Žádná historie hnojení.</p>`;
         return;
