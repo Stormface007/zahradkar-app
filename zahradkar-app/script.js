@@ -190,7 +190,7 @@ function loadHnojeniList() {
           <td>${ev.Datum}</td>
           <td>${ev.N_gm2 ?? ""}</td>
           <td>${ev.P_gm2 ?? ""}</td>
-          <td>${ev.K_gm2 ?? ""}</td>
+          <td>${ev.K_g_m2 ?? ""}</td>
         `;
         tb.appendChild(tr);
       });
