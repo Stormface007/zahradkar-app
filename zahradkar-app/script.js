@@ -267,7 +267,7 @@ function showUdalostForm(typ) {
     loadPlodiny();
   }
 
-  if (typ === "Hnojení") {
+  if (typ === "hnojeni") {
     html += `
       <label>Hnojivo:
         <select id="hnojivoSelect">
