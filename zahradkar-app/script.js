@@ -425,3 +425,72 @@ document.addEventListener("DOMContentLoaded", ()=>{
   if(localStorage.getItem("userID")) onLoginSuccess();
   loadWeatherByGeolocation();
 });
+
+async function ulozUdalost(typ) {
+  // 1) základní hodnoty
+  const zahonID = aktualniZahon?.ZahonID;
+  const datum   = document.getElementById("udalostDatum").value;
+  if (!zahonID || !datum) {
+    return alert("Záhon a datum jsou povinné.");
+  }
+
+  // 2) připravíme parametry
+  const ps = new URLSearchParams();
+  ps.append("action",   "addUdalost");
+  ps.append("zahonID",  zahonID);
+  // server očekává velké "Typ" – tam dejme první písmeno uppercase:
+  ps.append("typ",      typ.charAt(0).toUpperCase() + typ.slice(1));
+  ps.append("datum",    datum);
+
+  // 3) plodina (jen pro setí)
+  if (typ === "seti") {
+    const pl = document.getElementById("plodinaSelect").value;
+    ps.append("plodina", pl);
+  } else {
+    ps.append("plodina", "");
+  }
+
+  // 4) hnojivo a množství (jen pro hnojení)
+  if (typ === "hnojeni") {
+    const hnoj = document.getElementById("hnojivoSelect").value;
+    const mnoz = parseFloat(document.getElementById("udalostMnozstvi").value) || 0;
+    ps.append("hnojivo",   hnoj);
+    ps.append("mnozstvi",  mnoz);
+  } else {
+    ps.append("hnojivo",  "");
+    ps.append("mnozstvi", "");
+  }
+
+  // 5) sklizeň: výnos
+  if (typ === "sklizen") {
+    const vynos = parseFloat(document.getElementById("udalostVynos").value) || 0;
+    ps.append("vynos", vynos);
+  } else {
+    ps.append("vynos", "");
+  }
+
+  // 6) poznámku teď ignorujeme (upravili jste, že tam nechcete)
+  ps.append("poznamka", "");
+
+  // 7) odešleme na server
+  try {
+    showActionIndicator?.();
+    const res  = await fetch(SERVER_URL, { method: "POST", body: ps });
+    const text = await res.text();
+    if (text.trim() === "OK") {
+      if (typ === "hnojeni") {
+        // po hnojení obnovíme historii
+        loadHnojeniHistory();
+      }
+      // a vrátíme se na detail záhonu
+      zpetNaDetailZahonu();
+    } else {
+      alert("Chyba při ukládání události: " + text);
+    }
+  } catch (e) {
+    console.error("ulozUdalost error:", e);
+    alert("Chyba při odesílání události.");
+  } finally {
+    hideActionIndicator?.();
+  }
+}
