@@ -350,10 +350,6 @@ function showUdalostForm(typ) {
       </label><br>
     `;
   }
-  html += `<label>Poznámka:
-      <input type="text" id="udalostPoznamka"/>
-    </label>`;
-  c.innerHTML = html;
 
   // načíst data
   if (typ === "seti")    loadPlodiny();
