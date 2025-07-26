@@ -267,7 +267,7 @@ function showUdalostForm(typ) {
     loadPlodiny();
   }
 
-  if (typ === "hnojeni") {
+  if (typ === "Hnojení") {
     html += `
       <label>Hnojivo:
         <select id="hnojivoSelect">
@@ -322,7 +322,7 @@ function loadHnojeniHistory() {
     .then(arr => {
       // vyber jen Hnojení
       const hist = arr.filter(u =>
-        u.Typ.toLowerCase() === "hnojeni"
+        u.Typ.toLowerCase() === "Hnojení"
       );
 
       if (hist.length === 0) {
@@ -489,7 +489,7 @@ async function ulozUdalost(typ) {
   }
 
   // 4) hnojivo a množství (jen pro hnojení)
-  if (typ === "hnojeni") {
+  if (typ === "Hnojení") {
     const hnoj = document.getElementById("hnojivoSelect").value;
     const mnoz = parseFloat(document.getElementById("udalostMnozstvi").value) || 0;
     ps.append("hnojivo",   hnoj);
