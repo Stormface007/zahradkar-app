@@ -170,9 +170,9 @@ function loadHnojeniList() {
   const cont = document.getElementById("hnojeniList");
   cont.innerHTML = `<h4>Historie hnojení</h4>`;
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
-    .then(r=>r.json())
-    .then(arr=>{
-      const hnojs = arr.filter(e=>e.Typ.toLowerCase()==="hnojení");
+    .then(r => r.json())
+    .then(arr => {
+      const hnojs = arr.filter(e => e.Typ.toLowerCase() === "hnojení");
       if (!hnojs.length) {
         cont.innerHTML += "<p>Žádné záznamy.</p>";
         return;
@@ -183,22 +183,22 @@ function loadHnojeniList() {
           <th>Hnojivo</th><th>Datum</th><th>N (g/m²)</th><th>P (g/m²)</th><th>K (g/m²)</th>
         </tr></thead>`;
       const tb = document.createElement("tbody");
-      hnojs.forEach(ev=>{
+      hnojs.forEach(ev => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${ev.Hnojivo}</td>
           <td>${ev.Datum}</td>
-          <td>${ev.N_gm2 ?? ev.Ngm2 ?? ""}</td>
-          <td>${ev.P_gm2 ?? ev.Pgm2 ?? ""}</td>
-          <td>${ev.K_gm2 ?? ev.Kgm2 ?? ""}</td>
+          <td>${ev.N_gm2 ?? ""}</td>
+          <td>${ev.P_gm2 ?? ""}</td>
+          <td>${ev.K_gm2 ?? ""}</td>
         `;
-        tb.append(tr);
+        tb.appendChild(tr);
       });
-      tbl.append(tb);
-      cont.append(tbl);
+      tbl.appendChild(tb);
+      cont.appendChild(tbl);
     })
-    .catch(e=>{
-      console.error("Chyba historie hnojení:",e);
+    .catch(e => {
+      console.error("Chyba historie hnojení:", e);
       cont.innerHTML += "<p>Chyba načtení.</p>";
     });
 }
