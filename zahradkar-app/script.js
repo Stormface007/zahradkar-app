@@ -1,5 +1,5 @@
 // URL vašeho Google Apps Scriptu
-const SERVER_URL = "https://script.google.com/macros/s/AKfycbzIbLz5PiesOcF13vJFU84YBL7duwEMpoXJF9Ha8jxqrJBRAWiR8B8qnVhOeS3O1om3/exec";
+const SERVER_URL = "https://script.google.com/macros/s/AKfycbyJAdUq9ZU_s_OEc-WiAaWsHc5rh4H-jUwo1vrh55dHvQ-xRDuyEKiFaUCikFvowm3y/exec";
 
 let aktualniZahon = null;
 
