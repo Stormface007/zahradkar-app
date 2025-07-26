@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css"/>
-  <!-- defer zajistí, že funkce budou k dispozici před kliky na onclick -->
+  <!-- defer zajistí, že script.js bude k dispozici před klikem na tlačítka -->
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -62,12 +62,12 @@
     <div class="modal-content">
       <!-- Boční panel ikon -->
       <div class="side-icons">
-        <img id="icon-mereni"  class="side-icon" src="img/mereni.png"  alt="Měření"  onclick="onIconClick('mereni')"/>
-        <img id="icon-seti"    class="side-icon" src="img/seti.png"    alt="Setí"    onclick="onIconClick('seti')"/>
-        <img id="icon-hnojeni" class="side-icon" src="img/hnojeni.png" alt="Hnojení" onclick="onIconClick('hnojeni')"/>
-        <img id="icon-sklizen" class="side-icon" src="img/sklizen.png" alt="Sklizeň" onclick="onIconClick('sklizen')"/>
-        <img id="icon-analyza" class="side-icon" src="img/analyza.png" alt="Analýza" onclick="onIconClick('analyza')"/>
-        <img id="icon-nastaveni"class="side-icon" src="img/nastaveni.png"alt="Nastavení"onclick="onIconClick('nastaveni')"/>
+        <img id="icon-mereni"    class="side-icon" src="img/mereni.png"    alt="Měření"    onclick="onIconClick('mereni')"/>
+        <img id="icon-seti"      class="side-icon" src="img/seti.png"      alt="Setí"      onclick="onIconClick('seti')"/>
+        <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"   alt="Hnojení"   onclick="onIconClick('hnojeni')"/>
+        <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"   alt="Sklizeň"   onclick="onIconClick('sklizen')"/>
+        <img id="icon-analyza"   class="side-icon" src="img/analyza.png"   alt="Analýza"   onclick="onIconClick('analyza')"/>
+        <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png" alt="Nastavení" onclick="onIconClick('nastaveni')"/>
       </div>
 
       <div class="modal-body">
@@ -86,22 +86,24 @@
         </div>
 
         <!-- Formulář událostí / analýzy -->
-        <!-- Formulář událostí / analýzy -->
-<div id="modalViewUdalost" style="display:none;">
-  <div id="udalostFormContainer"></div>
+        <div id="modalViewUdalost" style="display:none;">
+          <!-- sem se vykreslí formulář (setí/hnojení/sklizeň/analýza) -->
+          <div id="udalostFormContainer"></div>
 
-  <!-- sem se bude vykreslovat historie hnojení -->
-  <div id="hnojeniHistory" class="hnojeni-history">
-    <em>Načítám historii hnojení…</em>
-  </div>
+          <!-- jedině pro hnojení: historie -->
+          <div id="hnojeniHistory" class="hnojeni-history">
+            <em>Načítám historii hnojení…</em>
+          </div>
 
-  <!-- tlačítko Zpět -->
-  <img src="img/Goback .png"
-       alt="Zpět"
-       class="modal-btn"
-       onclick="zpetNaDetailZahonu()" />
-</div>
-         
+          <!-- tlačítka jen v režimu událostí -->
+          <img src="img/Safe.png"
+               alt="Uložit událost"
+               class="modal-btn"
+               onclick="ulozUdalost(currentEventType)" />
+          <img src="img/Goback .png"
+               alt="Zpět"
+               class="modal-btn"
+               onclick="zpetNaDetailZahonu()" />
         </div>
       </div>
     </div>
