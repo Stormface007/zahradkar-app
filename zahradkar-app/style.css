@@ -22,11 +22,8 @@ body {
   margin: 0 auto 1rem;
 }
 
-/* Vstupní pole */
-input[type="text"],
-input[type="password"],
-input[type="number"],
-select {
+/* Vstupní pole & select */
+input, select {
   width: 100%;
   max-width: 300px;
   padding: 0.75rem;
@@ -34,12 +31,11 @@ select {
   border: 2px solid black;
   border-radius: 6px;
   font-size: 1rem;
-  background-color: white;
+  background: white;
   box-sizing: border-box;
 }
-
-/* Přizpůsobení select */
-#plodinaSelect {
+/* šipka u selectů */
+select {
   appearance: none;
   background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
   background-repeat: no-repeat;
@@ -50,7 +46,7 @@ select {
 /* Tlačítka */
 button {
   padding: 0.6rem 1.2rem;
-  background-color: white;
+  background: white;
   color: #009900;
   border: 2px solid #009900;
   border-radius: 6px;
@@ -59,14 +55,33 @@ button {
   margin: 0.5rem;
 }
 
-/* Aplikace */
-#appDiv {
-  padding: 2rem;
-  text-align: center;
+/* Top-panel */
+.top-panel {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.1);
 }
-.table-container {
-  overflow-x: auto;
+.icon-button {
+  width: 50px; height: 50px;
+  object-fit: contain;
+  cursor: pointer;
 }
+.toolbar-weather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  text-shadow: 0 0 2px black;
+}
+.toolbar-weather img {
+  width: 32px; height: 32px;
+}
+
+/* Tabulka záhonů */
+.table-container { overflow-x: auto; }
 #zahonyTable {
   width: 100%;
   border-collapse: collapse;
@@ -74,55 +89,29 @@ button {
   background: white;
   border: 2px solid black;
 }
-#zahonyTable th,
-#zahonyTable td {
-  border: 2px solid black;
+#zahonyTable th {
+  background: #009900;
   padding: 0.5rem;
+  border: 2px solid black;
 }
-
-/* Vlastní styling odkazu se záhonem + ikonou */
-#zahonyTable tbody td a.zahon-link {
-  display: inline-flex;
-  align-items: center;
-  color: #000;            /* černý text */
-  text-decoration: none;  /* žádné podtržení */
-  font-family: inherit;
-  cursor: pointer;
+#zahonyTable td {
+  padding: 0.5rem;
+  border: 2px solid black;
 }
-#zahonyTable tbody td a.zahon-link .zahon-icon {
-  width: 45px;
-  height: auto;
-  margin-right: 0.5rem;
-  vertical-align: middle;
+#zahonyTable a {
+  color: #000;
+  text-decoration: none;
+  font-family: Verdana, sans-serif;
 }
-#zahonyTable tbody td a.zahon-link:hover .zahon-icon {
-  transform: translateX(4px);
-}
-
-/* Horní panel ikon místo “Odhlásit se” */
-.top-panel {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-/* Styl ikon */
-.icon-button {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-  display: block;
-  cursor: pointer;
+#zahonyTable a:hover {
+  color: #005500;
 }
 
 /* Modal */
 .modal {
   display: none;
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  inset: 0;
   background: rgba(0,0,0,0.5);
   overflow: auto;
   z-index: 999;
@@ -133,15 +122,14 @@ button {
   margin: 5% auto;
   width: 90%; max-width: 600px;
   max-height: calc(100vh - 40px);
-  padding: 20px;
-  padding-left: 140px;
+  padding: 20px 20px 20px 140px;
   overflow-y: auto;
   border-radius: 8px;
   box-sizing: border-box;
 }
 .modal-body {}
 
-/* Boční panel ikon */
+/* Boční ikony */
 .side-icons {
   position: absolute;
   top: 20px; left: 20px;
@@ -157,183 +145,101 @@ button {
   width: 60px;
   cursor: pointer;
   opacity: 0.7;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform .2s, opacity .2s;
 }
-.side-icon:hover,
-.side-icon.active {
+.side-icon.active,
+.side-icon:hover {
   opacity: 1;
   transform: translateX(8px);
 }
 
 /* Úprava záhonu */
 .dimensions {
-  display: flex;
-  gap: 1rem;
-  margin: 1rem 0;
+  display: flex; gap:1rem; margin:1rem 0;
 }
-.dimensions input {
-  flex: 1;
-}
-.plocha {
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
+.dimensions input { flex:1; }
+.plocha { font-weight:bold; margin-bottom:1rem; }
 
-/* Canvas záhon */
-#zahonVizualizace {
-  position: relative;
-  z-index: 1;
-}
+/* Vizualizace záhonu */
+#zahonVizualizace { position: relative; z-index:1; }
 #zahonVizualizace canvas {
-  display: block;
-  margin: 0 auto;
-  background: transparent;
+  display:block; margin:0 auto; background:transparent;
 }
 
-/* Události / analýza */
-#udalostFormContainer input,
-#udalostFormContainer textarea {
-  width: 100%;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  border: 2px solid black;
-  border-radius: 4px;
-}
-#udalostSeznamContainer .udalost-item {
-  background: #f9f9f9;
-  border: 1px solid #ccc;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  text-align: left;
+/* Modal-btn */
+.modal-btn {
+  width:50px; height:50px;
+  cursor:pointer; margin:0.5rem;
 }
 
-/* Analytický režim – pH/N vedle sebe, P/K pod nimi */
+/* Analýza */
 #modalViewUdalost.analysis .nutrients {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1%;
-  margin-bottom: 1rem;
+  display:flex; flex-wrap:wrap; gap:1%; margin-bottom:1rem;
 }
-#modalViewUdalost.analysis .nutrients .nutrient {
-  flex: 1 1 48%;
+#modalViewUdalost.analysis .nutrient {
+  flex:1 1 48%;
 }
-#modalViewUdalost.analysis .nutrients label {
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-  display: block;
+.nutrient label { font-weight:bold; display:block; margin-bottom:.25rem; }
+.soil-info { margin-top:1rem; }
+.soil-info label { font-weight:bold; display:block; margin-bottom:.25rem; }
+.soil-info input { width:100%; padding:.5rem; border:2px solid black; border-radius:4px; }
+
+/* Hnojení – historie */
+.hnojeni-history {
+  max-height:200px;
+  overflow:auto;
+  margin-top:1rem;
+  border:2px solid black;
+  background:white;
 }
-#modalViewUdalost.analysis .soil-info {
-  margin-top: 1rem;
+.hnojeni-history table {
+  width:100%;
+  border-collapse:collapse;
 }
-#modalViewUdalost.analysis .soil-info label {
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-  display: block;
+.hnojeni-history th {
+  background:#009900;
+  padding:4px;
+  border:1px solid black;
 }
-#modalViewUdalost.analysis .soil-info input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 2px solid black;
-  border-radius: 4px;
+.hnojeni-history td {
+  padding:4px;
+  border:1px solid black;
 }
 
-/* Zmenšení pole názvu o 10 % */
-#modalViewDefault input#editNazev {
-  width: 90%;
-  box-sizing: border-box;
+/* Zoom modal (plátno + header) */
+.zoom-content {
+  position:relative;
+  background:#009900;
+  margin:2% auto;
+  width:90%; max-width:600px;
+  height:auto; overflow:hidden;
+  border-radius:8px;
+  box-sizing:border-box;
+}
+.zoom-header {
+  display:flex; justify-content:flex-end; align-items:center;
+  padding:.5rem; background:rgba(255,255,255,0.1); z-index:2;
+}
+.zoom-action-icon {
+  width:50px; height:50px; margin-left:1rem; cursor:pointer; z-index:2;
+}
+#zoomCanvas {
+  display:block; width:100%; height:auto; background:transparent; z-index:1;
 }
 
-/* --- Zoom-Modal: centrálně a responzivně --- */
-#zoomModal.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.5);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 10000;
-}
-#zoomModal .zoom-content {
-  background: #009900;
-  position: relative;
-  overflow: hidden;
-}
-@media (min-width: 768px) {
-  #zoomModal .zoom-content {
-    width: 80vw; height: 80vh; border-radius: 8px; padding: 1rem;
-  }
-}
-@media (max-width: 767px) {
-  #zoomModal .zoom-content {
-    width: 100vw; height: 100vh; border-radius: 0; padding: 0.5rem;
-  }
-}
-#zoomModal .zoom-content canvas {
-  width: 100%; height: 100%; object-fit: contain; display: block;
-}
-#zoomModal .zoom-content button {
-  position: absolute; top: 1rem; right: 1rem;
-  background: rgba(255,255,255,0.8); border: none; border-radius: 4px;
-  padding: 0.25rem 0.5rem; cursor: pointer; font-size: 1rem;
-}
-
-/* rotating carrot indicator */
+/* Indikátor akce (mrkev) */
 .action-indicator {
-  display: none; position: fixed; top: 50%; left: 50%;
-  transform: translate(-50%, -50%); z-index: 10000;
+  display:none; position:fixed; inset:0;
+  align-items:center; justify-content:center;
+  z-index:10000;
 }
 .action-indicator.active {
-  display: block; animation: rotate 1s linear infinite;
+  display:flex; animation:rotate 1s linear infinite;
+}
+.action-indicator img {
+  width:80px; height:80px;
 }
 @keyframes rotate {
-  from {transform: translate(-50%, -50%) rotate(0deg);}
-  to   {transform: translate(-50%, -50%) rotate(360deg);}
-}
-
-/* Zmenší rotující mrkev na 80×80 px */
-.action-indicator img { width: 80px; height: 80px; }
-.action-indicator { width: 80px; height: 80px; }
-
-/* Odkazy v seznamu záhonů jako obyčejný text */
-#zahonyTable tbody td a {
-  color: #000; text-decoration: none;
-  font-family: 'Verdana', sans-serif; font-weight: normal;
-}
-#zahonyTable tbody td a:hover {
-  color: #005500;
-}
-
-/* Modal‐button ikony */
-.modal-btn {
-  width: 50px; height: 50px; cursor: pointer; margin: 0.5rem;
-}
-
-/* Zoom-header ikony */
-.zoom-header { display:flex; justify-content:flex-end; padding:0.5rem; background:rgba(255,255,255,0.1); }
-.zoom-action-icon { cursor:pointer; margin-left:1rem; z-index:2; }
-#zoomCanvas { display:block; width:100%; height:auto; background:transparent; z-index:1; }
-
-.hnojeni-history {
-  max-height: 200px;         /* chcete-li upravte podle potřeby */
-  overflow: auto;            /* umožní svislé i vodorovné rolování */
-  margin-top: 1rem;
-  background: white;
-  border: 2px solid black;
-}
-.hnojeni-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.hnojeni-table th,
-.hnojeni-table td {
-  border: 1px solid black;
-  padding: 0.25rem 0.5rem;
-  background: white;
-}
-.hnojeni-table th {
-  background: #009900;
-  color: white;
-  position: sticky;
-  top: 0;                    /* hlavička zůstane na vrchu při scrollu */
-  z-index: 1;
+  from { transform:rotate(0deg); }
+  to   { transform:rotate(360deg); }
 }
