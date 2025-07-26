@@ -322,7 +322,7 @@ function loadHnojeniHistory() {
     .then(arr => {
       // vyber jen Hnojení
       const hist = arr.filter(u =>
-        u.Typ.toLowerCase() === "hnojení"
+        u.Typ.toLowerCase() === "Hnojení"
       );
 
       if (hist.length === 0) {
