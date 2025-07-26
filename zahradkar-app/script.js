@@ -238,14 +238,25 @@ function showUdalostForm(typ) {
   }
 
   // ikony Uložit / Zpět
-  html += `
-    <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost('${typ}')"/>
-    <img src="img/Goback.png" alt="Zpět"  class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-  `;
+   if (typ === "hnojeni") {
+    html += `
+      <!-- tlačítka Uložit/Zpět… -->
+      <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="ulozUdalost('hnojeni')"/>
+      <img src="img/Goback .png"  alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      <!-- sem přidáme historii hnojení -->
+      <div id="hnojeniHistory" class="hnojeni-history">
+        <em>Načítám historii hnojení…</em>
+      </div>
+    `;
+  }
   c.innerHTML = html;
+  if (typ === "hnojeni") {
+    loadHnojiva();           // pokud ještě potřebujete select hnojiv
+    loadHnojeniHistory();    // načte a vykreslí tabulku
+  }
+}
 
   if (typ==="seti")     loadPlodiny();
-  if (typ==="hnojeni")  { loadHnojiva(); loadHnojeniList(); }
 }
 
 // — Uložení události (volání GAS) —
