@@ -284,7 +284,8 @@ function showUdalostForm(typ) {
       </div>
     `;
     loadHnojiva();
-    loadHnojeniHistory();
+loadHnojeniHistory();
+    
   }
 
   if (typ === "sklizen") {
