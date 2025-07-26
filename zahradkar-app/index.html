@@ -97,6 +97,33 @@
       <canvas id="zoomCanvas"></canvas>
     </div>
   </div>
+  
+  <div class="hnojeni-history">
+  <!-- hlavička – pouze horizontálně scrollovatelná -->
+  <div class="history-header">
+    <table>
+      <thead>
+        <tr>
+          <th>Hnojivo</th>
+          <th>Datum</th>
+          <th>N (g/m²)</th>
+          <th>P (g/m²)</th>
+          <th>K (g/m²)</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+  <!-- tělo – pouze vertikálně scrollovatelná -->
+  <div class="history-body">
+    <table>
+      <tbody>
+        <!-- sem dynamicky vložíte řádky -->
+        <tr><td>NPK 15-15-15</td><td>2025-03-25</td><td>2.25</td><td>2.25</td><td>2.25</td></tr>
+        <!-- … další řádky … -->
+      </tbody>
+    </table>
+  </div>
+</div>
 
   <script src="script.js"></script>
 </body>
