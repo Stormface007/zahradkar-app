@@ -474,6 +474,7 @@ function closeZoom(){
 // document.addEventListener("DOMContentLoaded", ()=>{ ... });
 
 // — Ukládání události —
+// — Ukládání události —
 async function ulozUdalost(typ) {
   // 1) základní hodnoty
   const zahonID = aktualniZahon?.ZahonID;
@@ -484,36 +485,46 @@ async function ulozUdalost(typ) {
 
   // 2) připravíme parametry
   const ps = new URLSearchParams();
-  ps.append("action",   "addUdalost");
-  ps.append("zahonID",  zahonID);
-  // server očekává velké "Typ" – tam dejme první písmeno uppercase:
-  ps.append("typ",      typ.charAt(0).toUpperCase() + typ.slice(1));
-  ps.append("datum",    datum);
+  ps.append("action", "addUdalost");
+  ps.append("zahonID", zahonID);
+  ps.append("typ", typ.charAt(0).toUpperCase() + typ.slice(1));
+  ps.append("datum", datum);
 
-  // 3) plodina (jen pro setí)
+  // 3) plodina (setí a sklizeň)
   if (typ === "seti") {
     const pl = document.getElementById("plodinaSelect").value;
     ps.append("plodina", pl);
+    ps.append("hnojivo", "");
+    ps.append("mnozstvi", "");
+    ps.append("vynos", "");
+  } else if (typ === "sklizen") {
+    const plodina = document.getElementById("udalostPlodina").value.trim();
+    if (!plodina) {
+      alert("Vyplňte plodinu, kterou sklízíte.");
+      return;
+    }
+    let vynos = document.getElementById("udalostVynos").value.replace(",", ".");
+    vynos = vynos === "" ? "" : parseFloat(vynos);
+    if (vynos === "") vynos = "";
+    else if (isNaN(vynos)) vynos = 0;
+    ps.append("plodina", plodina);
+    ps.append("hnojivo", "");
+    ps.append("mnozstvi", "");
+    ps.append("vynos", vynos);
+  } else if (typ === "hnojeni") {
+    const hnoj = document.getElementById("hnojivoSelect").value;
+    let mnoz = document.getElementById("udalostMnozstvi").value.replace(",", ".");
+    mnoz = mnoz === "" ? "" : parseFloat(mnoz);
+    if (mnoz === "") mnoz = "";
+    else if (isNaN(mnoz)) mnoz = 0;
+    ps.append("plodina", "");
+    ps.append("hnojivo", hnoj);
+    ps.append("mnozstvi", mnoz);
+    ps.append("vynos", "");
   } else {
     ps.append("plodina", "");
-  }
-
-  // 4) hnojivo a množství (jen pro hnojení)
-  if (typ === "hnojeni") {
-    const hnoj = document.getElementById("hnojivoSelect").value;
-    const mnoz = parseFloat(document.getElementById("udalostMnozstvi").value) || 0;
-    ps.append("hnojivo",   hnoj);
-    ps.append("mnozstvi",  mnoz);
-  } else {
-    ps.append("hnojivo",  "");
+    ps.append("hnojivo", "");
     ps.append("mnozstvi", "");
-  }
-
-  // 5) sklizeň: výnos
-  if (typ === "sklizen") {
-    const vynos = parseFloat(document.getElementById("udalostVynos").value) || 0;
-    ps.append("vynos", vynos);
-  } else {
     ps.append("vynos", "");
   }
 
@@ -527,10 +538,8 @@ async function ulozUdalost(typ) {
     const text = await res.text();
     if (text.trim() === "OK") {
       if (typ === "hnojeni") {
-        // po hnojení obnovíme historii
         loadHnojeniHistory();
       }
-      // a vrátíme se na detail záhonu
       zpetNaDetailZahonu();
     } else {
       alert("Chyba při ukládání události: " + text);
@@ -564,37 +573,41 @@ function fmt(x) {
 
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
+  showActionIndicator?.();
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     const arr = await res.json();
-    // Setí a sklizně v pořadí od nejstarší k nejnovější
+
+    // Najdi poslední setí (nejnovější)
     const seti = arr.filter(u => u.Typ === "Setí");
+    if (!seti.length) {
+      document.getElementById("udalostPlodina").value = "";
+      document.getElementById("udalostPlodina").placeholder = "není zaseto...";
+      return;
+    }
+    const posledniSeti = seti.reduce((a, b) =>
+      new Date(a.Datum) > new Date(b.Datum) ? a : b
+    );
+
+    // Je po tomto setí už nějaká sklizeň?
     const sklizne = arr.filter(u => u.Typ === "Sklizeň");
+    const sklizenPoSeti = sklizne.find(sk =>
+      new Date(sk.Datum) > new Date(posledniSeti.Datum)
+    );
 
-    // Najdi poslední setí
-    let posledniSeti = null;
-    let posledniSetiDatum = null;
-    seti.forEach(u => {
-      const d = new Date(u.Datum);
-      if (!posledniSeti || d > posledniSetiDatum) {
-        posledniSeti = u;
-        posledniSetiDatum = d;
-      }
-    });
-
-    if (!posledniSeti) return; // žádné setí
-
-    // Najdi první sklizeň, která je PO tomto setí
-    const sklizenPoSeti = sklizne.find(sk => {
-      const dSk = new Date(sk.Datum);
-      return dSk > posledniSetiDatum;
-    });
-
-    // Pokud NEEXISTUJE sklizeň po posledním setí, předvyplň plodinu
     if (!sklizenPoSeti) {
+      // Není sklizeno – předvyplň plodinu
       document.getElementById("udalostPlodina").value = posledniSeti.Plodina || "";
+      document.getElementById("udalostPlodina").placeholder = "";
+    } else {
+      // Už sklizeno – pole prázdné, zobraz placeholder
+      document.getElementById("udalostPlodina").value = "";
+      document.getElementById("udalostPlodina").placeholder = "není zaseto...";
     }
   } catch (e) {
+    document.getElementById("udalostPlodina").placeholder = "Chyba načítání";
     console.error("Prefill Sklizen Plodina error:", e);
+  } finally {
+    hideActionIndicator?.();
   }
 }
