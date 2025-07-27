@@ -249,16 +249,19 @@ function loadHnojiva(){
 
 // — Přepínání formulářů v modalu —
 function showUdalostForm(typ) {
-  // 1) schovej defaultní view
+  // Schovej defaultní view
   document.getElementById("modalViewDefault").style.display = "none";
 
-  // 2) připrav modální oblast událostí
+  // Připrav modální oblast událostí
   const uv = document.getElementById("modalViewUdalost");
   uv.classList.remove("analysis");
   uv.style.display = "block";
 
-  // 3) vygeneruj formulář podle typu
+  // Vyčisti kontejner
   const c = document.getElementById("udalostFormContainer");
+  c.innerHTML = ""; // <-- důležité
+
+  // Skládej HTML podle typu
   let html = `
     <h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
     <label>Datum:
@@ -290,7 +293,6 @@ function showUdalostForm(typ) {
       </div>
     `;
     loadHnojiva();
-    loadHnojeniHistory();
   }
 
   if (typ === "sklizen") {
@@ -304,13 +306,19 @@ function showUdalostForm(typ) {
     `;
   }
 
-  // 4) tlačítka „uložit“ a „zpět“
+  // Tlačítka „uložit“ a „zpět“
   html += `
     <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost('${typ}')"/>
     <img src="img/Goback .png" alt="Zpět"  class="modal-btn" onclick="zpetNaDetailZahonu()"/>
   `;
 
+  // Nastav HTML najednou
   c.innerHTML = html;
+
+  // Načti historii hnojení až po vložení ID do DOMu (pro správný záhon)
+  if (typ === "hnojeni") {
+    loadHnojeniHistory();
+  }
 }
 
 // — Načtení historie hnojení —
