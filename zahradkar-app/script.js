@@ -525,27 +525,25 @@ function openZoom(z) {
   document.getElementById("zoomModal").style.display = "flex";
 }
 
-async function zobrazBodyNaZoom() {
-  console.log("ZOBRAZ BODY FUNGUJE", aktivniZahon);
-
-  if (!aktivniZahon) return;
-
-  try {
-    console.log("BODOVÁ DATA:", body);
-    const res = await fetch(SERVER_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "getBodyZahonu",
-        zahonID: aktivniZahon.ZahonID
-      }),
-    });
-
-    const data = await res.json();
-    vykresliBodyNaZoom(data);
-  } catch (e) {
-    console.error("❌ Chyba při načítání bodů záhonu:", e);
+function zobrazBodyNaZoom() {
+  if (!aktivniZahon) {
+    alert("Záhon není načten.");
+    return;
   }
+
+  console.log("▶ Načítám body pro záhon:", aktivniZahon.ZahonID);
+
+  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${aktivniZahon.ZahonID}`)
+    .then(r => r.json())
+    .then(body => {
+      console.log("✅ Body ze serveru:", body); // ⬅️ klíčový výpis
+      vykresliBodyNaZoom(aktivniZahon, body);
+    })
+    .catch(err => {
+      console.error("❌ Chyba při načítání bodů záhonu:", err);
+    });
 }
+
 function vykresliZahonNaZoom(z) {
   const canvas = document.getElementById("zoomCanvas");
   const ctx = canvas.getContext("2d");
