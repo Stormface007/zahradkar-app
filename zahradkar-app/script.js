@@ -99,7 +99,7 @@ async function loadZahony(){
     const td2=document.createElement("td"),
           a=document.createElement("a");
     a.href="#"; a.textContent=z.NazevZahonu;
-    a.onclick=()=>otevriModal(z);
+    a.onclick=()=>{ otevriModal(z); return false; };
     td2.append(a);
     // plocha
     const td3=document.createElement("td"),
@@ -285,18 +285,12 @@ function showUdalostForm(typ) {
       <label>Množství (kg):
         <input type="number" id="udalostMnozstvi"/>
       </label><br>
-    `;
-  }
-  
-
-      <!-- historie hnojení se vloží jen pro „hnojení“ -->
       <div id="hnojeniHistory" class="hnojeni-history">
         <em>Načítám historii hnojení…</em>
       </div>
     `;
     loadHnojiva();
-loadHnojeniHistory();
-    
+    loadHnojeniHistory();
   }
 
   if (typ === "sklizen") {
@@ -319,11 +313,10 @@ loadHnojeniHistory();
   c.innerHTML = html;
 }
 
-
-
 // — Načtení historie hnojení —
 function loadHnojeniHistory() {
   const cont = document.getElementById("hnojeniHistory");
+  if (!cont) return;
   if (!aktualniZahon) {
     cont.innerHTML = "<p>Žádný záhon.</p>";
     return;
@@ -383,10 +376,6 @@ function showAnalysisForm() {
       <label>Typ půdy:<input type="text" id="soilType"/></label><br>
       <label>Barva půdy:<input type="text" id="soilColor"/></label>
     </div>
-  `;
-
-  // a teď obrázky
-  c.innerHTML += `
     <img src="img/Safe.png"    alt="Uložit analýzu" class="modal-btn" onclick="saveAnalysis()"/>
     <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
   `;
@@ -459,13 +448,10 @@ function closeZoom(){
 }
 
 // — Auto-login + počasí při načtení —
-document.addEventListener("DOMContentLoaded", ()=>{
-  const zm=document.getElementById("zoomModal");
-  if(zm) zm.querySelector("button")?.addEventListener("click", closeZoom);
-  if(localStorage.getItem("userID")) onLoginSuccess();
-  loadWeatherByGeolocation();
-});
+// (tento blok je už na začátku, stačí jednou!)
+// document.addEventListener("DOMContentLoaded", ()=>{ ... });
 
+// — Ukládání události —
 async function ulozUdalost(typ) {
   // 1) základní hodnoty
   const zahonID = aktualniZahon?.ZahonID;
@@ -491,7 +477,7 @@ async function ulozUdalost(typ) {
   }
 
   // 4) hnojivo a množství (jen pro hnojení)
-  if (typ === "Hnojení") {
+  if (typ === "hnojeni") {
     const hnoj = document.getElementById("hnojivoSelect").value;
     const mnoz = parseFloat(document.getElementById("udalostMnozstvi").value) || 0;
     ps.append("hnojivo",   hnoj);
@@ -509,7 +495,7 @@ async function ulozUdalost(typ) {
     ps.append("vynos", "");
   }
 
-  // 6) poznámku teď ignorujeme (upravili jste, že tam nechcete)
+  // 6) poznámku teď ignorujeme
   ps.append("poznamka", "");
 
   // 7) odešleme na server
