@@ -313,7 +313,9 @@ function showUdalostForm(typ) {
   }
 
   c.innerHTML = html;
-
+if (typ === "sklizen") {
+  prefillSklizenPlodina();
+}
   // Historii načíst pouze pro hnojení
   if (typ === "hnojeni") {
    loadHnojeniHistory();
@@ -558,4 +560,41 @@ function fmt(x) {
   }
   // Pokud je x jiný řetězec, zobraz ho tak, jak je
   return x;
+}
+
+async function prefillSklizenPlodina() {
+  if (!aktualniZahon) return;
+  try {
+    const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
+    const arr = await res.json();
+    // Setí a sklizně v pořadí od nejstarší k nejnovější
+    const seti = arr.filter(u => u.Typ === "Setí");
+    const sklizne = arr.filter(u => u.Typ === "Sklizeň");
+
+    // Najdi poslední setí
+    let posledniSeti = null;
+    let posledniSetiDatum = null;
+    seti.forEach(u => {
+      const d = new Date(u.Datum);
+      if (!posledniSeti || d > posledniSetiDatum) {
+        posledniSeti = u;
+        posledniSetiDatum = d;
+      }
+    });
+
+    if (!posledniSeti) return; // žádné setí
+
+    // Najdi první sklizeň, která je PO tomto setí
+    const sklizenPoSeti = sklizne.find(sk => {
+      const dSk = new Date(sk.Datum);
+      return dSk > posledniSetiDatum;
+    });
+
+    // Pokud NEEXISTUJE sklizeň po posledním setí, předvyplň plodinu
+    if (!sklizenPoSeti) {
+      document.getElementById("udalostPlodina").value = posledniSeti.Plodina || "";
+    }
+  } catch (e) {
+    console.error("Prefill Sklizen Plodina error:", e);
+  }
 }
