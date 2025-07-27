@@ -661,26 +661,23 @@ async function prefillSklizenPlodina() {
 }
 
 function vykresliBodyNaCanvasu(zahon, bodyData) {
-  const canvas = document.getElementById("canvasZahonu");
-  const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const cv = document.getElementById("zoomCanvas");
+  const ctx = cv.getContext("2d");
 
-  // Poměry
-  const scaleX = canvas.width / zahon.Delka;
-  const scaleY = canvas.height / zahon.Sirka;
+  const scale = Math.min(cv.width / zahon.Delka, cv.height / zahon.Sirka);
+  const offsetX = (cv.width - zahon.Delka * scale) / 2;
+  const offsetY = (cv.height - zahon.Sirka * scale) / 2;
 
-  // Obdélník záhonu
-  ctx.strokeStyle = "#654321";
-  ctx.strokeRect(0, 0, zahon.Delka * scaleX, zahon.Sirka * scaleY);
+  ctx.fillStyle = "#0000ff"; // modrá barva pro body
 
-  // Body
-  ctx.fillStyle = "green";
-  for (const bod of bodyData) {
-    const x = bod.x * scaleX;
-    const y = bod.y * scaleY;
+  bodyData.forEach(body => {
+    const x = offsetX + parseFloat(body.X) * scale;
+    const y = offsetY + parseFloat(body.Y) * scale;
+
     ctx.beginPath();
-    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+    ctx.arc(x, y, 5, 0, 2 * Math.PI); // kruh o poloměru 5
     ctx.fill();
-  }
+  });
 }
+
 
