@@ -244,33 +244,40 @@ button {
   to   { transform:rotate(360deg); }
 }
 
-/* Hnojení – historie tabulka */
+/* Historie hnojení – stylizovaná tabulka */
 .hnojeni-history {
   max-height: 200px;
   overflow: auto;
   margin-top: 1rem;
   border: 2px solid black;
-  background: white;
-  font-size: 15px;
+  background: white; /* celé okolí tabulky */
 }
+
 .hnojeni-history table {
   width: 100%;
   border-collapse: collapse;
+  background: white; /* bílé pozadí celé tabulky */
 }
-.hnojeni-history th, .hnojeni-history td {
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
+
 .hnojeni-history th {
-  background: #009900;
+  background: #009900; /* zelená hlavička */
   color: #fff;
   font-weight: bold;
+  padding: 4px 8px;
+  border: 1px solid #009900;
+  text-align: center;
+  white-space: nowrap;
 }
+
+.hnojeni-history td {
+  background: #fff; /* bílé pozadí dat */
+  color: #000;
+  padding: 4px 8px;
+  border: 1px solid #009900;
+  text-align: center;
+}
+
 .hnojeni-history td.hnojivo {
   white-space: nowrap;
   font-weight: bold;
-}
-.hnojeni-history td.datum {
-  min-width: 90px;
 }
