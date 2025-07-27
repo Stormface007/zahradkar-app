@@ -256,7 +256,6 @@ function showUdalostForm(typ) {
   const c = document.getElementById("udalostFormContainer");
   c.innerHTML = "";
 
-  // Společný začátek formuláře
   let html = `
     <h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>
     <label>Datum:
@@ -264,7 +263,6 @@ function showUdalostForm(typ) {
     </label><br>
   `;
 
-  // Pole podle typu
   if (typ === "seti") {
     html += `
       <label>Plodina:
@@ -275,7 +273,6 @@ function showUdalostForm(typ) {
     `;
     loadPlodiny();
   }
-
   if (typ === "hnojeni") {
     html += `
       <label>Hnojivo:
@@ -287,7 +284,6 @@ function showUdalostForm(typ) {
     `;
     loadHnojiva();
   }
-
   if (typ === "sklizen") {
     html += `
       <label>Plodina:
@@ -307,8 +303,8 @@ function showUdalostForm(typ) {
     </div>
   `;
 
-  // Historie - až za tlačítky
-  if (typ === "hnojeni" || typ === "seti" || typ === "sklizen") {
+  // Historie pouze pro hnojení
+  if (typ === "hnojeni") {
     html += `
       <div id="udalostHistory" class="udalost-history">
         <em>Načítám historii...</em>
@@ -318,11 +314,10 @@ function showUdalostForm(typ) {
 
   c.innerHTML = html;
 
-  // Historii načti podle typu až po vložení kontejneru do DOM
+  // Historii načíst pouze pro hnojení
   if (typ === "hnojeni") {
-    loadHnojeniHistory();
+    loadUdalostHistory("hnojeni"); // nebo loadHnojeniHistory();
   }
-  // Pro budoucno: loadSetiHistory(); loadSklizenHistory();
 }
 // — Načtení historie hnojení —
 function loadHnojeniHistory() {
