@@ -2,6 +2,8 @@
 const SERVER_URL = "/.netlify/functions/proxy";
 
 let aktualniZahon = null;
+let lastZoomZahon = null;
+
 
 // — Počasí dle geolokace —
 function loadWeatherByGeolocation(){
@@ -495,6 +497,7 @@ function nakresliZahonCanvas(d,s){
 }
 
 function openZoom(zahon) {
+  lastZoomZahon = zahon;
   if (!zahon || !zahon.Delka || !zahon.Sirka || !zahon.ZahonID) {
     console.error("❌ Neplatný objekt záhonu:", zahon);
     return;
@@ -528,21 +531,15 @@ function openZoom(zahon) {
 }
 
 function zobrazBodyNaZoom() {
-  const zahon = window.aktualniZahonZoom;
-  if (!zahon || !zahon.ZahonID) {
-    console.error("❌ Záhon není definován nebo chybí ID.");
-    return;
-  }
-
-  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahon.ZahonID}`)
+  if (!lastZoomZahon) return;
+  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${lastZoomZahon.ZahonID}`)
     .then(r => r.json())
     .then(bodyData => {
-      vykresliBodyNaCanvasu(zahon, bodyData);
+      vykresliBodyNaCanvasu(lastZoomZahon, bodyData);
     })
-    .catch(err => {
-      console.error("❌ Chyba při načítání bodů záhonu:", err);
-    });
+    .catch(err => console.error("❌ Chyba při načítání bodů záhonu:", err));
 }
+
 
 
 
@@ -694,23 +691,20 @@ async function prefillSklizenPlodina() {
 }
 
 function vykresliBodyNaCanvasu(zahon, bodyData) {
-  const cv = document.getElementById("zoomCanvas");
-  const ctx = cv.getContext("2d");
+  const canvas = document.getElementById("zoomCanvas");
+  const ctx = canvas.getContext("2d");
+  const scale = Math.min(canvas.width / zahon.Delka, canvas.height / zahon.Sirka);
 
-  const scale = Math.min(cv.width / zahon.Delka, cv.height / zahon.Sirka),
-        w = zahon.Delka * scale,
-        h = zahon.Sirka * scale,
-        x = (cv.width - w) / 2,
-        y = (cv.height - h) / 2;
-
-  ctx.fillStyle = "red";
-  for (const bod of bodyData) {
-    const bx = parseFloat(bod.X) * scale + x;
-    const by = parseFloat(bod.Y) * scale + y;
+  bodyData.forEach(bod => {
+    const x = parseFloat(bod.X_m) * scale;
+    const y = parseFloat(bod.Y_m) * scale;
     ctx.beginPath();
-    ctx.arc(bx, by, 3, 0, 2 * Math.PI);
+    ctx.arc(x, y, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = "red";
     ctx.fill();
-  }
+    ctx.stroke();
+  });
 }
+
 
 
