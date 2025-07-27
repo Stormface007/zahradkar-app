@@ -194,14 +194,12 @@ button {
   border-radius: 5px;
   padding: 0;
 }
-
 .hnojeni-history table {
   min-width: 650px;
   width: 100%;
   border-collapse: collapse;
   background: #fff;
 }
-
 .hnojeni-history th {
   background: #009900;
   color: #fff;
@@ -211,7 +209,6 @@ button {
   text-align: center;
   white-space: nowrap;
 }
-
 .hnojeni-history td {
   background: #fff;
   color: #000;
@@ -220,7 +217,6 @@ button {
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
-
 .hnojeni-history td.hnojivo {
   white-space: nowrap;
   font-weight: bold;
