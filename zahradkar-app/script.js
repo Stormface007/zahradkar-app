@@ -1,5 +1,5 @@
 // — Vaše URL GAS webappu —  
-const SERVER_URL = "https://script.google.com/macros/s/AKfycbwDRq4THf_PLrdNF7Rzia8sT71CSGPQoRJWbU0OiGoscHrBormUAN6uFDVxRLwNpTFv/exec";
+const SERVER_URL = "https://script.google.com/macros/s/AKfycbxsfCoXIJ1YrP-S4gzIEyK60KuTwesmeyTkApexgPYfgyYojGljEBNLjhJbSxLFRg/exec";
 
 let aktualniZahon = null;
 
