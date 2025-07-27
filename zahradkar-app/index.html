@@ -52,8 +52,8 @@
     <!-- Formulář pro nový záhon -->
     <h3>Přidat nový záhon</h3>
     <input type="text" id="newNazev" placeholder="Název záhonu"/>
-    <input type="number" id="newDelka" placeholder="Délka (m)"/>
-    <input type="number" id="newSirka" placeholder="Šířka (m)"/>
+    <input type="number" id="newDelka" placeholder="Délka (m)" min="0"/>
+    <input type="number" id="newSirka" placeholder="Šířka (m)" min="0"/>
     <button onclick="addZahon()">Přidat</button>
   </div>
 
@@ -76,8 +76,8 @@
           <h3>Úprava záhonu</h3>
           <input type="text" id="editNazev" placeholder="Název záhonu"/>
           <div class="dimensions">
-            <input type="number" id="editDelka" placeholder="Délka (m)" oninput="updatePlocha()"/>
-            <input type="number" id="editSirka" placeholder="Šířka (m)" oninput="updatePlocha()"/>
+            <input type="number" id="editDelka" placeholder="Délka (m)" min="0" oninput="updatePlocha()"/>
+            <input type="number" id="editSirka" placeholder="Šířka (m)" min="0" oninput="updatePlocha()"/>
           </div>
           <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
           <div id="zahonVizualizace"></div>
