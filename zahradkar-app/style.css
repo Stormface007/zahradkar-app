@@ -259,3 +259,13 @@ button {
   from { transform:rotate(0deg); }
   to   { transform:rotate(360deg); }
 }
+#btnZoomZahon {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
