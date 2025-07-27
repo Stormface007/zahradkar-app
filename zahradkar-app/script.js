@@ -306,7 +306,7 @@ function showUdalostForm(typ) {
   // Historie pouze pro hnojení
   if (typ === "hnojeni") {
     html += `
-      <div id="udalostHistory" class="udalost-history">
+      <div id="udalostHistory" class="hnojeni-history">
         <em>Načítám historii...</em>
       </div>
     `;
