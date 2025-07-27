@@ -490,7 +490,7 @@ function openZoom(zahon) {
   cv.height = base * factor;
 
   const ctx = cv.getContext("2d");
-  ctx.fillStyle = "#009900";
+  ctx.fillStyle = "#009900"; // zelené pozadí
   ctx.fillRect(0, 0, cv.width, cv.height);
 
   const scale = Math.min(cv.width / zahon.Delka, cv.height / zahon.Sirka),
@@ -499,19 +499,25 @@ function openZoom(zahon) {
         x = (cv.width - w) / 2,
         y = (cv.height - h) / 2;
 
-  ctx.fillStyle = "#c2b280";
-  ctx.fillRect(x, y, w, h); // hnědý záhon
+  ctx.fillStyle = "#c2b280"; // hnědý obdélník záhonu
+  ctx.fillRect(x, y, w, h);
   ctx.lineWidth = 2;
   ctx.strokeStyle = "#000";
-  ctx.strokeRect(x, y, w, h); // černý okraj
+  ctx.strokeRect(x, y, w, h);
 
+  // ⏺️ Uložíme záhon pro další funkce (např. zobrazení bodů)
   window.aktualniZahonZoom = zahon;
+
+  // ⏺️ Zobrazíme modální okno
   document.getElementById("zoomModal").style.display = "flex";
 }
 
 function zobrazBodyNaZoom() {
   const zahon = window.aktualniZahonZoom;
-  if (!zahon) return;
+  if (!zahon || !zahon.ZahonID) {
+    console.error("❌ Záhon není definován nebo chybí ID.");
+    return;
+  }
 
   fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahon.ZahonID}`)
     .then(r => r.json())
@@ -522,6 +528,7 @@ function zobrazBodyNaZoom() {
       console.error("❌ Chyba při načítání bodů záhonu:", err);
     });
 }
+
 
 
 function closeZoom(){
@@ -672,32 +679,19 @@ async function prefillSklizenPlodina() {
 }
 
 function vykresliBodyNaCanvasu(zahon, bodyData) {
-  const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
-  cv.width = base * factor;
-  cv.height = base * factor;
-
+  const cv = document.getElementById("zoomCanvas");
   const ctx = cv.getContext("2d");
-  ctx.fillStyle = "#009900";
-  ctx.fillRect(0, 0, cv.width, cv.height);
 
   const scale = Math.min(cv.width / zahon.Delka, cv.height / zahon.Sirka),
         w = zahon.Delka * scale,
         h = zahon.Sirka * scale,
-        x0 = (cv.width - w) / 2,
-        y0 = (cv.height - h) / 2;
+        x = (cv.width - w) / 2,
+        y = (cv.height - h) / 2;
 
-  // vykresli záhon
-  ctx.fillStyle = "#c2b280";
-  ctx.fillRect(x0, y0, w, h);
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = "#000";
-  ctx.strokeRect(x0, y0, w, h);
-
-  // vykresli body
   ctx.fillStyle = "red";
   for (const bod of bodyData) {
-    const bx = x0 + parseFloat(bod.X) * scale;
-    const by = y0 + parseFloat(bod.Y) * scale;
+    const bx = parseFloat(bod.X) * scale + x;
+    const by = parseFloat(bod.Y) * scale + y;
     ctx.beginPath();
     ctx.arc(bx, by, 3, 0, 2 * Math.PI);
     ctx.fill();
