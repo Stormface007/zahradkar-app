@@ -243,3 +243,34 @@ button {
   from { transform:rotate(0deg); }
   to   { transform:rotate(360deg); }
 }
+
+/* Hnojení – historie tabulka */
+.hnojeni-history {
+  max-height: 200px;
+  overflow: auto;
+  margin-top: 1rem;
+  border: 2px solid black;
+  background: white;
+  font-size: 15px;
+}
+.hnojeni-history table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.hnojeni-history th, .hnojeni-history td {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+.hnojeni-history th {
+  background: #009900;
+  color: #fff;
+  font-weight: bold;
+}
+.hnojeni-history td.hnojivo {
+  white-space: nowrap;
+  font-weight: bold;
+}
+.hnojeni-history td.datum {
+  min-width: 90px;
+}
