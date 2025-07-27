@@ -40,6 +40,7 @@ function hideActionIndicator(){
 
 // — Přihlášení / odhlášení —
 async function login() {
+  console.log("login voláno");
   const u = document.getElementById("username").value;
   const p = document.getElementById("password").value;
   try {
@@ -133,6 +134,7 @@ function deleteSelected(){
 
 // — Přidání záhonu —
 function addZahon(){
+  console.log("addZahon voláno");
   const uid=localStorage.getItem("userID"),
         n=document.getElementById("newNazev").value.trim(),
         d=parseFloat(document.getElementById("newDelka").value)||0,
