@@ -249,26 +249,22 @@ function loadHnojiva(){
 
 // — Přepínání formulářů v modalu —
 function showUdalostForm(typ) {
-  // Schovej defaultní view
   document.getElementById("modalViewDefault").style.display = "none";
-
-  // Připrav modální oblast událostí
   const uv = document.getElementById("modalViewUdalost");
   uv.classList.remove("analysis");
   uv.style.display = "block";
-
-  // Vyčisti kontejner
   const c = document.getElementById("udalostFormContainer");
-  c.innerHTML = ""; // <-- důležité
+  c.innerHTML = "";
 
-  // Skládej HTML podle typu
+  // Společný začátek formuláře
   let html = `
-    <h4>${typ.charAt(0).toUpperCase()+typ.slice(1)}</h4>
+    <h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>
     <label>Datum:
       <input type="date" id="udalostDatum"/>
     </label><br>
   `;
 
+  // Pole podle typu
   if (typ === "seti") {
     html += `
       <label>Plodina:
@@ -288,9 +284,6 @@ function showUdalostForm(typ) {
       <label>Množství (kg):
         <input type="number" id="udalostMnozstvi"/>
       </label><br>
-      <div id="hnojeniHistory" class="hnojeni-history">
-        <em>Načítám historii hnojení…</em>
-      </div>
     `;
     loadHnojiva();
   }
@@ -306,21 +299,31 @@ function showUdalostForm(typ) {
     `;
   }
 
-  // Tlačítka „uložit“ a „zpět“
+  // Tlačítka - vždy hned za formulářem!
   html += `
-    <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost('${typ}')"/>
-    <img src="img/Goback .png" alt="Zpět"  class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+    <div class="modal-btns">
+      <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost('${typ}')"/>
+      <img src="img/Goback .png" alt="Zpět"  class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+    </div>
   `;
 
-  // Nastav HTML najednou
+  // Historie - až za tlačítky
+  if (typ === "hnojeni" || typ === "seti" || typ === "sklizen") {
+    html += `
+      <div id="udalostHistory" class="udalost-history">
+        <em>Načítám historii...</em>
+      </div>
+    `;
+  }
+
   c.innerHTML = html;
 
-  // Načti historii hnojení až po vložení ID do DOMu (pro správný záhon)
+  // Historii načti podle typu až po vložení kontejneru do DOM
   if (typ === "hnojeni") {
     loadHnojeniHistory();
   }
+  // Pro budoucno: loadSetiHistory(); loadSklizenHistory();
 }
-
 // — Načtení historie hnojení —
 function loadHnojeniHistory() {
   const cont = document.getElementById("hnojeniHistory");
