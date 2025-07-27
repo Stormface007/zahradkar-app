@@ -331,7 +331,7 @@ function loadHnojeniHistory() {
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
     .then(r => r.json())
     .then(arr => {
-      const hist = arr.filter(u => u.Typ.toLowerCase() === "hnojení");
+      const hist = arr.filter(u => u.Typ.toLowerCase() === "Hnojení");
       if (!hist.length) {
         cont.innerHTML = "<p>Žádná historie hnojení.</p>";
         return;
