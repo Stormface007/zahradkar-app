@@ -479,7 +479,7 @@ function nakresliZahonCanvas(d,s){
   c.appendChild(cv);
 }
 
-function openZoom(zahon) {
+ffunction openZoom(zahon) {
   const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
   cv.width = base * factor;
   cv.height = base * factor;
@@ -494,15 +494,22 @@ function openZoom(zahon) {
         x = (cv.width - w) / 2,
         y = (cv.height - h) / 2;
 
+  // vykresli samotný záhon
   ctx.fillStyle = "#c2b280";
   ctx.fillRect(x, y, w, h);
   ctx.lineWidth = 2;
   ctx.strokeStyle = "#000";
   ctx.strokeRect(x, y, w, h);
 
-  document.getElementById("zoomModal").style.display = "flex";
+  // uložíme záhon pro pozdější použití (např. ve funkci zobrazBodyNaZoom)
+  window.aktualniZahonZoom = zahon;
 
-  // ✅ Načtení bodů záhonu
+  document.getElementById("zoomModal").style.display = "flex";
+}
+function zobrazBodyNaZoom() {
+  const zahon = window.aktualniZahonZoom;
+  if (!zahon) return;
+
   fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahon.ZahonID}`)
     .then(r => r.json())
     .then(bodyData => {
@@ -512,6 +519,7 @@ function openZoom(zahon) {
       console.error("❌ Chyba při načítání bodů záhonu:", err);
     });
 }
+
 
 function closeZoom(){
   document.getElementById("zoomModal").style.display="none";
@@ -661,23 +669,36 @@ async function prefillSklizenPlodina() {
 }
 
 function vykresliBodyNaCanvasu(zahon, bodyData) {
-  const cv = document.getElementById("zoomCanvas");
+  const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
+  cv.width = base * factor;
+  cv.height = base * factor;
+
   const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#009900";
+  ctx.fillRect(0, 0, cv.width, cv.height);
 
-  const scale = Math.min(cv.width / zahon.Delka, cv.height / zahon.Sirka);
-  const offsetX = (cv.width - zahon.Delka * scale) / 2;
-  const offsetY = (cv.height - zahon.Sirka * scale) / 2;
+  const scale = Math.min(cv.width / zahon.Delka, cv.height / zahon.Sirka),
+        w = zahon.Delka * scale,
+        h = zahon.Sirka * scale,
+        x0 = (cv.width - w) / 2,
+        y0 = (cv.height - h) / 2;
 
-  ctx.fillStyle = "#0000ff"; // modrá barva pro body
+  // vykresli záhon
+  ctx.fillStyle = "#c2b280";
+  ctx.fillRect(x0, y0, w, h);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#000";
+  ctx.strokeRect(x0, y0, w, h);
 
-  bodyData.forEach(body => {
-    const x = offsetX + parseFloat(body.X) * scale;
-    const y = offsetY + parseFloat(body.Y) * scale;
-
+  // vykresli body
+  ctx.fillStyle = "red";
+  for (const bod of bodyData) {
+    const bx = x0 + parseFloat(bod.X) * scale;
+    const by = y0 + parseFloat(bod.Y) * scale;
     ctx.beginPath();
-    ctx.arc(x, y, 5, 0, 2 * Math.PI); // kruh o poloměru 5
+    ctx.arc(bx, by, 3, 0, 2 * Math.PI);
     ctx.fill();
-  });
+  }
 }
 
 
