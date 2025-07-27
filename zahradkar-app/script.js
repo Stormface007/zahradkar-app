@@ -184,24 +184,22 @@ async function addZahon(){
   } finally {
     hideActionIndicator();
   }
-  // přidáme nový řádek
-sheet.appendRow([
-  newID,    // číselné ZahonID
-  userID,
-  nazev,
-  delka,
-  sirka,
-  plocha
-]);
-
-// ➕ vygeneruj body po přidání záhonu
-vygenerujBodyProZahon(newID);
-
-return ContentService
-  .createTextOutput("OK")
-  .setMimeType(ContentService.MimeType.TEXT);
-
-}
+fetch("/.netlify/functions/proxy", {
+  method: "POST",
+  body: new URLSearchParams({
+    action: "addZahon",
+    userID: userId,
+    NazevZahonu: nazev,
+    Delka: delka,
+    Sirka: sirka
+  })
+})
+.then(res => res.text())
+.then(result => {
+  if (result === "OK") {
+    // úspěšně přidáno – třeba znovu načíst záhony
+  }
+});
 
 // — Otevření modalu záhonu —
 function otevriModal(z){
