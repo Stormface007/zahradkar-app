@@ -496,47 +496,47 @@ function nakresliZahonCanvas(d,s){
   c.appendChild(cv);
 }
 
-function openZoom(zahon) {
-  lastZoomZahon = zahon;
-  if (!zahon || !zahon.Delka || !zahon.Sirka || !zahon.ZahonID) {
-    console.error("❌ Neplatný objekt záhonu:", zahon);
-    return;
-  }
+let aktivniZahon = null; // mimo funkce
 
+function openZoom(z) {
+  aktivniZahon = z; // uložení pro další použití
   const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
   cv.width = base * factor;
   cv.height = base * factor;
 
   const ctx = cv.getContext("2d");
-  ctx.fillStyle = "#009900"; // zelené pozadí
+  ctx.fillStyle = "#009900";
   ctx.fillRect(0, 0, cv.width, cv.height);
 
-  const scale = Math.min(cv.width / zahon.Delka, cv.height / zahon.Sirka),
-        w = zahon.Delka * scale,
-        h = zahon.Sirka * scale,
+  const scale = Math.min(cv.width / z.Delka, cv.height / z.Sirka),
+        w = z.Delka * scale,
+        h = z.Sirka * scale,
         x = (cv.width - w) / 2,
         y = (cv.height - h) / 2;
 
-  ctx.fillStyle = "#c2b280"; // hnědý obdélník záhonu
+  ctx.fillStyle = "#c2b280";
   ctx.fillRect(x, y, w, h);
   ctx.lineWidth = 2;
   ctx.strokeStyle = "#000";
   ctx.strokeRect(x, y, w, h);
 
-  // ⏺️ Uložíme záhon pro další funkce (např. zobrazení bodů)
-  window.aktualniZahonZoom = zahon;
-
-  // ⏺️ Zobrazíme modální okno
   document.getElementById("zoomModal").style.display = "flex";
 }
 
 function zobrazBodyNaZoom() {
-  if (!lastZoomZahon) return;
-  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${lastZoomZahon.ZahonID}`)
+  if (!aktivniZahon) return;
+  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${aktivniZahon.ZahonID}`)
     .then(r => r.json())
-    .then(bodyData => {
-      vykresliBodyNaCanvasu(lastZoomZahon, bodyData);
-    })
+    .then(data => vykresliBodyNaCanvasu(aktivniZahon, data))
+    .catch(err => console.error("❌ Chyba při načítání bodů záhonu:", err));
+}
+
+
+function zobrazBodyNaZoom() {
+  if (!aktivniZahon) return;
+  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${aktivniZahon.ZahonID}`)
+    .then(r => r.json())
+    .then(data => vykresliBodyNaCanvasu(aktivniZahon, data))
     .catch(err => console.error("❌ Chyba při načítání bodů záhonu:", err));
 }
 
