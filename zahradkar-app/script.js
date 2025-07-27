@@ -72,6 +72,13 @@ function logout() {
   document.getElementById("loginDiv").style.display = "block";
 }
 
+// Při načtení stránky se podíváme, jestli už jsme přihlášeni
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("userID")) {
+    onLoginSuccess();
+  }
+  loadWeatherByGeolocation();
+});
 
 // — Načtení seznamu záhonů —
 async function loadZahony(){
