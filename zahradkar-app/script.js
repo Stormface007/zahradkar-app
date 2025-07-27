@@ -184,8 +184,8 @@ async function addZahon(){
   } finally {
     hideActionIndicator();
   }
-
-
+   }
+  
 // — Otevření modalu záhonu —
 function otevriModal(z){
   aktualniZahon=z;
