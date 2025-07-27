@@ -366,14 +366,14 @@ function loadHnojeniHistory() {
         function fmt(x) {
           return (x !== undefined && x !== null && x !== "" && !isNaN(Number(x))) ? Number(x).toFixed(1) : "";
         }
-        html += `<tr>
-          <td>${datum}</td>
-          <td style="white-space:nowrap;">${u.Hnojivo || ""}</td>
-          <td>${fmt(u.Mnozstvi)}</td>
-          <td>${fmt(u.N_g_m2)}</td>
-          <td>${fmt(u.P_g_m2)}</td>
-          <td>${fmt(u.K_g_m2)}</td>
-        </tr>`;
+       html += `<tr>
+ <td class="datum">${formatDate(u.Datum)}</td>
+  <td class="hnojivo">${u.Hnojivo || ""}</td>
+  <td>${fmt(u.Mnozstvi)}</td>
+  <td>${fmt(u.N_g_m2)}</td>
+  <td>${fmt(u.P_g_m2)}</td>
+  <td>${fmt(u.K_g_m2)}</td>
+</tr>`;
       });
       html += `</tbody></table>`;
       cont.innerHTML = html;
@@ -546,4 +546,13 @@ async function ulozUdalost(typ) {
   } finally {
     hideActionIndicator?.();
   }
+}
+function formatDate(d) {
+  if (!d) return "";
+  const dateObj = new Date(d);
+  if (isNaN(dateObj)) return d;
+  const day = ("0" + dateObj.getDate()).slice(-2);
+  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+  const yr  = dateObj.getFullYear();
+  return `${day}.${mon}.${yr}`;
 }
