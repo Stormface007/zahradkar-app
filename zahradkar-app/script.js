@@ -39,36 +39,39 @@ function hideActionIndicator(){
 }
 
 // — Přihlášení / odhlášení —
-async function login(){
-  const u=document.getElementById("username").value,
-        p=document.getElementById("password").value;
-  try{
-    const res = await fetch(`${SERVER_URL}?action=login`,{
-      method:"POST",
-      body:new URLSearchParams({username:u,password:p})
+async function login() {
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+  try {
+    const res = await fetch(`${SERVER_URL}?action=login`, {
+      method: "POST",
+      body: new URLSearchParams({ username: u, password: p })
     });
     const data = await res.json();
-    if(data.success){
-      localStorage.setItem("userID",data.userID);
+    if (data.success) {
+      localStorage.setItem("userID", data.userID);
       onLoginSuccess();
     } else {
-      document.getElementById("loginMsg").innerText="Neplatné přihlašovací údaje.";
+      document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
     }
-  }catch(e){
-    console.error(e);
-    document.getElementById("loginMsg").innerText="Chyba při přihlášení.";
+  } catch (err) {
+    console.error("Login error:", err);
+    document.getElementById("loginMsg").innerText = "Chyba při přihlášení.";
   }
 }
-function onLoginSuccess(){
-  document.getElementById("loginDiv").style.display="none";
-  document.getElementById("appDiv").style.display="block";
+
+function onLoginSuccess() {
+  document.getElementById("loginDiv").style.display = "none";
+  document.getElementById("appDiv").style.display   = "block";
   loadZahony();
 }
-function logout(){
+
+function logout() {
   localStorage.removeItem("userID");
-  document.getElementById("appDiv").style.display="none";
-  document.getElementById("loginDiv").style.display="block";
+  document.getElementById("appDiv").style.display   = "none";
+  document.getElementById("loginDiv").style.display = "block";
 }
+
 
 // — Načtení seznamu záhonů —
 async function loadZahony(){
