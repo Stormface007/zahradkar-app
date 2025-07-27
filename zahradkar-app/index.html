@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css"/>
-  <!-- defer zajistí, že script.js bude k dispozici před klikem na tlačítka -->
-  <script src="script.js" defer></script>
 </head>
 <body>
   <!-- Indikátor akce (točící se mrkev) -->
@@ -87,23 +85,14 @@
 
         <!-- Formulář událostí / analýzy -->
         <div id="modalViewUdalost" style="display:none;">
-          <!-- sem se vykreslí formulář (setí/hnojení/sklizeň/analýza) --
-
-          <!-- jedině pro hnojení: historie -->
-          <div id="hnojeniHistory" class="hnojeni-history">
-            <em>Načítám historii hnojení…</em>
-          </div>
-
-          <!-- tlačítka jen v režimu událostí -->
-          <img src="img/Safe.png"
-               alt="Uložit událost"
-               class="modal-btn"
-               onclick="ulozUdalost(currentEventType)" />
-          <img src="img/Goback .png"
-               alt="Zpět"
-               class="modal-btn"
-               onclick="zpetNaDetailZahonu()" />
+          <div id="udalostFormContainer"></div>
+          <!-- historie hnojení (jen pro hnojení) -->
+          <div id="hnojeniHistory" class="hnojeni-history"></div>
+          <!-- tlačítka událostí -->
+          <img src="img/Safe.png"    alt="Uložit událost" class="modal-btn" onclick="ulozUdalost(currentEventType)"/>
+          <img src="img/Goback .png" alt="Zpět"             class="modal-btn" onclick="zpetNaDetailZahonu()"/>
         </div>
+
       </div>
     </div>
   </div>
@@ -118,5 +107,8 @@
       <canvas id="zoomCanvas"></canvas>
     </div>
   </div>
+
+  <!-- teď script.js opravdu načteme až na úplný závěr těla stránky -->
+  <script src="script.js"></script>
 </body>
 </html>
