@@ -270,13 +270,14 @@ function showUdalostForm(typ) {
   if (typ === "hnojeni") {
     html += `
       <label>Hnojivo:
-        <select id="hnojivoSelect">
-          <option>Načítám…</option>
-        </select>
+        <select id="hnojivoSelect"><option>Načítám…</option></select>
       </label><br>
       <label>Množství (kg):
         <input type="number" id="udalostMnozstvi"/>
       </label><br>
+    `;
+  }
+  
 
       <!-- historie hnojení se vloží jen pro „hnojení“ -->
       <div id="hnojeniHistory" class="hnojeni-history">
@@ -312,53 +313,43 @@ loadHnojeniHistory();
 
 // — Načtení historie hnojení —
 function loadHnojeniHistory() {
-  const container = document.getElementById("hnojeniHistory");
+  const cont = document.getElementById("hnojeniHistory");
   if (!aktualniZahon) {
-    container.innerHTML = `<p>Žádný výběr záhonu.</p>`;
+    cont.innerHTML = "<p>Žádný záhon.</p>";
     return;
   }
 
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
     .then(r => r.json())
     .then(arr => {
-      // vyber jen Hnojení
-      const hist = arr.filter(u =>
-        u.Typ.toLowerCase() === "Hnojení"
-      );
-
-      if (hist.length === 0) {
-        container.innerHTML = `<p>Žádná historie hnojení.</p>`;
+      const hist = arr.filter(u => u.Typ.toLowerCase() === "hnojení");
+      if (!hist.length) {
+        cont.innerHTML = "<p>Žádná historie hnojení.</p>";
         return;
       }
-
-      let html = `
-        <table class="hnojeni-table">
-          <thead>
-            <tr>
-              <th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th>
-              <th>N (g/m²)</th><th>P (g/m²)</th><th>K (g/m²)</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-      hist.forEach(u => {
-        html += `
+      let html = `<table class="hnojeni-table">
+        <thead>
           <tr>
-            <td>${u.Datum}</td>
-            <td>${u.Hnojivo}</td>
-            <td>${u.Mnozstvi}</td>
-            <td>${u.N_g_m2||""}</td>
-            <td>${u.P_g_m2||""}</td>
-            <td>${u.K_g_m2||""}</td>
+            <th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th>
+            <th>N (g/m²)</th><th>P (g/m²)</th><th>K (g/m²)</th>
           </tr>
-        `;
+        </thead><tbody>`;
+      hist.forEach(u => {
+        html += `<tr>
+          <td>${u.Datum}</td>
+          <td>${u.Hnojivo}</td>
+          <td>${u.Mnozstvi}</td>
+          <td>${u.N_g_m2||""}</td>
+          <td>${u.P_g_m2||""}</td>
+          <td>${u.K_g_m2||""}</td>
+        </tr>`;
       });
       html += `</tbody></table>`;
-      container.innerHTML = html;
+      cont.innerHTML = html;
     })
-    .catch(e => {
-      console.error("Chyba načtení historie hnojení:", e);
-      container.innerHTML = `<p>Chyba při načítání historie.</p>`;
+    .catch(err => {
+      console.error("Chyba historie:", err);
+      cont.innerHTML = "<p>Chyba při načítání historie.</p>";
     });
 }
 
