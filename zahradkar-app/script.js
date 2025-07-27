@@ -321,7 +321,7 @@ function showUdalostForm(typ) {
 }
 // — Načtení historie hnojení —
 function loadHnojeniHistory() {
-  const cont = document.getElementById("hnojeniHistory");
+  const cont = document.getElementById("udalostHistory");
   if (!cont) return;
   if (!aktualniZahon) {
     cont.innerHTML = "<p>Žádný záhon.</p>";
@@ -331,7 +331,8 @@ function loadHnojeniHistory() {
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
     .then(r => r.json())
     .then(arr => {
-      const hist = arr.filter(u => u.Typ.toLowerCase() === "hnojeni");
+      console.log("UDALOSTI ARR:", arr);
+      const hist = arr.filter(u => u.Typ === "Hnojení");
       if (!hist.length) {
         cont.innerHTML = "<p>Žádná historie hnojení.</p>";
         return;
@@ -361,7 +362,6 @@ function loadHnojeniHistory() {
       cont.innerHTML = "<p>Chyba při načítání historie.</p>";
     });
 }
-
 function showAnalysisForm() {
   document.getElementById("modalViewDefault").style.display = "none";
   const uv = document.getElementById("modalViewUdalost");
