@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css"/>
+  <!-- Kód se načte až po DOMu, takže inline onclick najde funkce -->
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -91,7 +92,6 @@
           <img src="img/Safe.png"    alt="Uložit událost" class="modal-btn" onclick="ulozUdalost(currentEventType)"/>
           <img src="img/Goback .png" alt="Zpět"             class="modal-btn" onclick="zpetNaDetailZahonu()"/>
         </div>
-
       </div>
     </div>
   </div>
