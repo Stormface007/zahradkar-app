@@ -480,6 +480,11 @@ function nakresliZahonCanvas(d,s){
 }
 
 function openZoom(zahon) {
+  if (!zahon || !zahon.Delka || !zahon.Sirka || !zahon.ZahonID) {
+    console.error("❌ Neplatný objekt záhonu:", zahon);
+    return;
+  }
+
   const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
   cv.width = base * factor;
   cv.height = base * factor;
@@ -494,18 +499,16 @@ function openZoom(zahon) {
         x = (cv.width - w) / 2,
         y = (cv.height - h) / 2;
 
-  // vykresli samotný záhon
   ctx.fillStyle = "#c2b280";
-  ctx.fillRect(x, y, w, h);
+  ctx.fillRect(x, y, w, h); // hnědý záhon
   ctx.lineWidth = 2;
   ctx.strokeStyle = "#000";
-  ctx.strokeRect(x, y, w, h);
+  ctx.strokeRect(x, y, w, h); // černý okraj
 
-  // uložíme záhon pro pozdější použití (např. ve funkci zobrazBodyNaZoom)
   window.aktualniZahonZoom = zahon;
-
   document.getElementById("zoomModal").style.display = "flex";
 }
+
 function zobrazBodyNaZoom() {
   const zahon = window.aktualniZahonZoom;
   if (!zahon) return;
