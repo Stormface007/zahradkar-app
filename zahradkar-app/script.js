@@ -500,6 +500,8 @@ let aktivniZahon = null; // mimo funkce
 
 function openZoom(z) {
   aktivniZahon = z; // uložení pro další použití
+  document.getElementById("zoomModal").style.display = "block";
+  vykresliZahonNaZoom(z);
   const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
   cv.width = base * factor;
   cv.height = base * factor;
@@ -523,12 +525,77 @@ function openZoom(z) {
   document.getElementById("zoomModal").style.display = "flex";
 }
 
-function zobrazBodyNaZoom() {
+async function zobrazBodyNaZoom() {
   if (!aktivniZahon) return;
-  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${aktivniZahon.ZahonID}`)
-    .then(r => r.json())
-    .then(data => vykresliBodyNaCanvasu(aktivniZahon, data))
-    .catch(err => console.error("❌ Chyba při načítání bodů záhonu:", err));
+
+  try {
+    const res = await fetch(SERVER_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getBodyZahonu",
+        zahonID: aktivniZahon.ZahonID
+      }),
+    });
+
+    const data = await res.json();
+    vykresliBodyNaZoom(data);
+  } catch (e) {
+    console.error("❌ Chyba při načítání bodů záhonu:", e);
+  }
+}
+function vykresliZahonNaZoom(z) {
+  const canvas = document.getElementById("zoomCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // rozměry canvasu
+  canvas.width = window.innerWidth * 0.9;
+  canvas.height = window.innerHeight * 0.8;
+
+  const w = canvas.width;
+  const h = canvas.height;
+
+  // výpočet měřítka (px na metr)
+  const scaleX = w / z.Delka;
+  const scaleY = h / z.Sirka;
+  const scale = Math.min(scaleX, scaleY);
+
+  // uložení pro pozdější použití
+  canvas.dataset.scale = scale;
+  canvas.dataset.offsetX = (w - z.Delka * scale) / 2;
+  canvas.dataset.offsetY = (h - z.Sirka * scale) / 2;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // vykreslení záhonu (obdélník)
+  ctx.fillStyle = "#c9b17c";
+  ctx.strokeStyle = "#000";
+  const x = parseFloat(canvas.dataset.offsetX);
+  const y = parseFloat(canvas.dataset.offsetY);
+  const dx = z.Delka * scale;
+  const dy = z.Sirka * scale;
+
+  ctx.fillRect(x, y, dx, dy);
+  ctx.strokeRect(x, y, dx, dy);
+}
+
+function vykresliBodyNaZoom(bodyArray) {
+  const canvas = document.getElementById("zoomCanvas");
+  const ctx = canvas.getContext("2d");
+
+  if (!aktivniZahon || !canvas.width || !canvas.height) return;
+
+  const { Sirka, Delka } = aktivniZahon;
+  const scaleX = canvas.width / Sirka;
+  const scaleY = canvas.height / Delka;
+
+  ctx.fillStyle = "red";
+  bodyArray.forEach(bod => {
+    const x = bod.X * scaleX;
+    const y = bod.Y * scaleY;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fill();
+  });
 }
 
 
@@ -540,6 +607,23 @@ function zobrazBodyNaZoom() {
     .catch(err => console.error("❌ Chyba při načítání bodů záhonu:", err));
 }
 
+function vykresliBodyNaZoom(bodArray) {
+  const canvas = document.getElementById("zoomCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const scale = parseFloat(canvas.dataset.scale);
+  const offsetX = parseFloat(canvas.dataset.offsetX);
+  const offsetY = parseFloat(canvas.dataset.offsetY);
+
+  ctx.fillStyle = "red";
+  for (const bod of bodArray) {
+    const x = parseFloat(bod.X) * scale + offsetX;
+    const y = parseFloat(bod.Y) * scale + offsetY;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+}
 
 
 
