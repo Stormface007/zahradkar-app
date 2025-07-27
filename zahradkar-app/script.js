@@ -491,6 +491,14 @@ function openZoom(d,s){
   ctx.fillStyle="#c2b280"; ctx.fillRect(x,y,w,h);
   ctx.lineWidth=2; ctx.strokeStyle="#000"; ctx.strokeRect(x,y,w,h);
   document.getElementById("zoomModal").style.display="flex";
+   fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahon.ZahonID}`)
+    .then(r => r.json())
+    .then(bodyData => {
+      vykresliBodyNaCanvasu(zahon, bodyData);
+    })
+    .catch(err => {
+      console.error("❌ Chyba při načítání bodů záhonu:", err);
+    });
 }
 function closeZoom(){
   document.getElementById("zoomModal").style.display="none";
@@ -638,3 +646,28 @@ async function prefillSklizenPlodina() {
     hideActionIndicator?.();
   }
 }
+
+function vykresliBodyNaCanvasu(zahon, bodyData) {
+  const canvas = document.getElementById("canvasZahonu");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Poměry
+  const scaleX = canvas.width / zahon.Delka;
+  const scaleY = canvas.height / zahon.Sirka;
+
+  // Obdélník záhonu
+  ctx.strokeStyle = "#654321";
+  ctx.strokeRect(0, 0, zahon.Delka * scaleX, zahon.Sirka * scaleY);
+
+  // Body
+  ctx.fillStyle = "green";
+  for (const bod of bodyData) {
+    const x = bod.x * scaleX;
+    const y = bod.y * scaleY;
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+}
+
