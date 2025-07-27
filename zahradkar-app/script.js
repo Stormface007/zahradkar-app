@@ -336,7 +336,7 @@ function loadHnojeniHistory() {
         cont.innerHTML = "<p>Žádná historie hnojení.</p>";
         return;
       }
-      let html = `<table class="hnojeni-table">
+      let html = `<table>
         <thead>
           <tr>
             <th>Datum</th>
@@ -349,31 +349,17 @@ function loadHnojeniHistory() {
         </thead>
         <tbody>`;
       hist.forEach(u => {
-        // Převod data
-        let datum = "";
-        if (u.Datum) {
-          const d = new Date(u.Datum);
-          if (!isNaN(d)) {
-            const day = ("0" + d.getDate()).slice(-2);
-            const mon = ("0" + (d.getMonth() + 1)).slice(-2);
-            const yr  = d.getFullYear();
-            datum = `${day}.${mon}.${yr}`;
-          } else {
-            datum = u.Datum;
-          }
-        }
-        // Zaokrouhlení N, P, K na 1 desetinné místo
         function fmt(x) {
           return (x !== undefined && x !== null && x !== "" && !isNaN(Number(x))) ? Number(x).toFixed(1) : "";
         }
-       html += `<tr>
- <td class="datum">${formatDate(u.Datum)}</td>
-  <td class="hnojivo">${u.Hnojivo || ""}</td>
-  <td>${fmt(u.Mnozstvi)}</td>
-  <td>${fmt(u.N_g_m2)}</td>
-  <td>${fmt(u.P_g_m2)}</td>
-  <td>${fmt(u.K_g_m2)}</td>
-</tr>`;
+        html += `<tr>
+          <td class="datum">${formatDate(u.Datum)}</td>
+          <td class="hnojivo">${u.Hnojivo || ""}</td>
+          <td>${fmt(u.Mnozstvi)}</td>
+          <td>${fmt(u.N_g_m2)}</td>
+          <td>${fmt(u.P_g_m2)}</td>
+          <td>${fmt(u.K_g_m2)}</td>
+        </tr>`;
       });
       html += `</tbody></table>`;
       cont.innerHTML = html;
@@ -382,6 +368,17 @@ function loadHnojeniHistory() {
       console.error("Chyba historie:", err);
       cont.innerHTML = "<p>Chyba při načítání historie.</p>";
     });
+}
+
+// Pomocná funkce na formátování data
+function formatDate(d) {
+  if (!d) return "";
+  const dateObj = new Date(d);
+  if (isNaN(dateObj)) return d;
+  const day = ("0" + dateObj.getDate()).slice(-2);
+  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+  const yr  = dateObj.getFullYear();
+  return `${day}.${mon}.${yr}`;
 }
 function showAnalysisForm() {
   document.getElementById("modalViewDefault").style.display = "none";
