@@ -184,6 +184,23 @@ async function addZahon(){
   } finally {
     hideActionIndicator();
   }
+  // přidáme nový řádek
+sheet.appendRow([
+  newID,    // číselné ZahonID
+  userID,
+  nazev,
+  delka,
+  sirka,
+  plocha
+]);
+
+// ➕ vygeneruj body po přidání záhonu
+vygenerujBodyProZahon(newID);
+
+return ContentService
+  .createTextOutput("OK")
+  .setMimeType(ContentService.MimeType.TEXT);
+
 }
 
 // — Otevření modalu záhonu —
