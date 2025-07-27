@@ -184,27 +184,7 @@ button {
 .soil-info label { font-weight:bold; display:block; margin-bottom:.25rem; }
 .soil-info input { width:100%; padding:.5rem; border:2px solid black; border-radius:4px; }
 
-/* Hnojení – historie */
-.hnojeni-history {
-  max-height:200px;
-  overflow:auto;
-  margin-top:1rem;
-  border:2px solid black;
-  background:white;
-}
-.hnojeni-history table {
-  width:100%;
-  border-collapse:collapse;
-}
-.hnojeni-history th {
-  background:#009900;
-  padding:4px;
-  border:1px solid black;
-}
-.hnojeni-history td {
-  padding:4px;
-  border:1px solid black;
-}
+
 
 /* Zoom modal (plátno + header) */
 .zoom-content {
