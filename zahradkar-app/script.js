@@ -184,22 +184,7 @@ async function addZahon(){
   } finally {
     hideActionIndicator();
   }
-fetch("/.netlify/functions/proxy", {
-  method: "POST",
-  body: new URLSearchParams({
-    action: "addZahon",
-    userID: userId,
-    NazevZahonu: nazev,
-    Delka: delka,
-    Sirka: sirka
-  })
-})
-.then(res => res.text())
-.then(result => {
-  if (result === "OK") {
-    // úspěšně přidáno – třeba znovu načíst záhony
-  }
-});
+
 
 // — Otevření modalu záhonu —
 function otevriModal(z){
