@@ -479,7 +479,7 @@ function nakresliZahonCanvas(d,s){
   c.appendChild(cv);
 }
 
-ffunction openZoom(zahon) {
+function openZoom(zahon) {
   const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
   cv.width = base * factor;
   cv.height = base * factor;
