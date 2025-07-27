@@ -316,7 +316,7 @@ function showUdalostForm(typ) {
 
   // Historii načíst pouze pro hnojení
   if (typ === "hnojeni") {
-    loadUdalostHistory("hnojeni"); // nebo loadHnojeniHistory();
+   loadHnojeniHistory();
   }
 }
 // — Načtení historie hnojení —
