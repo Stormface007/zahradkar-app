@@ -1,43 +1,75 @@
+// netlify/functions/proxy.js
 const fetch = require("node-fetch");
 
-// Nahraď svou funkční Google Apps Script URL
+// Základní adresa vašeho GAS webappu
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6n-H11cafb2YYNK_ajt5_Q7CeYdYl-IV1jI4nQ2KcLRFjak6cP_AArr037FMmCcbU/exec";
 
-exports.handler = async function(event, context) {
-    const params = event.rawQuery ? "?" + event.rawQuery : "";
-    const targetUrl = APPS_SCRIPT_URL + params;
+// Pokud není GAS_URL v env, použijeme tuhle konstantu
+const GAS_URL = process.env.GAS_URL || APPS_SCRIPT_URL;
 
-    try {
-        const response = await fetch(targetUrl);
-        const contentType = response.headers.get("content-type") || "";
+exports.handler = async (event, context) => {
+  const { httpMethod, queryStringParameters = {}, body } = event;
 
-        if (contentType.includes("application/json")) {
-            const json = await response.json();
-            return {
-                statusCode: 200,
-                body: JSON.stringify(json),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            };
-        } else {
-            const text = await response.text();
-            return {
-                statusCode: 200,
-                body: text,
-                headers: {
-                    "Content-Type": "text/plain"
-                }
-            };
-        }
+  // CORS preflight
+  if (httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
+      body: ""
+    };
+  }
 
-    } catch (error) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: error.message }),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        };
+  try {
+    // Přeposlání GET
+    if (httpMethod === "GET") {
+      const qs = new URLSearchParams(queryStringParameters).toString();
+      const resp = await fetch(`${GAS_URL}?${qs}`);
+      const text = await resp.text();
+      return {
+        statusCode: resp.status,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": resp.headers.get("Content-Type") || "application/json"
+        },
+        body: text
+      };
     }
+
+    // Přeposlání POST (form data)
+    if (httpMethod === "POST") {
+      const resp = await fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body
+      });
+      const text = await resp.text();
+      return {
+        statusCode: resp.status,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "text/plain"
+        },
+        body: text
+      };
+    }
+
+    // Jiná než GET/POST/OPTIONS → Method Not Allowed
+    return {
+      statusCode: 405,
+      headers: { Allow: "GET,POST,OPTIONS" },
+      body: "Method Not Allowed"
+    };
+
+  } catch (err) {
+    console.error("Proxy error:", err);
+    return {
+      statusCode: 500,
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: "Internal Server Error"
+    };
+  }
 };
