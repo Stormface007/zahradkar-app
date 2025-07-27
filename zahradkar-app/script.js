@@ -526,9 +526,12 @@ function openZoom(z) {
 }
 
 async function zobrazBodyNaZoom() {
+  console.log("ZOBRAZ BODY FUNGUJE", aktivniZahon);
+
   if (!aktivniZahon) return;
 
   try {
+    console.log("BODOVÁ DATA:", body);
     const res = await fetch(SERVER_URL, {
       method: "POST",
       body: JSON.stringify({
@@ -579,6 +582,10 @@ function vykresliZahonNaZoom(z) {
 }
 
 function vykresliBodyNaZoom(bodyArray) {
+  console.log("KRESLÍM BODY", bodyArray.length);
+console.log(`Bod: x=${bod.X}, y=${bod.Y}, canvasX=${x}, canvasY=${y}`);
+console.log("Canvas size:", canvas.width, canvas.height);
+
   const canvas = document.getElementById("zoomCanvas");
   const ctx = canvas.getContext("2d");
 
