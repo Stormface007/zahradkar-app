@@ -479,19 +479,31 @@ function nakresliZahonCanvas(d,s){
   c.appendChild(cv);
 }
 
-// — Zoom modal —
-function openZoom(d,s){
-  const cv=document.getElementById("zoomCanvas"), factor=5, base=80;
-  cv.width=base*factor; cv.height=base*factor;
-  const ctx=cv.getContext("2d");
-  ctx.fillStyle="#009900"; ctx.fillRect(0,0,cv.width,cv.height);
-  const scale=Math.min(cv.width/(d||1),cv.height/(s||1)),
-        w=(d||1)*scale, h=(s||1)*scale,
-        x=(cv.width-w)/2, y=(cv.height-h)/2;
-  ctx.fillStyle="#c2b280"; ctx.fillRect(x,y,w,h);
-  ctx.lineWidth=2; ctx.strokeStyle="#000"; ctx.strokeRect(x,y,w,h);
-  document.getElementById("zoomModal").style.display="flex";
-   fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahon.ZahonID}`)
+function openZoom(zahon) {
+  const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
+  cv.width = base * factor;
+  cv.height = base * factor;
+
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#009900";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+
+  const scale = Math.min(cv.width / zahon.Delka, cv.height / zahon.Sirka),
+        w = zahon.Delka * scale,
+        h = zahon.Sirka * scale,
+        x = (cv.width - w) / 2,
+        y = (cv.height - h) / 2;
+
+  ctx.fillStyle = "#c2b280";
+  ctx.fillRect(x, y, w, h);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#000";
+  ctx.strokeRect(x, y, w, h);
+
+  document.getElementById("zoomModal").style.display = "flex";
+
+  // ✅ Načtení bodů záhonu
+  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahon.ZahonID}`)
     .then(r => r.json())
     .then(bodyData => {
       vykresliBodyNaCanvasu(zahon, bodyData);
@@ -500,6 +512,7 @@ function openZoom(d,s){
       console.error("❌ Chyba při načítání bodů záhonu:", err);
     });
 }
+
 function closeZoom(){
   document.getElementById("zoomModal").style.display="none";
 }
