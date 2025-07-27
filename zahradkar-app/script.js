@@ -331,7 +331,6 @@ function loadHnojeniHistory() {
   fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
     .then(r => r.json())
     .then(arr => {
-      console.log("UDALOSTI ARR:", arr);
       const hist = arr.filter(u => u.Typ === "Hnojení");
       if (!hist.length) {
         cont.innerHTML = "<p>Žádná historie hnojení.</p>";
@@ -340,18 +339,40 @@ function loadHnojeniHistory() {
       let html = `<table class="hnojeni-table">
         <thead>
           <tr>
-            <th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th>
-            <th>N (g/m²)</th><th>P (g/m²)</th><th>K (g/m²)</th>
+            <th>Datum</th>
+            <th>Hnojivo</th>
+            <th>Množství (kg)</th>
+            <th>N (g/m²)</th>
+            <th>P (g/m²)</th>
+            <th>K (g/m²)</th>
           </tr>
-        </thead><tbody>`;
+        </thead>
+        <tbody>`;
       hist.forEach(u => {
+        // Převod data
+        let datum = "";
+        if (u.Datum) {
+          const d = new Date(u.Datum);
+          if (!isNaN(d)) {
+            const day = ("0" + d.getDate()).slice(-2);
+            const mon = ("0" + (d.getMonth() + 1)).slice(-2);
+            const yr  = d.getFullYear();
+            datum = `${day}.${mon}.${yr}`;
+          } else {
+            datum = u.Datum;
+          }
+        }
+        // Zaokrouhlení N, P, K na 1 desetinné místo
+        function fmt(x) {
+          return (x !== undefined && x !== null && x !== "" && !isNaN(Number(x))) ? Number(x).toFixed(1) : "";
+        }
         html += `<tr>
-          <td>${u.Datum}</td>
-          <td>${u.Hnojivo}</td>
-          <td>${u.Mnozstvi}</td>
-          <td>${u.N_g_m2||""}</td>
-          <td>${u.P_g_m2||""}</td>
-          <td>${u.K_g_m2||""}</td>
+          <td>${datum}</td>
+          <td style="white-space:nowrap;">${u.Hnojivo || ""}</td>
+          <td>${fmt(u.Mnozstvi)}</td>
+          <td>${fmt(u.N_g_m2)}</td>
+          <td>${fmt(u.P_g_m2)}</td>
+          <td>${fmt(u.K_g_m2)}</td>
         </tr>`;
       });
       html += `</tbody></table>`;
