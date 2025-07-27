@@ -133,32 +133,57 @@ function deleteSelected(){
 }
 
 // — Přidání záhonu —
-function addZahon(){
-  console.log("addZahon voláno");
-  const uid=localStorage.getItem("userID"),
-        n=document.getElementById("newNazev").value.trim(),
-        d=parseFloat(document.getElementById("newDelka").value)||0,
-        s=parseFloat(document.getElementById("newSirka").value)||0;
-  if(!n||d<=0||s<=0){
-    alert("Vyplňte správně název, délku i šířku.");return;
+async function addZahon(){
+  console.log("▶ addZahon voláno");
+  const uid = localStorage.getItem("userID");
+  const n   = document.getElementById("newNazev").value.trim();
+  const d   = parseFloat(document.getElementById("newDelka").value) || 0;
+  const s   = parseFloat(document.getElementById("newSirka").value) || 0;
+
+  if (!n || d <= 0 || s <= 0) {
+    alert("Vyplňte správně název, délku i šířku.");
+    return;
   }
+
   showActionIndicator();
-  const ps=new URLSearchParams();
-  ps.append("action","addZahon");
-  ps.append("userID",uid);
-  ps.append("NazevZahonu",n);
-  ps.append("Delka",d);
-  ps.append("Sirka",s);
-  fetch(SERVER_URL,{method:"POST",body:ps})
-    .then(r=>r.text())
-    .then(txt=>{
-      if(txt.trim()==="OK"){
-        ["newNazev","newDelka","newSirka"]
-          .forEach(id=>document.getElementById(id).value="");
-        loadZahony();
-      }
-    })
-    .finally(()=>hideActionIndicator());
+
+  // připravíme body
+  const ps = new URLSearchParams({
+    action:       "addZahon",
+    userID:       uid,
+    NazevZahonu:  n,
+    Delka:        d,
+    Sirka:        s
+  });
+
+  console.log("→ POST", SERVER_URL, ps.toString());
+
+  try {
+    const resp = await fetch(SERVER_URL, {
+      method:  "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body:    ps.toString()
+    });
+    console.log("← status", resp.status, resp.statusText);
+    const text = await resp.text();
+    console.log("← body:", text);
+
+    if (text.trim() === "OK") {
+      // vyčistit formulář a načíst znovu
+      ["newNazev","newDelka","newSirka"].forEach(id=>{
+        document.getElementById(id).value = "";
+      });
+      await loadZahony();
+    } else {
+      console.error("‼ neočekávaná odpověď:", text);
+      alert("Chyba serveru: " + text);
+    }
+  } catch (err) {
+    console.error("❌ fetch error:", err);
+    alert("Chyba při komunikaci se serverem.");
+  } finally {
+    hideActionIndicator();
+  }
 }
 
 // — Otevření modalu záhonu —
