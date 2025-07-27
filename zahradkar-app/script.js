@@ -349,9 +349,6 @@ function loadHnojeniHistory() {
         </thead>
         <tbody>`;
       hist.forEach(u => {
-        function fmt(x) {
-          return (x !== undefined && x !== null && x !== "" && !isNaN(Number(x))) ? Number(x).toFixed(1) : "";
-        }
         html += `<tr>
           <td class="datum">${formatDate(u.Datum)}</td>
           <td class="hnojivo">${u.Hnojivo || ""}</td>
@@ -369,7 +366,6 @@ function loadHnojeniHistory() {
       cont.innerHTML = "<p>Chyba při načítání historie.</p>";
     });
 }
-
 // Pomocná funkce na formátování data
 function formatDate(d) {
   if (!d) return "";
@@ -552,4 +548,14 @@ function formatDate(d) {
   const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
   const yr  = dateObj.getFullYear();
   return `${day}.${mon}.${yr}`;
+}
+
+function fmt(x) {
+  if (x === undefined || x === null || x === "") return "";
+  // Pokud je x číslo nebo řetězec reprezentující číslo, zobraz ho na 1 desetinné místo
+  if (typeof x === "number" || !isNaN(Number(x))) {
+    return Number(x).toFixed(1);
+  }
+  // Pokud je x jiný řetězec, zobraz ho tak, jak je
+  return x;
 }
