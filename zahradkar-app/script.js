@@ -125,25 +125,32 @@ async function loadZahony() {
   }
 }
 
-// — Mazání záhonů —
-function deleteSelected(){
-  const checks = document.querySelectorAll(
-    "#zahonyTable tbody input:checked"
-  );
-  if(!checks.length) return alert("Neoznačili jste žádný záhon.");
-  showActionIndicator();
-  Promise.all(
-    Array.from(checks).map(cb=>{
-      const ps=new URLSearchParams();
-      ps.append("action","deleteZahon");
-      ps.append("ZahonID",cb.value);
-      return fetch(SERVER_URL,{method:"POST",body:ps})
-        .then(r=>r.text());
-    })
-  ).then(()=>loadZahony())
-   .finally(()=>hideActionIndicator());
-}
+// — Mazání vybraných záhonů —
+function deleteSelected() {
+  const checks = document.querySelectorAll("#zahonyTable tbody input:checked");
 
+  if (!checks.length) {
+    alert("Neoznačili jste žádný záhon.");
+    return;
+  }
+
+  showActionIndicator();
+
+  const promises = Array.from(checks).map(cb => {
+    const ps = new URLSearchParams();
+    ps.append("action", "deleteZahon");
+    ps.append("ZahonID", cb.value);
+
+    return fetch(SERVER_URL, {
+      method: "POST",
+      body: ps
+    }).then(res => res.text());
+  });
+
+  Promise.all(promises)
+    .then(() => loadZahony())
+    .finally(() => hideActionIndicator());
+}
 // — Přidání záhonu —
 async function addZahon(){
   console.log("▶ addZahon voláno");
