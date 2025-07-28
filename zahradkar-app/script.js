@@ -1,4 +1,4 @@
-// — Vaše URL GAS webappu —  
+// — deklarace —  
 const SERVER_URL = "/.netlify/functions/proxy";
 
 let aktualniZahon = null;
@@ -86,36 +86,43 @@ async function loadZahony() {
   const uid = localStorage.getItem("userID");
   if (!uid) return;
 
-  const res = await fetch(`${SERVER_URL}?action=getZahony&userID=${uid}`);
-  const arr = await res.json();
-  const tb = document.querySelector("#zahonyTable tbody");
-  tb.innerHTML = "";
+  try {
+    const res = await fetch(`${SERVER_URL}?action=getZahony&userID=${uid}`);
+    const arr = await res.json();
+    const tb = document.querySelector("#zahonyTable tbody");
+    tb.innerHTML = "";
 
-  arr.forEach(z => {
-    const row = document.createElement("tr");
+    arr.forEach(z => {
+      const row = document.createElement("tr");
 
-    // ✅ checkbox
-    const td1 = document.createElement("td");
-    const cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.value = z.ZahonID;
-    td1.append(cb);
+      // ✅ checkbox
+      const td1 = document.createElement("td");
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = z.ZahonID;
+      td1.append(cb);
 
-    // ✅ odkaz na záhon
-    const td2 = document.createElement("td");
-    const a = document.createElement("a");
-    a.href = "#";
-    a.textContent = z.NazevZahonu;
-    a.onclick = () => { otevriModal(z); return false; };
-    td2.append(a);
+      // ✅ odkaz na záhon
+      const td2 = document.createElement("td");
+      const a = document.createElement("a");
+      a.href = "#";
+      a.textContent = z.NazevZahonu;
+      a.onclick = () => { otevriModal(z); return false; };
+      td2.append(a);
 
-    // ✅ plocha
-    const td3 = document.createElement("td");
-    const plo = z.Velikost_m2 != null
-      ? z.Velikost_m2
-      : ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
-    td3.textContent = `${plo} m²`;
-    );
+      // ✅ plocha
+      const td3 = document.createElement("td");
+      const plo = z.Velikost_m2 != null
+        ? z.Velikost_m2
+        : ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
+      td3.textContent = `${plo} m²`;
+
+      row.append(td1, td2, td3);
+      tb.append(row);
+    });
+  } catch (err) {
+    console.error("Chyba při načítání záhonů:", err);
+  }
 }
 
 // — Mazání záhonů —
