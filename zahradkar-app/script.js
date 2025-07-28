@@ -209,20 +209,28 @@ function nakresliZahonCanvas(delka, sirka) {
   canvas.width = 300;
   canvas.height = 200;
   canvas.style.border = "1px solid black";
-  canvas.style.cursor = "pointer"; // aby uživatel viděl, že může kliknout
-
+  canvas.style.cursor = "pointer";
   canvas.addEventListener("click", () => openZoomModal(delka, sirka));
   viz.appendChild(canvas);
 
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // 📐 Prohození pro zobrazení NA VÝŠKU
+  if (delka > sirka) {
+    [delka, sirka] = [sirka, delka];
+  }
+
   const padding = 20;
-  const scale = Math.min((canvas.width - padding * 2) / delka, (canvas.height - padding * 2) / sirka);
+  const scale = Math.min(
+    (canvas.width - padding * 2) / delka,
+    (canvas.height - padding * 2) / sirka
+  );
+
   const w = delka * scale;
   const h = sirka * scale;
 
-  ctx.fillStyle = "#a0522d"; // barva záhonu
+  ctx.fillStyle = "#a0522d";
   ctx.fillRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
 
   ctx.strokeStyle = "#000";
@@ -673,25 +681,43 @@ function closeZoomModal() {
   document.getElementById("zoomModal").style.display = "none";
 }
 //- vykresleni zoommodal - 
-function vykresliZoomZahon(delka, sirka) {
+function drawZoomCanvas(delka, sirka) {
   const canvas = document.getElementById("zoomCanvas");
   const ctx = canvas.getContext("2d");
+
+  canvas.width = 600;
+  canvas.height = 400;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Poměr stran
-  const maxWidth = canvas.width - 40;
-  const maxHeight = canvas.height - 40;
-  const scale = Math.min(maxWidth / delka, maxHeight / sirka);
+  // 📐 Prohození pro zobrazení NA VÝŠKU
+  if (delka > sirka) {
+    [delka, sirka] = [sirka, delka];
+  }
+
+  const padding = 40;
+  const scale = Math.min(
+    (canvas.width - padding * 2) / delka,
+    (canvas.height - padding * 2) / sirka
+  );
 
   const w = delka * scale;
   const h = sirka * scale;
 
-  ctx.fillStyle = "#a0522d"; // světle hnědá pro záhon
-  ctx.fillRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+  const x = (canvas.width - w) / 2;
+  const y = (canvas.height - h) / 2;
 
-  ctx.strokeStyle = "#000";
-  ctx.lineWidth = 2;
-  ctx.strokeRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+  ctx.fillStyle = "#deb887";
+  ctx.fillRect(x, y, w, h);
+
+  ctx.strokeStyle = "#333";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(x, y, w, h);
+
+  // volitelně: dopsání rozměrů
+  ctx.fillStyle = "#000";
+  ctx.font = "16px sans-serif";
+  ctx.fillText(`Délka: ${delka} m`, x, y - 10);
+  ctx.fillText(`Šířka: ${sirka} m`, x, y + h + 20);
 }
 
 
