@@ -203,19 +203,37 @@ async function addZahon(){
   
   
 // — Otevření modalu záhonu —
-function otevriModal(z){
-  aktualniZahon=z;
+function otevriModal(z) {
+  console.log("✅ otevriModal voláno pro záhon:", z);
+
+  aktualniZahon = z;
   setActiveIcon(null);
-  // vyplnit form
-  document.getElementById("editNazev").value=z.NazevZahonu;
-  document.getElementById("editDelka").value=z.Delka||0;
-  document.getElementById("editSirka").value=z.Sirka||0;
+
+  // Vyplnit form
+  const nazevInput = document.getElementById("editNazev");
+  const delkaInput = document.getElementById("editDelka");
+  const sirkaInput = document.getElementById("editSirka");
+  const modal = document.getElementById("modal");
+
+  if (!nazevInput || !delkaInput || !sirkaInput || !modal) {
+    console.error("❌ Některý z prvků modalu nebyl nalezen!");
+    return;
+  }
+
+  nazevInput.value = z.NazevZahonu;
+  delkaInput.value = z.Delka || 0;
+  sirkaInput.value = z.Sirka || 0;
+
   updatePlocha();
-  nakresliZahonCanvas(z.Delka,z.Sirka);
-  // zobrazit default
-  document.getElementById("modalViewDefault").style.display="block";
-  document.getElementById("modalViewUdalost").style.display="none";
-  document.getElementById("modal").style.display="flex";
+  nakresliZahonCanvas(z.Delka, z.Sirka);
+
+  // Zobrazit výchozí view
+  document.getElementById("modalViewDefault").style.display = "block";
+  document.getElementById("modalViewUdalost").style.display = "none";
+
+  modal.style.display = "flex";
+
+  console.log("✅ Modal zobrazen. Display:", modal.style.display);
 }
 // - Zavření modalu-
 function closeModal(){
