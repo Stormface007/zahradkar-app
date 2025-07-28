@@ -654,4 +654,36 @@ async function prefillSklizenPlodina() {
   }
 }
 
+// - otevřeni zoommodalu - 
+function openZoomModal(delka, sirka) {
+  const modal = document.getElementById("zoomModal");
+  modal.style.display = "flex";
+  vykresliZoomZahon(delka, sirka);
+}
+// - zavreni zoommodalu - 
+function closeZoomModal() {
+  document.getElementById("zoomModal").style.display = "none";
+}
+//- vykresleni zoommodal - 
+function vykresliZoomZahon(delka, sirka) {
+  const canvas = document.getElementById("zoomCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Poměr stran
+  const maxWidth = canvas.width - 40;
+  const maxHeight = canvas.height - 40;
+  const scale = Math.min(maxWidth / delka, maxHeight / sirka);
+
+  const w = delka * scale;
+  const h = sirka * scale;
+
+  ctx.fillStyle = "#a0522d"; // světle hnědá pro záhon
+  ctx.fillRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 2;
+  ctx.strokeRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+}
+
 
