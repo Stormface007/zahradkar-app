@@ -238,3 +238,10 @@ button {
   from { transform:rotate(0deg); }
   to   { transform:rotate(360deg); }
 }
+/* CCS nastaveni pro zvetseneny zahon modal*/
+#zoomCanvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
