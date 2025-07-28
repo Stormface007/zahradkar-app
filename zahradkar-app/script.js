@@ -116,16 +116,7 @@ async function loadZahony() {
       : ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
     td3.textContent = `${plo} m²`;
 
-    // ✅ zoom tlačítko
-    const td4 = document.createElement("td");
-    const btnZoom = document.createElement("button");
-    btnZoom.textContent = "🔍 Zoom";
-    btnZoom.onclick = () => openZoom(z);
-    td4.appendChild(btnZoom);
-
-    row.append(td1, td2, td3, td4);
-    tb.appendChild(row);
-  });
+    });
 }
 
 // — Mazání záhonů —
