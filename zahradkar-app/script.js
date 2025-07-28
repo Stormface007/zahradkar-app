@@ -107,7 +107,10 @@ async function loadZahony() {
       const a = document.createElement("a");
       a.href = "#";
       a.textContent = z.NazevZahonu;
-      a.onclick = () => { otevriModal(z); return false; };
+     a.addEventListener("click", e => {
+  e.preventDefault();
+  otevriModal(z);
+});
       td2.append(a);
 
       // ✅ plocha
