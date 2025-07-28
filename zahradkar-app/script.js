@@ -151,6 +151,7 @@ function deleteSelected() {
     .then(() => loadZahony())
     .finally(() => hideActionIndicator());
 }
+// — Pridání záhonů —
 async function addZahon(){
   console.log("▶ addZahon voláno");
 
@@ -213,6 +214,7 @@ function otevriModal(z){
   document.getElementById("modalViewUdalost").style.display="none";
   document.getElementById("modal").style.display="flex";
 }
+// - Zavření modalu-
 function closeModal(){
   aktualniZahon=null;
   document.getElementById("modal").style.display="none";
@@ -222,8 +224,9 @@ function closeModal(){
 function updatePlocha(){
   const d=parseFloat(document.getElementById("editDelka").value)||0,
         s=parseFloat(document.getElementById("editSirka").value)||0;
-  document.getElementById("vypocetPlochy").textContent=(d*s).toFixed(2);
+  document.getElementById("vypocetPlochy").textContent = `${(d * s).toFixed(2)} m²`;
 }
+// - uložení záhonu- 
 function saveZahon(){
   const n=document.getElementById("editNazev").value.trim(),
         d=parseFloat(document.getElementById("editDelka").value)||0,
@@ -254,7 +257,7 @@ function saveZahon(){
     .finally(()=>hideActionIndicator());
 }
 
-// — Načtení plodin/hnojiv —
+// — Načtení plodin z backend - 
 function loadPlodiny(){
   fetch(`${SERVER_URL}?action=getPlodiny`)
     .then(r=>r.json())
@@ -270,6 +273,7 @@ function loadPlodiny(){
     })
     .catch(e=>console.error("Chyba plodin:",e));
 }
+// - načtení hnojiv z backend-
 function loadHnojiva(){
   fetch(`${SERVER_URL}?action=getHnojiva`)
     .then(r=>r.json())
@@ -417,6 +421,7 @@ function formatDate(d) {
   const yr  = dateObj.getFullYear();
   return `${day}.${mon}.${yr}`;
 }
+//- blok modal pro analýzu zahonu- 
 function showAnalysisForm() {
   document.getElementById("modalViewDefault").style.display = "none";
   const uv = document.getElementById("modalViewUdalost");
@@ -441,10 +446,12 @@ function showAnalysisForm() {
     <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
   `;
 }
+// - ulozeni analýzy (zatim se nikam neuklada ale vyřešime) - 
 function saveAnalysis(){
   alert("Analýza uložena");
   zpetNaDetailZahonu();
 }
+// - funkce pro opetovny navrat k zakladnimu zobrazeni zahonu - 
 function zpetNaDetailZahonu(){
   const uv=document.getElementById("modalViewUdalost");
   uv.style.display="none";
@@ -461,6 +468,7 @@ function setActiveIcon(active){
       if(e) e.classList.toggle("active", t===active);
     });
 }
+// - řízení přepínaní mezi režimy v modal - 
 function onIconClick(typ){
   setActiveIcon(typ);
   document.getElementById("modalViewDefault").style.display="none";
@@ -471,7 +479,7 @@ function onIconClick(typ){
   // nastaveni zatím nic
 }
 
-
+// - ulozeni udalosti - 
 async function ulozUdalost(typ) {
   // 1) základní hodnoty
   const zahonID = aktualniZahon?.ZahonID;
@@ -548,16 +556,8 @@ async function ulozUdalost(typ) {
     hideActionIndicator?.();
   }
 }
-function formatDate(d) {
-  if (!d) return "";
-  const dateObj = new Date(d);
-  if (isNaN(dateObj)) return d;
-  const day = ("0" + dateObj.getDate()).slice(-2);
-  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
-  const yr  = dateObj.getFullYear();
-  return `${day}.${mon}.${yr}`;
-}
 
+// - format cisel- 
 function fmt(x) {
   if (x === undefined || x === null || x === "") return "";
   // Pokud je x číslo nebo řetězec reprezentující číslo, zobraz ho na 1 desetinné místo
@@ -567,7 +567,10 @@ function fmt(x) {
   // Pokud je x jiný řetězec, zobraz ho tak, jak je
   return x;
 }
-
+// — Předvyplnění názvu plodiny při přidávání sklizně —
+// Pokud záhon obsahuje záznam o posledním "Setí", který ještě nebyl sklizen,
+// plodina z tohoto setí se automaticky doplní do pole "Plodina" ve formuláři sklizně.
+// Pokud už sklizeň po posledním setí existuje, pole zůstane prázdné.
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   showActionIndicator?.();
