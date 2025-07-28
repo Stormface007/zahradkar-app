@@ -84,6 +84,7 @@
           <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="saveZahon()"/>
           <img src="img/Goback .png" alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
         </div>
+        
 
         <!-- Formulář událostí / analýzy -->
         <div id="modalViewUdalost" style="display:none;">
@@ -92,6 +93,15 @@
       </div>
     </div>
   </div>
+  <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED -->
+<div id="zoomModal" class="modal">
+  <div class="modal-content" style="padding: 20px; max-width: 800px;">
+    <h3>Zvětšený náhled záhonu</h3>
+    <canvas id="zoomCanvas" width="600" height="400" style="border:1px solid #333; background:#f4f4f4;"></canvas>
+    <br>
+    <button onclick="closeZoomModal()">Zavřít</button>
+  </div>
+</div>
 
 </body>
 </html>
