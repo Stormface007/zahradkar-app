@@ -317,6 +317,7 @@ function loadPlodiny(){
 }
 // - načtení hnojiv z backend-
 function loadHnojiva(){
+  showActionIndicator();
   fetch(`${SERVER_URL}?action=getHnojiva`)
     .then(r=>r.json())
     .then(arr=>{
@@ -408,6 +409,7 @@ if (typ === "sklizen") {
 }
 // — Načtení historie hnojení —
 function loadHnojeniHistory() {
+  showActionIndicator();
   const cont = document.getElementById("udalostHistory");
   if (!cont) return;
   if (!aktualniZahon) {
@@ -490,6 +492,7 @@ function showAnalysisForm() {
 }
 // - ulozeni analýzy (zatim se nikam neuklada ale vyřešime) - 
 function saveAnalysis(){
+  showActionIndicator();
   alert("Analýza uložena");
   zpetNaDetailZahonu();
 }
