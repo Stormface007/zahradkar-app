@@ -222,74 +222,6 @@ button {
   font-weight: bold;
 }
 
-/* Fullscreen Zoom Modal */
-#zoomModal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #009900;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-/* Zoom modal obsah (canvas + tlačítka) */
-.zoom-content {
-  position: relative;
-  width: 95%;
-  height: 95%;
-  background: #009900;
-  border-radius: 8px;
-  overflow: hidden;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Horní lišta s tlačítky */
-.zoom-header {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  z-index: 2;
-}
-
-/* Ikony (uložit, zpět) */
-.zoom-action-icon {
-  width: 50px;
-  height: 50px;
-  margin-left: 1rem;
-  cursor: pointer;
-  z-index: 2;
-}
-
-/* Tlačítko Zobraz body */
-.zoom-header button {
-  margin-left: 1rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: white;
-  color: #009900;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-/* Canvas pro vykreslení záhonu + bodů */
-#zoomCanvas {
-  flex: 1;
-  width: 800px;
-  height: 400px;
-  display: block;
-  background: transparent;
-}
-
-
 /* Indikátor akce (mrkev) */
 .action-indicator {
   display:none; position:fixed; inset:0;
@@ -305,14 +237,4 @@ button {
 @keyframes rotate {
   from { transform:rotate(0deg); }
   to   { transform:rotate(360deg); }
-}
-#btnZoomZahon {
-  margin-top: 12px;
-  padding: 8px 12px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
 }
