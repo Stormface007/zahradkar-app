@@ -720,4 +720,44 @@ function drawZoomCanvas(delka, sirka) {
   ctx.fillText(`Šířka: ${sirka} m`, x, y + h + 20);
 }
 
+function resizeAndDrawCanvas(canvas, delka, sirka) {
+  const containerWidth = canvas.parentElement.clientWidth;
+  const maxCanvasWidth = Math.min(containerWidth, 600); // max 600px
+  const maxCanvasHeight = window.innerHeight * 0.6;      // např. 60 % výšky okna
+
+  // prohození pro zobrazení NA VÝŠKU
+  if (delka > sirka) {
+    [delka, sirka] = [sirka, delka];
+  }
+
+  canvas.width = maxCanvasWidth;
+  canvas.height = maxCanvasHeight;
+
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const padding = 40;
+  const scale = Math.min(
+    (canvas.width - padding * 2) / delka,
+    (canvas.height - padding * 2) / sirka
+  );
+
+  const w = delka * scale;
+  const h = sirka * scale;
+
+  const x = (canvas.width - w) / 2;
+  const y = (canvas.height - h) / 2;
+
+  ctx.fillStyle = "#deb887";
+  ctx.fillRect(x, y, w, h);
+
+  ctx.strokeStyle = "#333";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(x, y, w, h);
+
+  ctx.fillStyle = "#000";
+  ctx.font = "16px sans-serif";
+  ctx.fillText(`Délka: ${delka} m`, x, y - 10);
+  ctx.fillText(`Šířka: ${sirka} m`, x, y + h + 20);
+}
 
