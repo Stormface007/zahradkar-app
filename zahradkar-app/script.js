@@ -115,7 +115,7 @@ async function loadZahony() {
       ? z.Velikost_m2
       : ((z.Delka || 0) * (z.Sirka || 0)).toFixed(2);
     td3.textContent = `${plo} m²`;
-}
+});
 
 // — Mazání záhonů —
 function deleteSelected(){
