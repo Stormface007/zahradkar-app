@@ -262,7 +262,8 @@ function otevriModal(z) {
   sirkaInput.value = z.Sirka || 0;
 
   updatePlocha();
-  nakresliZahonCanvas(z.Delka, z.Sirka);
+  const canvas = document.getElementById("zahonCanvas");
+resizeAndDrawCanvas(canvas, z.Delka || 0, z.Sirka || 0);
 
   // Zobrazit výchozí view
   document.getElementById("modalViewDefault").style.display = "block";
@@ -671,10 +672,15 @@ async function prefillSklizenPlodina() {
 }
 
 // - otevřeni zoommodalu - 
-function openZoomModal(delka, sirka) {
-  const modal = document.getElementById("zoomModal");
-  modal.style.display = "flex";
-  vykresliZoomZahon(delka, sirka);
+function openZoomModal(z) {
+  const canvas = document.getElementById("zoomCanvas");
+  if (!canvas || !z) return;
+
+  // Otevřít modal
+  document.getElementById("zoomModal").style.display = "flex";
+
+  // Vykreslit zvětšený záhon – PŘESNĚ TADY voláš funkci:
+  resizeAndDrawCanvas(canvas, z.Delka || 0, z.Sirka || 0);
 }
 // - zavreni zoommodalu - 
 function closeZoomModal() {
