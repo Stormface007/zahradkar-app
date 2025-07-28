@@ -496,53 +496,78 @@ function nakresliZahonCanvas(d,s){
   c.appendChild(cv);
 }
 
-let aktivniZahon = null; // mimo funkce
+let currentZahonZoomId = null;
+let currentZahonZoomData = null;
 
-function openZoom(z) {
-  aktivniZahon = z; // uložení pro další použití
-  document.getElementById("zoomModal").style.display = "block";
-  vykresliZahonNaZoom(z);
-  const cv = document.getElementById("zoomCanvas"), factor = 5, base = 80;
-  cv.width = base * factor;
-  cv.height = base * factor;
-
-  const ctx = cv.getContext("2d");
-  ctx.fillStyle = "#009900";
-  ctx.fillRect(0, 0, cv.width, cv.height);
-
-  const scale = Math.min(cv.width / z.Delka, cv.height / z.Sirka),
-        w = z.Delka * scale,
-        h = z.Sirka * scale,
-        x = (cv.width - w) / 2,
-        y = (cv.height - h) / 2;
-
-  ctx.fillStyle = "#c2b280";
-  ctx.fillRect(x, y, w, h);
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = "#000";
-  ctx.strokeRect(x, y, w, h);
-
+// Otevře zoom modal a nastaví ID záhonu
+function openZoom(zahon) {
+  currentZahonZoomId = zahon.id;
+  currentZahonZoomData = zahon;
   document.getElementById("zoomModal").style.display = "flex";
+  vykresliZahonNaZoomCanvas();  // volitelně vykresli i obdélník záhonu
 }
 
-function zobrazBodyNaZoom() {
-  if (!aktivniZahon) {
-    alert("Záhon není načten.");
+
+
+// Získá body a zobrazí je na canvasu
+async function zobrazBodyNaZoom() {
+  if (!currentZahonZoomId) {
+    console.warn("Žádné zahonID není aktivní");
     return;
   }
 
-  console.log("▶ Načítám body pro záhon:", aktivniZahon.ZahonID);
-
-  fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${aktivniZahon.ZahonID}`)
-    .then(r => r.json())
-    .then(body => {
-      console.log("✅ Body ze serveru:", body); // ⬅️ klíčový výpis
-      vykresliBodyNaZoom(aktivniZahon, body);
-    })
-    .catch(err => {
-      console.error("❌ Chyba při načítání bodů záhonu:", err);
+  try {
+    const response = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getBodyZahonu",
+        zahonID: currentZahonZoomId,
+      }),
     });
+
+    const data = await response.json();
+    if (!data || !Array.isArray(data)) {
+      console.warn("Žádná data nebo špatný formát.");
+      return;
+    }
+
+    const canvas = document.getElementById("zoomCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // ⚠️ Ověření, že rozměry jsou v pořádku
+    const zahonDelka = parseFloat(currentZahonZoomData.delka);
+    const zahonSirka = parseFloat(currentZahonZoomData.sirka);
+
+    if (!zahonDelka || !zahonSirka) {
+      console.warn("Chybějící nebo neplatné rozměry záhonu.");
+      return;
+    }
+
+    const scaleX = canvas.width / zahonDelka;
+    const scaleY = canvas.height / zahonSirka;
+
+    // ⚪ Nakresli body jako kruhy
+    ctx.fillStyle = "red";
+    data.forEach((bod) => {
+      const x = parseFloat(bod.X);
+      const y = parseFloat(bod.Y);
+      if (!isNaN(x) && !isNaN(y)) {
+        const cx = x * scaleX;
+        const cy = y * scaleY;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    });
+
+    console.log(`Zobrazilo se ${data.length} bodů`);
+  } catch (error) {
+    console.error("Chyba při načítání bodů:", error);
+  }
 }
+
+
 
 function vykresliZahonNaZoom(z) {
   const canvas = document.getElementById("zoomCanvas");
@@ -629,7 +654,25 @@ function vykresliBodyNaZoom(bodArray) {
     ctx.fill();
   }
 }
+// (Volitelné) vykresli samotný záhon jako obdélník v canvasu
+function vykresliZahonNaZoomCanvas() {
+  const canvas = document.getElementById("zoomCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  if (!currentZahonZoomData) return;
+
+  const zahonDelka = parseFloat(currentZahonZoomData.delka);
+  const zahonSirka = parseFloat(currentZahonZoomData.sirka);
+  if (!zahonDelka || !zahonSirka) return;
+
+  const scaleX = canvas.width / zahonDelka;
+  const scaleY = canvas.height / zahonSirka;
+
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(0, 0, zahonDelka * scaleX, zahonSirka * scaleY);
+}
 
 
 function closeZoom(){
