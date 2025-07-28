@@ -202,24 +202,32 @@ async function addZahon(){
 }
 //-vykresleni zahonu v modal- 
 function nakresliZahonCanvas(delka, sirka) {
-  const container = document.getElementById("zahonVizualizace");
-  container.innerHTML = "";
+  const viz = document.getElementById("zahonVizualizace");
+  viz.innerHTML = "";
 
   const canvas = document.createElement("canvas");
-  canvas.width = 200;
-  canvas.height = 150;
+  canvas.width = 300;
+  canvas.height = 200;
+  canvas.style.border = "1px solid black";
+  canvas.style.cursor = "pointer"; // aby uživatel viděl, že může kliknout
+
+  canvas.addEventListener("click", () => openZoomModal(delka, sirka));
+  viz.appendChild(canvas);
 
   const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "#deb887"; // světle hnědá
-  const maxW = canvas.width - 20;
-  const maxH = canvas.height - 20;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const scale = Math.min(maxW / delka, maxH / sirka);
+  const padding = 20;
+  const scale = Math.min((canvas.width - padding * 2) / delka, (canvas.height - padding * 2) / sirka);
   const w = delka * scale;
   const h = sirka * scale;
 
+  ctx.fillStyle = "#a0522d"; // barva záhonu
   ctx.fillRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
-  container.appendChild(canvas);
+
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 2;
+  ctx.strokeRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
 }
   
   
