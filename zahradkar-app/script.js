@@ -200,6 +200,27 @@ async function addZahon(){
     hideActionIndicator();
   }
 }
+//-vykresleni zahonu v modal- 
+function nakresliZahonCanvas(delka, sirka) {
+  const container = document.getElementById("zahonVizualizace");
+  container.innerHTML = "";
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 200;
+  canvas.height = 150;
+
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#deb887"; // světle hnědá
+  const maxW = canvas.width - 20;
+  const maxH = canvas.height - 20;
+
+  const scale = Math.min(maxW / delka, maxH / sirka);
+  const w = delka * scale;
+  const h = sirka * scale;
+
+  ctx.fillRect((canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+  container.appendChild(canvas);
+}
   
   
 // — Otevření modalu záhonu —
