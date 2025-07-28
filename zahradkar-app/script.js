@@ -151,9 +151,9 @@ function deleteSelected() {
     .then(() => loadZahony())
     .finally(() => hideActionIndicator());
 }
-// — Přidání záhonu —
 async function addZahon(){
   console.log("▶ addZahon voláno");
+
   const uid = localStorage.getItem("userID");
   const n   = document.getElementById("newNazev").value.trim();
   const d   = parseFloat(document.getElementById("newDelka").value) || 0;
@@ -166,44 +166,37 @@ async function addZahon(){
 
   showActionIndicator();
 
-  // připravíme body
-  const ps = new URLSearchParams({
-    action:       "addZahon",
-    userID:       uid,
-    NazevZahonu:  n,
-    Delka:        d,
-    Sirka:        s
-  });
-
-  console.log("→ POST", SERVER_URL, ps.toString());
+  const ps = new URLSearchParams();
+  ps.append("action", "addZahon");
+  ps.append("userID", uid);
+  ps.append("NazevZahonu", n);
+  ps.append("Delka", d);
+  ps.append("Sirka", s);
 
   try {
-    const resp = await fetch(SERVER_URL, {
-      method:  "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body:    ps.toString()
+    const res = await fetch(SERVER_URL, {
+      method: "POST",
+      body: ps
     });
-    console.log("← status", resp.status, resp.statusText);
-    const text = await resp.text();
-    console.log("← body:", text);
 
-    if (text.trim() === "OK") {
-      // vyčistit formulář a načíst znovu
-      ["newNazev","newDelka","newSirka"].forEach(id=>{
-        document.getElementById(id).value = "";
-      });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById("newNazev").value = "";
+      document.getElementById("newDelka").value = "";
+      document.getElementById("newSirka").value = "";
       await loadZahony();
     } else {
-      console.error("‼ neočekávaná odpověď:", text);
-      alert("Chyba serveru: " + text);
+      alert("Nepodařilo se přidat záhon.");
     }
   } catch (err) {
-    console.error("❌ fetch error:", err);
-    alert("Chyba při komunikaci se serverem.");
+    console.error("Chyba při přidávání záhonu:", err);
+    alert("Chyba při přidávání záhonu.");
   } finally {
     hideActionIndicator();
   }
-   }
+}
+  
   
 // — Otevření modalu záhonu —
 function otevriModal(z){
