@@ -246,13 +246,13 @@ function otevriModal(z) {
   aktualniZahon = z;
   setActiveIcon(null);
 
-  // Vyplnit form
   const nazevInput = document.getElementById("editNazev");
   const delkaInput = document.getElementById("editDelka");
   const sirkaInput = document.getElementById("editSirka");
   const modal = document.getElementById("modal");
+  const canvas = document.getElementById("zahonCanvas");
 
-  if (!nazevInput || !delkaInput || !sirkaInput || !modal) {
+  if (!nazevInput || !delkaInput || !sirkaInput || !modal || !canvas) {
     console.error("❌ Některý z prvků modalu nebyl nalezen!");
     return;
   }
@@ -262,16 +262,15 @@ function otevriModal(z) {
   sirkaInput.value = z.Sirka || 0;
 
   updatePlocha();
-  const canvas = document.getElementById("zahonCanvas");
-if (canvas) {
-  resizeAndDrawCanvas(document.getElementById("zahonCanvas"), delka, sirka);
-} else {
-  console.error("❌ Canvas nebyl nalezen!");
-}
-  // Zobrazit výchozí view
+
+  try {
+    resizeAndDrawCanvas(canvas, z.Delka, z.Sirka);
+  } catch (e) {
+    console.error("❌ Chyba při vykreslení záhonu:", e);
+  }
+
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
-
   modal.style.display = "flex";
 
   console.log("✅ Modal zobrazen. Display:", modal.style.display);
