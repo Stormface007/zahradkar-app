@@ -725,16 +725,16 @@ function drawZoomCanvas(delka, sirka) {
   ctx.fillText(`Délka: ${delka} m`, x, y - 10);
   ctx.fillText(`Šířka: ${sirka} m`, x, y + h + 20);
 }
-
+//- funkce pro zobrazeni a zmenu velikosti canvas- 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
-  const containerWidth = canvas.parentElement.clientWidth;
-  const maxCanvasWidth = Math.min(containerWidth, 600); // max 600px
-  const maxCanvasHeight = window.innerHeight * 0.6;      // např. 60 % výšky okna
-
-  // prohození pro zobrazení NA VÝŠKU
-  if (delka > sirka) {
-    [delka, sirka] = [sirka, delka];
+  if (!canvas) {
+    console.error("❌ Canvas není definován.");
+    return;
   }
+
+  const containerWidth = canvas.parentElement?.clientWidth || 600;
+  const maxCanvasWidth = Math.min(containerWidth, 600);
+  const maxCanvasHeight = window.innerHeight * 0.6;
 
   canvas.width = maxCanvasWidth;
   canvas.height = maxCanvasHeight;
@@ -743,13 +743,30 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const padding = 40;
+
+  // Rozměry záhonu
+  const realDelka = delka || 1;
+  const realSirka = sirka || 1;
+
+  // Přepočet na výšku (pro zobrazení)
+  let zobrazeniDelka = realDelka;
+  let zobrazeniSirka = realSirka;
+  let otoceno = false;
+
+  if (realDelka > realSirka) {
+    // zobraz jako „na výšku“
+    zobrazeniDelka = realSirka;
+    zobrazeniSirka = realDelka;
+    otoceno = true;
+  }
+
   const scale = Math.min(
-    (canvas.width - padding * 2) / delka,
-    (canvas.height - padding * 2) / sirka
+    (canvas.width - padding * 2) / zobrazeniDelka,
+    (canvas.height - padding * 2) / zobrazeniSirka
   );
 
-  const w = delka * scale;
-  const h = sirka * scale;
+  const w = zobrazeniDelka * scale;
+  const h = zobrazeniSirka * scale;
 
   const x = (canvas.width - w) / 2;
   const y = (canvas.height - h) / 2;
@@ -763,7 +780,13 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
 
   ctx.fillStyle = "#000";
   ctx.font = "16px sans-serif";
-  ctx.fillText(`Délka: ${delka} m`, x, y - 10);
-  ctx.fillText(`Šířka: ${sirka} m`, x, y + h + 20);
+
+  // Popisky zachovají původní (ne přeházené) hodnoty
+  ctx.fillText(`Délka: ${realDelka} m`, x, y - 10);
+  ctx.fillText(`Šířka: ${realSirka} m`, x, y + h + 20);
+
+  if (otoceno) {
+    console.log("ℹ️ Záhon otočen pro zobrazení na výšku.");
+  }
 }
 
