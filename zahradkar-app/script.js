@@ -679,46 +679,51 @@ async function prefillSklizenPlodina() {
 }
 
 // - otevřeni zoommodalu - 
-function openZoomModal(z) {
-  const canvas = document.getElementById("zoomCanvas");
-  if (!canvas || !z) return;
+function openZoom(zahon) {
+  const zoomModal = document.getElementById("zoomModal");
+  zoomModal.style.display = "flex";
 
-  // Otevřít modal
-  document.getElementById("zoomModal").style.display = "flex";
-
-  // Vykreslit zvětšený záhon – PŘESNĚ TADY voláš funkci:
-  resizeAndDrawCanvas(canvas, z.Delka || 0, z.Sirka || 0);
+  requestAnimationFrame(() => {
+    const canvas = document.getElementById("zoomCanvas");
+    resizeAndDrawCanvas(canvas, zahon.Delka, zahon.Sirka);
+  });
 }
+
+
 // - zavreni zoommodalu - 
 function closeZoomModal() {
   document.getElementById("zoomModal").style.display = "none";
 }
-//- vykresleni zoommodal - 
+// vykreslení zahonu 
 function drawZoomCanvas(delka, sirka) {
   const canvas = document.getElementById("zoomCanvas");
   const ctx = canvas.getContext("2d");
 
-  canvas.width = 600;
-  canvas.height = 400;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!canvas || !ctx) return;
 
-  // 📐 Prohození pro zobrazení NA VÝŠKU
-  if (delka > sirka) {
-    [delka, sirka] = [sirka, delka];
-  }
-
+  // Dynamická velikost canvasu (např. 90% šířky okna, 70% výšky)
+  const maxWidth = window.innerWidth * 0.9;
+  const maxHeight = window.innerHeight * 0.7;
   const padding = 40;
+
+  // Výpočet měřítka podle poměru
   const scale = Math.min(
-    (canvas.width - padding * 2) / delka,
-    (canvas.height - padding * 2) / sirka
+    (maxWidth - padding * 2) / delka,
+    (maxHeight - padding * 2) / sirka
   );
 
   const w = delka * scale;
   const h = sirka * scale;
 
-  const x = (canvas.width - w) / 2;
-  const y = (canvas.height - h) / 2;
+  canvas.width = w + padding * 2;
+  canvas.height = h + padding * 2;
 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const x = padding;
+  const y = padding;
+
+  // Vykreslení záhonu
   ctx.fillStyle = "#deb887";
   ctx.fillRect(x, y, w, h);
 
@@ -726,7 +731,7 @@ function drawZoomCanvas(delka, sirka) {
   ctx.lineWidth = 3;
   ctx.strokeRect(x, y, w, h);
 
-  // volitelně: dopsání rozměrů
+  // Volitelně: vypiš rozměry
   ctx.fillStyle = "#000";
   ctx.font = "16px sans-serif";
   ctx.fillText(`Délka: ${delka} m`, x, y - 10);
