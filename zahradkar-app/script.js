@@ -263,7 +263,11 @@ function otevriModal(z) {
 
   updatePlocha();
   const canvas = document.getElementById("zahonCanvas");
-resizeAndDrawCanvas(canvas, z.Delka || 0, z.Sirka || 0);
+if (canvas) {
+  resizeAndDrawCanvas(canvas, delka, sirka);
+} else {
+  console.error("❌ Canvas nebyl nalezen!");
+}
 
   // Zobrazit výchozí view
   document.getElementById("modalViewDefault").style.display = "block";
