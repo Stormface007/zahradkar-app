@@ -729,41 +729,30 @@ function drawZoomCanvas(delka, sirka) {
 }
 //- funkce pro zobrazeni a zmenu velikosti canvas- 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
-  if (!canvas) {
-    console.error("Canvas nenalezen.");
-    return;
-  }
+  if (!canvas || !delka || !sirka) return;
 
   const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    console.error("Nelze získat 2D kontext canvasu.");
-    return;
-  }
+  const container = canvas.parentElement;
+  const w = container.clientWidth;
+  const h = container.clientHeight;
 
-  // Získání velikosti rodiče
-  const parent = canvas.parentElement;
-  const parentWidth = parent.clientWidth;
-  const parentHeight = parent.clientHeight;
+  // Vyčisti canvas
+  canvas.width = w;
+  canvas.height = h;
+  ctx.clearRect(0, 0, w, h);
 
-  // Výpočet poměru stran
-  const ratio = delka / sirka;
-  const padding = 10;
+  // Poměry stran
+  const scaleX = w / delka;
+  const scaleY = h / sirka;
+  const scale = Math.min(scaleX, scaleY); // aby se vešlo celé
 
-  // Výpočet velikosti canvasu v pixelech
-  let drawWidth = parentWidth - padding * 2;
-  let drawHeight = drawWidth / ratio;
+  const rectWidth = delka * scale;
+  const rectHeight = sirka * scale;
 
-  if (drawHeight > parentHeight - padding * 2) {
-    drawHeight = parentHeight - padding * 2;
-    drawWidth = drawHeight * ratio;
-  }
+  const offsetX = (w - rectWidth) / 2;
+  const offsetY = (h - rectHeight) / 2;
 
-  canvas.width = drawWidth;
-  canvas.height = drawHeight;
-
-  // Vymazání a vykreslení obdélníku
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#d4a373"; // světle hnědá barva záhonu
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#d2a679"; // světle hnědá
+  ctx.fillRect(offsetX, offsetY, rectWidth, rectHeight);
 }
 
