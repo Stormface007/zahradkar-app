@@ -264,11 +264,10 @@ function otevriModal(z) {
   updatePlocha();
   const canvas = document.getElementById("zahonCanvas");
 if (canvas) {
-  resizeAndDrawCanvas(canvas, zahon.Delka, zahon.Sirka); // ✅ SPRÁVNĚ
+  resizeAndDrawCanvas(canvas, z.Delka, z.Sirka); // ✅ správně
 } else {
   console.error("❌ Canvas nebyl nalezen!");
 }
-
   // Zobrazit výchozí view
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
