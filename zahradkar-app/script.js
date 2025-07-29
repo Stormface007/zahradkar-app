@@ -730,24 +730,26 @@ function drawZoomCanvas(delka, sirka) {
 }
 //- funkce pro zobrazeni a zmenu velikosti canvas- 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
-  if (!canvas || !canvas.getContext) {
-    console.error("❌ Canvas neexistuje nebo není podporován.");
-    return;
+  const container = canvas.parentElement;
+  const containerWidth = container.clientWidth;
+  const containerHeight = container.clientHeight;
+
+  // Prohození – záhon orientujeme NA VÝŠKU pokud je delší
+  if (delka > sirka) {
+    [delka, sirka] = [sirka, delka];
   }
 
+  // Nastavit canvas na velikost kontejneru
+  canvas.width = containerWidth;
+  canvas.height = containerHeight;
+
   const ctx = canvas.getContext("2d");
-
-  // Nastavíme pevnou velikost pro test
-  canvas.width = 300;
-  canvas.height = 300;
-
-  // Vyčistíme
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const padding = 20;
   const scale = Math.min(
-    (canvas.width - 2 * padding) / delka,
-    (canvas.height - 2 * padding) / sirka
+    (canvas.width - padding * 2) / delka,
+    (canvas.height - padding * 2) / sirka
   );
 
   const w = delka * scale;
@@ -760,7 +762,7 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.fillRect(x, y, w, h);
 
   ctx.strokeStyle = "#333";
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 3;
   ctx.strokeRect(x, y, w, h);
 
   ctx.fillStyle = "#000";
