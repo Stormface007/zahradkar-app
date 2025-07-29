@@ -730,44 +730,41 @@ function drawZoomCanvas(delka, sirka) {
 }
 //- funkce pro zobrazeni a zmenu velikosti canvas- 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
-  const container = canvas.parentElement;
-  const containerWidth = container.clientWidth;
-  const containerHeight = container.clientHeight;
-
-  // Prohození – záhon orientujeme NA VÝŠKU pokud je delší
-  if (delka > sirka) {
-    [delka, sirka] = [sirka, delka];
+  if (!canvas) {
+    console.error("Canvas nenalezen.");
+    return;
   }
 
-  // Nastavit canvas na velikost kontejneru
-  canvas.width = containerWidth;
-  canvas.height = containerHeight;
-
   const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    console.error("Nelze získat 2D kontext canvasu.");
+    return;
+  }
+
+  // Získání velikosti rodiče
+  const parent = canvas.parentElement;
+  const parentWidth = parent.clientWidth;
+  const parentHeight = parent.clientHeight;
+
+  // Výpočet poměru stran
+  const ratio = delka / sirka;
+  const padding = 10;
+
+  // Výpočet velikosti canvasu v pixelech
+  let drawWidth = parentWidth - padding * 2;
+  let drawHeight = drawWidth / ratio;
+
+  if (drawHeight > parentHeight - padding * 2) {
+    drawHeight = parentHeight - padding * 2;
+    drawWidth = drawHeight * ratio;
+  }
+
+  canvas.width = drawWidth;
+  canvas.height = drawHeight;
+
+  // Vymazání a vykreslení obdélníku
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const padding = 20;
-  const scale = Math.min(
-    (canvas.width - padding * 2) / delka,
-    (canvas.height - padding * 2) / sirka
-  );
-
-  const w = delka * scale;
-  const h = sirka * scale;
-
-  const x = (canvas.width - w) / 2;
-  const y = (canvas.height - h) / 2;
-
-  ctx.fillStyle = "#deb887";
-  ctx.fillRect(x, y, w, h);
-
-  ctx.strokeStyle = "#333";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(x, y, w, h);
-
-  ctx.fillStyle = "#000";
-  ctx.font = "14px sans-serif";
-  ctx.fillText(`Délka: ${delka} m`, x, y - 8);
-  ctx.fillText(`Šířka: ${sirka} m`, x, y + h + 18);
+  ctx.fillStyle = "#d4a373"; // světle hnědá barva záhonu
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
