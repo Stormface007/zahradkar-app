@@ -727,68 +727,42 @@ function drawZoomCanvas(delka, sirka) {
 }
 //- funkce pro zobrazeni a zmenu velikosti canvas- 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
-  if (!canvas) {
-    console.error("❌ Canvas není definován.");
+  if (!canvas || !canvas.getContext) {
+    console.error("❌ Canvas neexistuje nebo není podporován.");
     return;
   }
-
-  const parent = canvas.parentElement;
-  if (!parent) {
-    console.error("❌ Canvas nemá parentElement.");
-    return;
-  }
-
-  const padding = 20;
-
-  // Získání dostupného prostoru
-  const containerWidth = parent.clientWidth;
-  const containerHeight = parent.clientHeight;
-
-  // Nastavíme větší canvas
-  const maxCanvasWidth = containerWidth;
-  const maxCanvasHeight = containerHeight * 0.9;
-
-  canvas.width = maxCanvasWidth;
-  canvas.height = maxCanvasHeight;
 
   const ctx = canvas.getContext("2d");
+
+  // Nastavíme pevnou velikost pro test
+  canvas.width = 300;
+  canvas.height = 300;
+
+  // Vyčistíme
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Přehození rozměrů pro "na výšku"
-  let realDelka = delka || 1;
-  let realSirka = sirka || 1;
-  let displayDelka = realDelka;
-  let displaySirka = realSirka;
-
-  if (realDelka > realSirka) {
-    displayDelka = realSirka;
-    displaySirka = realDelka;
-  }
-
-  // Výpočet měřítka podle maximálních rozměrů a paddingu
+  const padding = 20;
   const scale = Math.min(
-    (canvas.width - 2 * padding) / displayDelka,
-    (canvas.height - 2 * padding) / displaySirka
+    (canvas.width - 2 * padding) / delka,
+    (canvas.height - 2 * padding) / sirka
   );
 
-  const w = displayDelka * scale;
-  const h = displaySirka * scale;
+  const w = delka * scale;
+  const h = sirka * scale;
 
   const x = (canvas.width - w) / 2;
   const y = (canvas.height - h) / 2;
 
-  // Vykreslení záhonu
   ctx.fillStyle = "#deb887";
   ctx.fillRect(x, y, w, h);
 
   ctx.strokeStyle = "#333";
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 2;
   ctx.strokeRect(x, y, w, h);
 
-  // Popisky
   ctx.fillStyle = "#000";
   ctx.font = "14px sans-serif";
-  ctx.fillText(`Délka: ${realDelka} m`, x, y - 8);
-  ctx.fillText(`Šířka: ${realSirka} m`, x, y + h + 18);
+  ctx.fillText(`Délka: ${delka} m`, x, y - 8);
+  ctx.fillText(`Šířka: ${sirka} m`, x, y + h + 18);
 }
 
