@@ -679,13 +679,12 @@ async function prefillSklizenPlodina() {
 }
 
 // - otevřeni zoommodalu - 
-function openZoom(zahon) {
-  const zoomModal = document.getElementById("zoomModal");
-  zoomModal.style.display = "flex";
+function openZoom() {
+  const zahon = aktualniZahon;
+  document.getElementById("zoomModal").style.display = "flex";
 
   requestAnimationFrame(() => {
-    const canvas = document.getElementById("zoomCanvas");
-    resizeAndDrawCanvas(canvas, zahon.Delka, zahon.Sirka);
+    drawZoomCanvas(zahon.Delka, zahon.Sirka);
   });
 }
 
