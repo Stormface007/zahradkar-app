@@ -264,7 +264,7 @@ function otevriModal(z) {
   updatePlocha();
   const canvas = document.getElementById("zahonCanvas");
 if (canvas) {
-  resizeAndDrawCanvas(canvas, z.Delka, z.Sirka); // ✅ správně
+  resizeAndDrawCanvas(document.getElementById("zahonCanvas"), delka, sirka);
 } else {
   console.error("❌ Canvas nebyl nalezen!");
 }
