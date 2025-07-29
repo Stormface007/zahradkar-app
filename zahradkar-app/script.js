@@ -729,30 +729,42 @@ function drawZoomCanvas(delka, sirka) {
 }
 //- funkce pro zobrazeni a zmenu velikosti canvas- 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
-  if (!canvas || !delka || !sirka) return;
+  if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
-  const container = canvas.parentElement;
-  const w = container.clientWidth;
-  const h = container.clientHeight;
+  const parent = canvas.parentElement;
+  const padding = 10;
 
-  // Vyčisti canvas
-  canvas.width = w;
-  canvas.height = h;
-  ctx.clearRect(0, 0, w, h);
+  // Nastav rozměr canvasu podle rodiče
+  const width = parent.clientWidth;
+  const height = parent.clientHeight;
+  canvas.width = width;
+  canvas.height = height;
 
-  // Poměry stran
-  const scaleX = w / delka;
-  const scaleY = h / sirka;
-  const scale = Math.min(scaleX, scaleY); // aby se vešlo celé
+  ctx.clearRect(0, 0, width, height);
 
-  const rectWidth = delka * scale;
-  const rectHeight = sirka * scale;
+  // Poměr stran záhonu
+  const aspectRatio = delka / sirka;
 
-  const offsetX = (w - rectWidth) / 2;
-  const offsetY = (h - rectHeight) / 2;
+  // Maximální šířka/výška pro obdélník se započítáním paddingu
+  const maxDrawWidth = width - padding * 2;
+  const maxDrawHeight = height - padding * 2;
 
-  ctx.fillStyle = "#d2a679"; // světle hnědá
-  ctx.fillRect(offsetX, offsetY, rectWidth, rectHeight);
+  // Najdi ideální velikost obdélníku
+  let drawWidth = maxDrawWidth;
+  let drawHeight = drawWidth / aspectRatio;
+
+  if (drawHeight > maxDrawHeight) {
+    drawHeight = maxDrawHeight;
+    drawWidth = drawHeight * aspectRatio;
+  }
+
+  // Centrování
+  const offsetX = (width - drawWidth) / 2;
+  const offsetY = (height - drawHeight) / 2;
+
+  // Kresli záhon
+  ctx.fillStyle = "#d4a373"; // světle hnědá
+  ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
 }
 
