@@ -58,45 +58,52 @@
   </div>
 
   <!-- MODÁLNÍ OKNO -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <!-- Boční panel ikon -->
-      <div class="side-icons">
-        <img id="icon-mereni"    class="side-icon" src="img/mereni.png"    alt="Měření"    onclick="onIconClick('mereni')"/>
-        <img id="icon-seti"      class="side-icon" src="img/seti.png"      alt="Setí"      onclick="onIconClick('seti')"/>
-        <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"   alt="Hnojení"   onclick="onIconClick('hnojeni')"/>
-        <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"   alt="Sklizeň"   onclick="onIconClick('sklizen')"/>
-        <img id="icon-analyza"   class="side-icon" src="img/analyza.png"   alt="Analýza"   onclick="onIconClick('analyza')"/>
-        <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png" alt="Nastavení" onclick="onIconClick('nastaveni')"/>
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <!-- Boční panel ikon -->
+    <div class="side-icons">
+      <img id="icon-mereni"    class="side-icon" src="img/mereni.png"    alt="Měření"    onclick="onIconClick('mereni')"/>
+      <img id="icon-seti"      class="side-icon" src="img/seti.png"      alt="Setí"      onclick="onIconClick('seti')"/>
+      <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"   alt="Hnojení"   onclick="onIconClick('hnojeni')"/>
+      <img id="icon-sklizen"   class="side-icon" src="img/sklizen.png"   alt="Sklizeň"   onclick="onIconClick('sklizen')"/>
+      <img id="icon-analyza"   class="side-icon" src="img/analyza.png"   alt="Analýza"   onclick="onIconClick('analyza')"/>
+      <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png" alt="Nastavení" onclick="onIconClick('nastaveni')"/>
+    </div>
+
+    <div class="modal-body">
+      <!-- Defaultní úprava záhonu -->
+      <div id="modalViewDefault">
+        <h3>Úprava záhonu</h3>
+
+        <!-- Vstupní pole -->
+        <input type="text" id="editNazev" placeholder="Název záhonu"/>
+
+        <div class="dimensions">
+          <input type="number" id="editDelka" placeholder="Délka (m)" min="0" oninput="updatePlocha()"/>
+          <input type="number" id="editSirka" placeholder="Šířka (m)" min="0" oninput="updatePlocha()"/>
+        </div>
+
+        <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
+
+        <!-- 🔶 Vizualizace záhonu -->
+        <div id="zahonVizualizace">
+          <div id="canvasContainer" style="width: 100%; max-width: 600px; height: 30vh; margin: 10px auto; background: #fefefe; border: 2px solid #444; border-radius: 8px; box-shadow: 0 0 6px rgba(0,0,0,0.2);">
+            <canvas id="zahonCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+          </div>
+        </div>
+
+        <!-- Tlačítka -->
+        <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="saveZahon()"/>
+        <img src="img/Goback .png" alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
       </div>
 
-      <div class="modal-body">
-        <!-- Defaultní úprava záhonu -->
-        <div id="modalViewDefault">
-          <h3>Úprava záhonu</h3>
-          <input type="text" id="editNazev" placeholder="Název záhonu"/>
-          <div class="dimensions">
-            <input type="number" id="editDelka" placeholder="Délka (m)" min="0" oninput="updatePlocha()"/>
-            <input type="number" id="editSirka" placeholder="Šířka (m)" min="0" oninput="updatePlocha()"/>
-          </div>
-          <div class="plocha">Plocha: <span id="vypocetPlochy">0</span></div>
-          <div id="zahonVizualizace">
- <div id="canvasContainer" style="width: 100%; height: 30vh; position: relative;">
-  <canvas id="zahonCanvas" style="width: 100%; height: 100%;"></canvas>
-</div>
-</div>
-          <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="saveZahon()"/>
-          <img src="img/Goback .png" alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
-        </div>
-        
-
-        <!-- Formulář událostí / analýzy -->
-        <div id="modalViewUdalost" style="display:none;">
-          <div id="udalostFormContainer"></div>
-        </div>
+      <!-- Formulář událostí / analýzy -->
+      <div id="modalViewUdalost" style="display:none;">
+        <div id="udalostFormContainer"></div>
       </div>
     </div>
   </div>
+</div>
   <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED -->
 <div id="zoomModal" class="modal">
   <div class="modal-content" style="padding: 20px; max-width: 800px;">
