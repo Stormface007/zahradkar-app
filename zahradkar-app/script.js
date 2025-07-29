@@ -264,7 +264,12 @@ function otevriModal(z) {
   updatePlocha();
 
   try {
-    resizeAndDrawCanvas(canvas, z.Delka, z.Sirka);
+    requestAnimationFrame(() => {
+  const canvas = document.getElementById("zahonCanvas");
+  if (canvas) {
+    resizeAndDrawCanvas(canvas, aktualniZahon.Delka, aktualniZahon.Sirka);
+  }
+});
   } catch (e) {
     console.error("❌ Chyba při vykreslení záhonu:", e);
   }
