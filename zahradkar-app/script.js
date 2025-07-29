@@ -732,9 +732,21 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
     return;
   }
 
-  const containerWidth = canvas.parentElement?.clientWidth || 600;
-  const maxCanvasWidth = Math.min(containerWidth, 600);
-  const maxCanvasHeight = window.innerHeight * 0.6;
+  const parent = canvas.parentElement;
+  if (!parent) {
+    console.error("❌ Canvas nemá parentElement.");
+    return;
+  }
+
+  const padding = 20;
+
+  // Získání dostupného prostoru
+  const containerWidth = parent.clientWidth;
+  const containerHeight = parent.clientHeight;
+
+  // Nastavíme větší canvas
+  const maxCanvasWidth = containerWidth;
+  const maxCanvasHeight = containerHeight * 0.9;
 
   canvas.width = maxCanvasWidth;
   canvas.height = maxCanvasHeight;
@@ -742,35 +754,30 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const padding = 40;
-
-  // Rozměry záhonu
-  const realDelka = delka || 1;
-  const realSirka = sirka || 1;
-
-  // Přepočet na výšku (pro zobrazení)
-  let zobrazeniDelka = realDelka;
-  let zobrazeniSirka = realSirka;
-  let otoceno = false;
+  // Přehození rozměrů pro "na výšku"
+  let realDelka = delka || 1;
+  let realSirka = sirka || 1;
+  let displayDelka = realDelka;
+  let displaySirka = realSirka;
 
   if (realDelka > realSirka) {
-    // zobraz jako „na výšku“
-    zobrazeniDelka = realSirka;
-    zobrazeniSirka = realDelka;
-    otoceno = true;
+    displayDelka = realSirka;
+    displaySirka = realDelka;
   }
 
+  // Výpočet měřítka podle maximálních rozměrů a paddingu
   const scale = Math.min(
-    (canvas.width - padding * 2) / zobrazeniDelka,
-    (canvas.height - padding * 2) / zobrazeniSirka
+    (canvas.width - 2 * padding) / displayDelka,
+    (canvas.height - 2 * padding) / displaySirka
   );
 
-  const w = zobrazeniDelka * scale;
-  const h = zobrazeniSirka * scale;
+  const w = displayDelka * scale;
+  const h = displaySirka * scale;
 
   const x = (canvas.width - w) / 2;
   const y = (canvas.height - h) / 2;
 
+  // Vykreslení záhonu
   ctx.fillStyle = "#deb887";
   ctx.fillRect(x, y, w, h);
 
@@ -778,15 +785,10 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.lineWidth = 3;
   ctx.strokeRect(x, y, w, h);
 
+  // Popisky
   ctx.fillStyle = "#000";
-  ctx.font = "16px sans-serif";
-
-  // Popisky zachovají původní (ne přeházené) hodnoty
-  ctx.fillText(`Délka: ${realDelka} m`, x, y - 10);
-  ctx.fillText(`Šířka: ${realSirka} m`, x, y + h + 20);
-
-  if (otoceno) {
-    console.log("ℹ️ Záhon otočen pro zobrazení na výšku.");
-  }
+  ctx.font = "14px sans-serif";
+  ctx.fillText(`Délka: ${realDelka} m`, x, y - 8);
+  ctx.fillText(`Šířka: ${realSirka} m`, x, y + h + 18);
 }
 
