@@ -72,7 +72,6 @@ function logout() {
   document.getElementById("appDiv").style.display   = "none";
   document.getElementById("loginDiv").style.display = "block";
 }
-
 // Při načtení stránky se podíváme, jestli už jsme přihlášeni
 document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("userID")) {
