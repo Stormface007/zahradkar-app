@@ -407,7 +407,7 @@ function loadSetiSklizenHistory() {
   const cont = document.getElementById("udalostHistory");
   if (!cont || !aktualniZahon) return;
 
-  fetch(${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID})
+fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
     .then(r => r.json())
     .then(arr => {
       const data = arr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
