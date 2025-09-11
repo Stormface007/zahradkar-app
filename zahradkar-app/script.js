@@ -407,7 +407,7 @@ function loadSetiSklizenHistory() {
   const cont = document.getElementById("udalostHistory");
   if (!cont || !aktualniZahon) return;
 
-  fetch(${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}
+  fetch(${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID})
     .then(r => r.json())
     .then(arr => {
       const data = arr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
@@ -418,6 +418,7 @@ function loadSetiSklizenHistory() {
 
       let html = `<table>
         <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th></tr></thead><tbody>`;
+      
       data.reverse().slice(0, 3).forEach(u => {
         html += `<tr>
           <td>${formatDate(u.Datum)}</td>
@@ -426,6 +427,7 @@ function loadSetiSklizenHistory() {
           <td>${u.Vynos_kg || ""}</td>
         </tr>`;
       });
+      
       html += </tbody></table>;
       cont.innerHTML = html;
     })
