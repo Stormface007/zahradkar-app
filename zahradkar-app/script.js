@@ -508,71 +508,53 @@ function onIconClick(typ){
 }
 
 // - ulozeni udalosti - 
+// - uložení události (sjednocený formulář setí + sklizeň) -
 async function ulozUdalost(typ) {
-  // 1) základní hodnoty
   const zahonID = aktualniZahon?.ZahonID;
   const datum   = document.getElementById("udalostDatum").value;
   if (!zahonID || !datum) {
     return alert("Záhon a datum jsou povinné.");
   }
 
-  // 2) připravíme parametry
   const ps = new URLSearchParams();
   ps.append("action", "addUdalost");
   ps.append("zahonID", zahonID);
-  ps.append("typ", typ.charAt(0).toUpperCase() + typ.slice(1));
   ps.append("datum", datum);
 
-  // 3) plodina (setí a sklizeň)
-  if (typ === "seti") {
-    const pl = document.getElementById("plodinaSelect").value;
-    ps.append("plodina", pl);
-    ps.append("hnojivo", "");
-    ps.append("mnozstvi", "");
-    ps.append("vynos", "");
-  } else if (typ === "sklizen") {
-    const plodina = document.getElementById("udalostPlodina").value.trim();
-    if (!plodina) {
-      alert("Vyplňte plodinu, kterou sklízíte.");
-      return;
-    }
-    let vynos = document.getElementById("udalostVynos").value.replace(",", ".");
-    vynos = vynos === "" ? "" : parseFloat(vynos);
-    if (vynos === "") vynos = "";
-    else if (isNaN(vynos)) vynos = 0;
+  // ❗ Rozlišíme typ podle toho, co uživatel vyplnil:
+  const plodina = document.getElementById("plodinaSelect")?.value?.trim() || "";
+  const plodinaSklizen = document.getElementById("udalostPlodina")?.value?.trim() || "";
+  let vynos = document.getElementById("udalostVynos")?.value?.replace(",", ".");
+  vynos = vynos === "" ? "" : parseFloat(vynos);
+  if (vynos !== "" && isNaN(vynos)) vynos = 0;
+
+  if (plodina && !plodinaSklizen) {
+    // ➕ SETÍ
+    ps.append("typ", "Setí");
     ps.append("plodina", plodina);
     ps.append("hnojivo", "");
     ps.append("mnozstvi", "");
-    ps.append("vynos", vynos);
-  } else if (typ === "hnojeni") {
-    const hnoj = document.getElementById("hnojivoSelect").value;
-    let mnoz = document.getElementById("udalostMnozstvi").value.replace(",", ".");
-    mnoz = mnoz === "" ? "" : parseFloat(mnoz);
-    if (mnoz === "") mnoz = "";
-    else if (isNaN(mnoz)) mnoz = 0;
-    ps.append("plodina", "");
-    ps.append("hnojivo", hnoj);
-    ps.append("mnozstvi", mnoz);
     ps.append("vynos", "");
-  } else {
-    ps.append("plodina", "");
+  } else if (plodinaSklizen) {
+    // ➕ SKLIZEŇ
+    ps.append("typ", "Sklizeň");
+    ps.append("plodina", plodinaSklizen);
     ps.append("hnojivo", "");
     ps.append("mnozstvi", "");
-    ps.append("vynos", "");
+    ps.append("vynos", vynos);
+  } else {
+    alert("Vyplňte alespoň plodinu pro setí nebo sklizeň.");
+    return;
   }
 
-  // 6) poznámku teď ignorujeme
+  // poznámku zatím ignorujeme
   ps.append("poznamka", "");
 
-  // 7) odešleme na server
   try {
     showActionIndicator?.();
-    const res  = await fetch(SERVER_URL, { method: "POST", body: ps });
+    const res = await fetch(SERVER_URL, { method: "POST", body: ps });
     const text = await res.text();
     if (text.trim() === "OK") {
-      if (typ === "hnojeni") {
-        loadHnojeniHistory();
-      }
       zpetNaDetailZahonu();
     } else {
       alert("Chyba při ukládání události: " + text);
