@@ -41,20 +41,33 @@ function hideActionIndicator(){
 // — Přihlášení / odhlášení —
 async function login() {
   console.log("login voláno");
-  const u = document.getElementById("username").value;
-  const p = document.getElementById("password").value;
+
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
+
   try {
-    const res = await fetch(`${SERVER_URL}?action=login`, {
+    const res = await fetch(SERVER_URL, {
       method: "POST",
-      body: new URLSearchParams({ username: u, password: p })
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        action: "login",  // ⚠ DŮLEŽITÉ!
+        username: u,
+        password: p
+      })
     });
+
     const data = await res.json();
+
     if (data.success) {
       localStorage.setItem("userID", data.userID);
-      onLoginSuccess();
+      console.log("Přihlášení úspěšné, userID:", data.userID);
+      onLoginSuccess();  // volání tvojí funkce
     } else {
       document.getElementById("loginMsg").innerText = "Neplatné přihlašovací údaje.";
     }
+
   } catch (err) {
     console.error("Login error:", err);
     document.getElementById("loginMsg").innerText = "Chyba při přihlášení.";
