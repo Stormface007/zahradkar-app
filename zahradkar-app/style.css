@@ -2,19 +2,20 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #009900;
+  background-color: #c4f7c4; /* jemnější zelená */
   color: black;
 }
 
 /* Přihlášení */
 #loginDiv {
-  background: #009900;
+  background: #b2e6b2;
   padding: 2rem;
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
   margin: 10vh auto 0;
   text-align: center;
+  box-shadow: 0 0 16px rgba(0,0,0,0.05);
 }
 .logo-small {
   width: 80px;
@@ -28,16 +29,15 @@ input, select {
   max-width: 300px;
   padding: 0.75rem;
   margin: 0.5rem 0;
-  border: 2px solid black;
+  border: 2px solid #2e7d32; /* sjednocený odstín */
   border-radius: 6px;
   font-size: 1rem;
   background: white;
   box-sizing: border-box;
 }
-/* šipka u selectů */
 select {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path fill='%23000' d='M0,0l4,5l4,-5z'/></svg>");
+  background-image: url("image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path fill='%232e7d32' d='M0,0l4,5l4,-5z'/></svg>");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 8px 5px;
@@ -47,12 +47,17 @@ select {
 button {
   padding: 0.6rem 1.2rem;
   background: white;
-  color: #009900;
-  border: 2px solid #009900;
+  color: #2e7d32;
+  border: 2px solid #2e7d32;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
   margin: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+}
+button:hover {
+  background: #e9ffe9;
+  color: #005500;
 }
 
 /* Top-panel */
@@ -62,7 +67,7 @@ button {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
-  background: rgba(255,255,255,0.1);
+  background: rgba(180, 230, 180, 0.15);
 }
 .icon-button {
   width: 50px; height: 50px;
@@ -87,16 +92,17 @@ button {
   border-collapse: collapse;
   margin-top: 1rem;
   background: white;
-  border: 2px solid black;
+  border: 2px solid #2e7d32;
 }
 #zahonyTable th {
-  background: #009900;
+  background: #4caf50;
+  color: #fff;
   padding: 0.5rem;
-  border: 2px solid black;
+  border: 2px solid #2e7d32;
 }
 #zahonyTable td {
   padding: 0.5rem;
-  border: 2px solid black;
+  border: 2px solid #2e7d32;
 }
 #zahonyTable a {
   color: #000;
@@ -104,8 +110,10 @@ button {
   font-family: Verdana, sans-serif;
 }
 #zahonyTable a:hover {
-  color: #005500;
+  color: #205520;
 }
+/* Hover efekt na řádek */
+#zahonyTable tr:hover { background: #e9ffe9; }
 
 /* Modal */
 .modal {
@@ -118,14 +126,16 @@ button {
 }
 .modal-content {
   position: relative;
-  background: #009900;
+  background: #b2e6b2;
   margin: 5% auto;
   width: 90%; max-width: 600px;
   max-height: calc(100vh - 40px);
-  padding: 20px 20px 20px 140px;
+  padding: 20px 20px 20px 120px; /* snížený left padding */
   overflow-y: auto;
   border-radius: 8px;
   box-sizing: border-box;
+  border: 2px solid #2e7d32;
+  box-shadow: 0 4px 32px rgba(0,60,0,0.08);
 }
 .modal-body {}
 
@@ -146,6 +156,7 @@ button {
   cursor: pointer;
   opacity: 0.7;
   transition: transform .2s, opacity .2s;
+  border: 2px solid #a5d6a7;
 }
 .side-icon.active,
 .side-icon:hover {
@@ -161,11 +172,13 @@ button {
 .plocha { font-weight:bold; margin-bottom:1rem; }
 
 /* Vizualizace záhonu */
-#zahonVizualizace { height: 300px; /* nebo klidně i víc: 400–500px */
+#zahonVizualizace { height: 320px; /* mírné zvýšení výšky */
   margin-top: 10px;
   position: relative; z-index:1; }
 #zahonVizualizace canvas {
   display:block; margin:0 auto; background:transparent;
+  border: 2px solid #2e7d32;
+  border-radius: 6px;
 }
 
 /* Modal-btn */
@@ -184,15 +197,15 @@ button {
 .nutrient label { font-weight:bold; display:block; margin-bottom:.25rem; }
 .soil-info { margin-top:1rem; }
 .soil-info label { font-weight:bold; display:block; margin-bottom:.25rem; }
-.soil-info input { width:100%; padding:.5rem; border:2px solid black; border-radius:4px; }
+.soil-info input { width:100%; padding:.5rem; border:2px solid #2e7d32; border-radius:4px; }
 
 /* Historie hnojení – stylizovaná tabulka */
 .hnojeni-history {
   max-height: 220px;
   overflow: auto;
   margin-top: 1rem;
-  border: 2px solid #009900;
-  background: #fff;
+  border: 2px solid #2e7d32;
+  background: #f7fff7;
   border-radius: 5px;
   padding: 0;
 }
@@ -200,22 +213,22 @@ button {
   min-width: 650px;
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: #f7fff7;
 }
 .hnojeni-history th {
-  background: #009900;
+  background: #4caf50;
   color: #fff;
   font-weight: bold;
   padding: 6px 10px;
-  border: 1px solid #009900;
+  border: 1px solid #2e7d32;
   text-align: center;
   white-space: nowrap;
 }
 .hnojeni-history td {
-  background: #fff;
+  background: #f7fff7;
   color: #000;
   padding: 6px 10px;
-  border: 1px solid #009900;
+  border: 1px solid #2e7d32;
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
@@ -231,28 +244,43 @@ button {
   z-index:10000;
 }
 .action-indicator.active {
-  display:flex; animation:rotate 1s linear infinite;
+  display:flex; animation:rotate-mrkev 1.2s linear infinite;
 }
 .action-indicator img {
   width:80px; height:80px;
 }
-@keyframes rotate {
+@keyframes rotate-mrkev {
   from { transform:rotate(0deg); }
   to   { transform:rotate(360deg); }
 }
+/* nastaveni boxu pro vizualizaci zahonu */
+#canvasContainer {
+  width: 100%;
+  max-width: 600px;
+  height: 32vh; /* mírné navýšení */
+  margin: 10px auto;
+  background: #f7fff7;
+  border: 2px solid #2e7d32;
+  border-radius: 8px;
+}
+
 /* CCS nastaveni pro zvetseneny zahon modal*/
 #zoomCanvas {
   width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
+  border: 2px solid #2e7d32;
+  border-radius: 8px;
+  background: #f7fff7;
 }
-/* nastaveni boxu pro vizulaizaci zahonu*/
-#canvasContainer {
-  width: 100%;
-  max-width: 600px;
-  height: 30vh; /* nebo třeba 200px */
-  margin: 10px auto;
-  background: #f5f5f5;
-  border: 1px solid #ccc;
+
+/* Mobilní optimalizace */
+@media (max-width: 500px) {
+  input, select { font-size: .9rem; }
+  .modal-content { padding: 10px 10px 10px 50px; }
+  #zahonVizualizace { height: 210px; }
+  #canvasContainer { height: 20vh; }
+  .side-icon { width: 40px; }
+  #zoomCanvas { max-width: 100%; }
 }
