@@ -418,7 +418,6 @@ function loadSetiSklizenHistory() {
 
       let html = `<table>
         <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th></tr></thead><tbody>`;
-      
       data.reverse().slice(0, 3).forEach(u => {
         html += `<tr>
           <td>${formatDate(u.Datum)}</td>
@@ -427,7 +426,6 @@ function loadSetiSklizenHistory() {
           <td>${u.Vynos_kg || ""}</td>
         </tr>`;
       });
-      
       html += </tbody></table>;
       cont.innerHTML = html;
     })
