@@ -426,7 +426,7 @@ fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
           <td>${u.Vynos_kg || ""}</td>
         </tr>`;
       });
-      html += </tbody></table>;
+      html += "</tbody></table>";
       cont.innerHTML = html;
     })
     .catch(e => {
