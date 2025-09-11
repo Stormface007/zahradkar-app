@@ -378,114 +378,59 @@ function showUdalostForm(typ) {
   c.innerHTML = "";
 
   let html = `
-    <h4>${typ.charAt(0).toUpperCase() + typ.slice(1)}</h4>
+    <h4>Setí a sklizeň</h4>
     <label>Datum:
       <input type="date" id="udalostDatum"/>
     </label><br>
-  `;
-
-  if (typ === "seti") {
-    html += `
-      <label>Plodina:
-        <select id="plodinaSelect">
-          <option>Načítám…</option>
-        </select>
-      </label><br>
-    `;
-    loadPlodiny();
-  }
-  if (typ === "hnojeni") {
-    html += `
-      <label>Hnojivo:
-        <select id="hnojivoSelect"><option>Načítám…</option></select>
-      </label><br>
-      <label>Množství (kg):
-        <input type="number" id="udalostMnozstvi"/>
-      </label><br>
-    `;
-    loadHnojiva();
-  }
-  if (typ === "sklizen") {
-    html += `
-      <label>Plodina:
-        <input type="text" id="udalostPlodina"/>
-      </label><br>
-      <label>Výnos (kg):
-        <input type="number" id="udalostVynos"/>
-      </label><br>
-    `;
-  }
-
-  // Tlačítka - vždy hned za formulářem!
-  html += `
+    <label>Plodina:
+      <select id="plodinaSelect"><option>Načítám…</option></select>
+    </label><br>
+    <label>Výnos (kg):
+      <input type="number" id="udalostVynos"/>
+    </label><br>
     <div class="modal-btns">
-      <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost('${typ}')"/>
-      <img src="img/Goback .png" alt="Zpět"  class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozSetiNeboSklizen()"/>
+      <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+    </div>
+    <div id="udalostHistory" class="hnojeni-history">
+      <em>Načítám historii...</em>
     </div>
   `;
 
-  // Historie pouze pro hnojení
-  if (typ === "hnojeni") {
-    html += `
-      <div id="udalostHistory" class="hnojeni-history">
-        <em>Načítám historii...</em>
-      </div>
-    `;
-  }
-
   c.innerHTML = html;
-if (typ === "sklizen") {
-  prefillSklizenPlodina();
+  loadPlodiny();
+  loadSetiSklizenHistory();
 }
-  // Historii načíst pouze pro hnojení
-  if (typ === "hnojeni") {
-   loadHnojeniHistory();
-  }
-}
-// — Načtení historie hnojení —
-function loadHnojeniHistory() {
-  const cont = document.getElementById("udalostHistory");
-  if (!cont) return;
-  if (!aktualniZahon) {
-    cont.innerHTML = "<p>Žádný záhon.</p>";
-    return;
-  }
 
-  fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
+// — Načtení historie setí a sklizně —
+function loadSetiSklizenHistory() {
+  const cont = document.getElementById("udalostHistory");
+  if (!cont || !aktualniZahon) return;
+
+  fetch(${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID})
     .then(r => r.json())
     .then(arr => {
-      const hist = arr.filter(u => u.Typ === "Hnojení");
-      if (!hist.length) {
-        cont.innerHTML = "<p>Žádná historie hnojení.</p>";
+      const data = arr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
+      if (!data.length) {
+        cont.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
         return;
       }
+
       let html = `<table>
-        <thead>
-          <tr>
-            <th>Datum</th>
-            <th>Hnojivo</th>
-            <th>Množství (kg)</th>
-            <th>N (g/m²)</th>
-            <th>P (g/m²)</th>
-            <th>K (g/m²)</th>
-          </tr>
-        </thead>
-        <tbody>`;
-      hist.forEach(u => {
+        <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th></tr></thead><tbody>`;
+      data.reverse().slice(0, 3).forEach(u => {
         html += `<tr>
-          <td class="datum">${formatDate(u.Datum)}</td>
-          <td class="hnojivo">${u.Hnojivo || ""}</td>
-          <td>${fmt(u.Mnozstvi)}</td>
-          <td>${fmt(u.N_g_m2)}</td>
-          <td>${fmt(u.P_g_m2)}</td>
-          <td>${fmt(u.K_g_m2)}</td>
+          <td>${formatDate(u.Datum)}</td>
+          <td>${u.Typ}</td>
+          <td>${u.Plodina || ""}</td>
+          <td>${u.Vynos_kg || ""}</td>
         </tr>`;
       });
-      html += `</tbody></table>`;
+      html += </tbody></table>;
       cont.innerHTML = html;
     })
-    .catch(err => {
-      console.error("Chyba historie:", err);
+    .catch(e => {
+      console.error("Chyba historie setí/sklizně:", e);
       cont.innerHTML = "<p>Chyba při načítání historie.</p>";
     });
 }
@@ -540,7 +485,7 @@ function zpetNaDetailZahonu(){
 
 // — Boční ikony —
 function setActiveIcon(active){
-  ["mereni","seti","hnojeni","sklizen","analyza","nastaveni"]
+  ["mereni","seti","hnojeni","analyza","nastaveni"]
     .forEach(t=>{
       const e=document.getElementById("icon-"+t);
       if(e) e.classList.toggle("active", t===active);
@@ -551,10 +496,15 @@ function onIconClick(typ){
   setActiveIcon(typ);
   document.getElementById("modalViewDefault").style.display="none";
   document.getElementById("modalViewUdalost").style.display="none";
-  if(["seti","hnojeni","sklizen"].includes(typ)) showUdalostForm(typ);
-  else if(typ==="mereni") document.getElementById("modalViewDefault").style.display="block";
-  else if(typ==="analyza") showAnalysisForm();
-  // nastaveni zatím nic
+  if (typ === "seti") {
+  showUdalostForm("plodina");  // nový sjednocený formulář
+} else if (typ === "hnojeni") {
+  showUdalostForm("hnojeni");
+} else if (typ === "mereni") {
+  document.getElementById("modalViewDefault").style.display = "block";
+} else if (typ === "analyza") {
+  showAnalysisForm();
+}
 }
 
 // - ulozeni udalosti - 
