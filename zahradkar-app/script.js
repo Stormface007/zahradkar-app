@@ -254,6 +254,7 @@ function nakresliZahonCanvas(delka, sirka) {
 // — Otevření modalu záhonu —
 function otevriModal(z) {
   console.log("✅ otevriModal voláno pro záhon:", z);
+document.getElementById("nazevZahonu").textContent = z.NazevZahonu || "";
 
   aktualniZahon = z;
   setActiveIcon(null);
