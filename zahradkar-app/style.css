@@ -277,10 +277,24 @@ button:hover {
 
 /* Mobilní optimalizace */
 @media (max-width: 500px) {
-  input, select { font-size: .9rem; }
-  .modal-content { padding: 10px 10px 10px 50px; }
-  #zahonVizualizace { height: 210px; }
-  #canvasContainer { height: 20vh; }
+    input, select { font-size: .9rem; }
+  .modal-content {
+    padding: 12px 6px 12px 46px; /* menší left padding */
+    font-size: 0.95rem;
+  }
+  .side-icons {
+    top: 8px;
+    left: 4px;
+    gap: 0.5rem;
+  }
+  .side-icon {
+    width: 32px; /* zmenšit ikony */
+    padding: 2px;
+  }
+  #zahonVizualizace {
+    height: 120px;
+  }
+    #canvasContainer { height: 20vh; }
   .side-icon { width: 40px; }
   #zoomCanvas { max-width: 100%; }
 }
