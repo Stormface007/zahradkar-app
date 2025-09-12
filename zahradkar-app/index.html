@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zahrádkářský systém</title>
   <link rel="stylesheet" href="style.css"/>
-  <!-- Kód se načte až po DOMu, takže inline onclick najde funkce -->
   <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- Indikátor akce (točící se mrkev) -->
+  <!-- Indikátor akce -->
   <div id="actionIndicator" class="action-indicator">
     <img src="img/Plodina_mrkev .png" alt="Vizualizace akce"/>
   </div>
@@ -25,8 +24,6 @@
 
   <!-- Hlavní aplikace -->
   <div id="appDiv" style="display:none;">
-
-    <!-- Horní panel s počasím a ikonami -->
     <div class="top-panel">
       <div id="weatherContainer" class="toolbar-weather">
         <img id="weatherIcon" alt="Počasí"/>
@@ -36,7 +33,6 @@
       <img id="userIcon" class="icon-button" src="img/User.png" alt="Uživatel"/>
     </div>
 
-    <!-- Tabulka záhonů -->
     <div class="table-actions">
       <button onclick="deleteSelected()">🗑️ Smazat označené</button>
     </div>
@@ -49,7 +45,6 @@
       </table>
     </div>
 
-    <!-- Formulář pro nový záhon -->
     <h3>Přidat nový záhon</h3>
     <input type="text" id="newNazev" placeholder="Název záhonu"/>
     <input type="number" id="newDelka" placeholder="Délka (m)" min="0"/>
@@ -57,63 +52,56 @@
     <button onclick="addZahon()">Přidat</button>
   </div>
 
-  <!-- MODÁLNÍ OKNO -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <!-- Boční panel ikon -->
-    <div class="side-icons">
-      <img id="icon-mereni"    class="side-icon" src="img/mereni.png"    alt="Měření"    onclick="onIconClick('mereni')"/>
-      <img id="icon-seti"      class="side-icon" src="img/seti.png"      alt="Setí"      onclick="onIconClick('seti')"/>
-      <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"   alt="Hnojení"   onclick="onIconClick('hnojeni')"/>
-      <img id="icon-analyza"   class="side-icon" src="img/analyza.png"   alt="Analýza"   onclick="onIconClick('analyza')"/>
-      <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png" alt="Nastavení" onclick="onIconClick('nastaveni')"/>
-    </div>
+  <!-- MODÁLNÍ OKNO pro editaci záhonu a akce -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <!-- Boční panel ikon -->
+      <div class="side-icons">
+        <img id="icon-mereni"    class="side-icon" src="img/mereni.png"    alt="Měření"    onclick="onIconClick('mereni')"/>
+        <img id="icon-seti"      class="side-icon" src="img/seti.png"      alt="Setí"      onclick="onIconClick('seti')"/>
+        <img id="icon-hnojeni"   class="side-icon" src="img/hnojeni.png"   alt="Hnojení"   onclick="onIconClick('hnojeni')"/>
+        <img id="icon-analyza"   class="side-icon" src="img/analyza.png"   alt="Analýza"   onclick="onIconClick('analyza')"/>
+        <img id="icon-nastaveni" class="side-icon" src="img/nastaveni.png" alt="Nastavení" onclick="onIconClick('nastaveni')"/>
+      </div>
 
-    <div class="modal-body">
-      <!-- Defaultní úprava záhonu -->
-      <div id="modalViewDefault">
+      <div class="modal-body">
         <div id="nazevZahonu" class="modal-zahon-name"></div>
-        <h4>Setí a sklizeň</h4>
-        <h3>Úprava záhonu</h3>
-
-        <!-- Vstupní pole -->
-        <input type="text" id="editNazev" placeholder="Název záhonu"/>
-
-        <div class="dimensions">
-          <input type="number" id="editDelka" placeholder="Délka (m)" min="0" oninput="updatePlocha()"/>
-          <input type="number" id="editSirka" placeholder="Šířka (m)" min="0" oninput="updatePlocha()"/>
-        </div>
-
-        <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
-
-        <!-- 🔶 Vizualizace záhonu -->
-        <div id="zahonVizualizace">
-          <div id="canvasContainer" style="width: 100%; max-width: 600px; height: 30vh; margin: 10px auto; background: #fefefe; border: 2px solid #444; border-radius: 8px; box-shadow: 0 0 6px rgba(0,0,0,0.2);">
-           <canvas id="zahonCanvas" style="width: 100%; height: 100%;" onclick="openZoom()"></canvas>
+        
+        <!-- Základní editace záhonu -->
+        <div id="modalViewDefault">
+          <h3>Úprava záhonu</h3>
+          <input type="text" id="editNazev" placeholder="Název záhonu"/>
+          <div class="dimensions">
+            <input type="number" id="editDelka" placeholder="Délka (m)" min="0" oninput="updatePlocha()"/>
+            <input type="number" id="editSirka" placeholder="Šířka (m)" min="0" oninput="updatePlocha()"/>
           </div>
+          <div class="plocha">Plocha: <span id="vypocetPlochy">0</span> m²</div>
+          <div id="zahonVizualizace">
+            <div id="canvasContainer">
+             <canvas id="zahonCanvas" style="width: 100%; height: 100%;" onclick="openZoom()"></canvas>
+            </div>
+          </div>
+          <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="saveZahon()"/>
+          <img src="img/Goback.png"  alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
         </div>
 
-        <!-- Tlačítka -->
-        <img src="img/Safe.png"    alt="Uložit" class="modal-btn" onclick="saveZahon()"/>
-        <img src="img/Goback .png" alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
-      </div>
-
-      <!-- Formulář událostí / analýzy -->
-      <div id="modalViewUdalost" style="display:none;">
-        <div id="udalostFormContainer"></div>
+        <!-- Formulář událostí / analýzy -->
+        <div id="modalViewUdalost" style="display:none;">
+          <div id="udalostFormContainer"></div>
+          <img src="img/Goback.png"  alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
+        </div>
       </div>
     </div>
   </div>
-</div>
-  <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED -->
-<div id="zoomModal" class="modal">
-  <div class="modal-content" style="padding: 20px; max-width: 800px;">
-    <h3>Zvětšený náhled záhonu</h3>
-    <canvas id="zoomCanvas" width="600" height="400" style="border:1px solid #333; background:#f4f4f4;"></canvas>
-    <br>
-    <button onclick="closeZoomModal()">Zavřít</button>
-  </div>
-</div>
 
+  <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED -->
+  <div id="zoomModal" class="modal">
+    <div class="modal-content" style="padding: 20px; max-width: 800px;">
+      <h3>Zvětšený náhled záhonu</h3>
+      <canvas id="zoomCanvas" width="600" height="400"></canvas>
+      <br>
+      <button onclick="closeZoomModal()">Zavřít</button>
+    </div>
+  </div>
 </body>
 </html>
