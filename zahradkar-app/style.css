@@ -313,11 +313,12 @@ button:hover {
 }
 .modal-zahon-name {
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   color: #205520;
-  margin-bottom: 0.3em;
-  margin-top: 0;
-  letter-spacing: .5px;
-  text-align: left;
+  text-align: right;
+  margin-bottom: 0.5em;
+  margin-top: 0.2em;
+  letter-spacing: 1px;
 }
+
 
