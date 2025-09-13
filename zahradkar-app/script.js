@@ -452,11 +452,11 @@ function onTypAkceChange() {
 
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
+  const plodinaSelect = document.getElementById("plodinaSelect");
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     const arr = await res.json();
     const seti = arr.filter(u => u.Typ === "Setí");
-    const plodinaSelect = document.getElementById("plodinaSelect");
     if (!seti.length) {
       plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
       return;
@@ -466,9 +466,10 @@ async function prefillSklizenPlodina() {
     );
     plodinaSelect.innerHTML = `<option value="${posledniSeti.Plodina}">${posledniSeti.Plodina}</option>`;
   } catch (e) {
-    document.getElementById("plodinaSelect").innerHTML = '<option value="">Chyba načítání</option>';
+    plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
   }
 }
+
 
 
 // — Načtení historie setí a sklizně —
