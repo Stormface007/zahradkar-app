@@ -376,7 +376,7 @@ function showUdalostForm(typ) {
   uv.classList.remove("analysis");
   uv.style.display = "block";
   const c = document.getElementById("udalostFormContainer");
-  c.innerHTML = "";
+  c.innerHTML = `
   
   if (typ === "hnojeni") {
     // FORMULÁŘ PRO HNOJENÍ
@@ -404,7 +404,7 @@ function showUdalostForm(typ) {
   } else {
     // FORMULÁŘ PRO SETÍ/SKLIZEŇ
     c.innerHTML = `
-     <h4>Setí a sklizeň</h4>
+    <h4>Setí a sklizeň</h4>
     <label>Typ akce:
       <select id="typAkceSelect" onchange="onTypAkceChange()">
         <option value="seti">Setí</option>
@@ -427,9 +427,40 @@ function showUdalostForm(typ) {
     <div id="udalostHistory" class="hnojeni-history">
       <em>Načítám historii...</em>
     </div>
-    `;
+  `;
+  loadSetiSklizenHistory();
+  // Výchozí režim: Setí
+  loadPlodiny();
+  document.getElementById("udalostVynos").disabled = true; // Výnos povolit jen pro sklizeň
+}
+function onTypAkceChange() {
+  const typ = document.getElementById("typAkceSelect").value;
+  if (typ === "seti") {
     loadPlodiny();
-    loadSetiSklizenHistory();
+    document.getElementById("udalostVynos").disabled = true;
+  } else if (typ === "sklizen") {
+    prefillSklizenPlodina();
+    document.getElementById("udalostVynos").disabled = false;
+  }
+}
+
+async function prefillSklizenPlodina() {
+  if (!aktualniZahon) return;
+  try {
+    const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
+    const arr = await res.json();
+    const seti = arr.filter(u => u.Typ === "Setí");
+    const plodinaSelect = document.getElementById("plodinaSelect");
+    if (!seti.length) {
+      plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
+      return;
+    }
+    const posledniSeti = seti.reduce((a, b) =>
+      new Date(a.Datum) > new Date(b.Datum) ? a : b
+    );
+    plodinaSelect.innerHTML = `<option value="${posledniSeti.Plodina}">${posledniSeti.Plodina}</option>`;
+  } catch (e) {
+    document.getElementById("plodinaSelect").innerHTML = '<option value="">Chyba načítání</option>';
   }
 }
 
@@ -753,19 +784,5 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.fillStyle = "#d4a373"; // světle hnědá
   ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
 }
-function onTypAkceChange() {
-  const typ = document.getElementById("typAkceSelect").value;
-  const plodinaSelect = document.getElementById("plodinaSelect");
 
-  if (typ === "seti") {
-    // Načte seznam všech plodin k setí
-    loadPlodiny();
-    // Výnos pole (kg) vypnout (nepovinné)
-    document.getElementById("udalostVynos").disabled = true;
-  } else if (typ === "sklizen") {
-    // Předvyplní plodinu podle posledního setí (nebo „není zaseto“)
-    prefillSklizenPlodina();
-    document.getElementById("udalostVynos").disabled = false;
-  }
-}
 
