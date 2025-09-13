@@ -572,46 +572,33 @@ function onIconClick(typ){
 
 // - ulozeni udalosti - 
 // - uložení události (sjednocený formulář setí + sklizeň) -
-async function ulozUdalost(typ) {
+async function ulozUdalost() {
   const typ = document.getElementById("typAkceSelect").value;
   const zahonID = aktualniZahon?.ZahonID;
   const datum   = document.getElementById("udalostDatum").value;
-  if (!zahonID || !datum) {
-    return alert("Záhon a datum jsou povinné.");
+  const plodina = document.getElementById("plodinaSelect").value.trim();
+  let vynos = document.getElementById("udalostVynos").value.replace(",", ".");
+  vynos = vynos === "" ? "" : parseFloat(vynos);
+  if (!zahonID || !datum || !plodina) {
+    alert("Záhon, datum a plodina jsou povinné.");
+    return;
   }
-
   const ps = new URLSearchParams();
   ps.append("action", "addUdalost");
   ps.append("zahonID", zahonID);
   ps.append("datum", datum);
-
-  // ❗ Rozlišíme typ podle toho, co uživatel vyplnil:
-  const plodina = document.getElementById("plodinaSelect")?.value?.trim() || "";
-  const plodinaSklizen = document.getElementById("udalostPlodina")?.value?.trim() || "";
-  let vynos = document.getElementById("udalostVynos")?.value?.replace(",", ".");
-  vynos = vynos === "" ? "" : parseFloat(vynos);
-  if (vynos !== "" && isNaN(vynos)) vynos = 0;
-
-  if (plodina && !plodinaSklizen) {
-    // ➕ SETÍ
+  if (typ === "seti") {
     ps.append("typ", "Setí");
     ps.append("plodina", plodina);
-    ps.append("hnojivo", "");
-    ps.append("mnozstvi", "");
     ps.append("vynos", "");
-  } else if (plodinaSklizen) {
-    // ➕ SKLIZEŇ
+  } else if (typ === "sklizen") {
     ps.append("typ", "Sklizeň");
-    ps.append("plodina", plodinaSklizen);
-    ps.append("hnojivo", "");
-    ps.append("mnozstvi", "");
+    ps.append("plodina", plodina);
     ps.append("vynos", vynos);
-  } else {
-    alert("Vyplňte alespoň plodinu pro setí nebo sklizeň.");
-    return;
   }
-
-  // poznámku zatím ignorujeme
+  // další pole: hnojivo, množství, poznámka (zatím prázdná)
+  ps.append("hnojivo", "");
+  ps.append("mnozstvi", "");
   ps.append("poznamka", "");
 
   try {
@@ -630,6 +617,7 @@ async function ulozUdalost(typ) {
     hideActionIndicator?.();
   }
 }
+
 
 // - format cisel- 
 function fmt(x) {
