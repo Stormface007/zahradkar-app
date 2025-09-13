@@ -542,6 +542,7 @@ function onIconClick(typ){
 // - ulozeni udalosti - 
 // - uložení události (sjednocený formulář setí + sklizeň) -
 async function ulozUdalost(typ) {
+  const typ = document.getElementById("typAkceSelect").value;
   const zahonID = aktualniZahon?.ZahonID;
   const datum   = document.getElementById("udalostDatum").value;
   if (!zahonID || !datum) {
