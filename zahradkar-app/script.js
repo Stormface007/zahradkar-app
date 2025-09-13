@@ -377,31 +377,56 @@ function showUdalostForm(typ) {
   uv.style.display = "block";
   const c = document.getElementById("udalostFormContainer");
   c.innerHTML = "";
-
-  let html = `
-    <h4>Setí a sklizeň</h4>
-    <label>Datum:
-      <input type="date" id="udalostDatum"/>
-    </label><br>
-    <label>Plodina:
-      <select id="plodinaSelect"><option>Načítám…</option></select>
-    </label><br>
-    <label>Výnos (kg):
-      <input type="number" id="udalostVynos"/>
-    </label><br>
-    <div class="modal-btns">
-      <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozSetiNeboSklizen()"/>
-      <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-    </div>
-    <div id="udalostHistory" class="hnojeni-history">
-      <em>Načítám historii...</em>
-    </div>
-  `;
-
-  c.innerHTML = html;
-  loadPlodiny();
-  loadSetiSklizenHistory();
+  
+  if (typ === "hnojeni") {
+    // FORMULÁŘ PRO HNOJENÍ
+    c.innerHTML = `
+      <h4>Hnojení</h4>
+      <label>Datum:
+        <input type="date" id="hnojeniDatum"/>
+      </label><br>
+      <label>Hnojivo:
+        <select id="hnojivoSelect"><option>Načítám…</option></select>
+      </label><br>
+      <label>Množství (kg):
+        <input type="number" id="hnojeniMnozstvi"/>
+      </label><br>
+      <div class="modal-btns">
+        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
+        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      </div>
+      <div id="hnojeniHistory" class="hnojeni-history">
+        <em>Načítám historii...</em>
+      </div>
+    `;
+    loadHnojiva();
+    loadHnojeniHistory();   // musí existovat funkce, která načte historii hnojení
+  } else {
+    // FORMULÁŘ PRO SETÍ/SKLIZEŇ
+    c.innerHTML = `
+      <h4>Setí a sklizeň</h4>
+      <label>Datum:
+        <input type="date" id="udalostDatum"/>
+      </label><br>
+      <label>Plodina:
+        <select id="plodinaSelect"><option>Načítám…</option></select>
+      </label><br>
+      <label>Výnos (kg):
+        <input type="number" id="udalostVynos"/>
+      </label><br>
+      <div class="modal-btns">
+        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozSetiNeboSklizen()"/>
+        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      </div>
+      <div id="udalostHistory" class="hnojeni-history">
+        <em>Načítám historii...</em>
+      </div>
+    `;
+    loadPlodiny();
+    loadSetiSklizenHistory();
+  }
 }
+
 
 // — Načtení historie setí a sklizně —
 function loadSetiSklizenHistory() {
