@@ -416,7 +416,7 @@ function showUdalostForm(typ) {
       </label><br>
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozSetiNeboSklizen()"/>
-        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
       </div>
       <div id="udalostHistory" class="hnojeni-history">
         <em>Načítám historii...</em>
