@@ -435,14 +435,20 @@ function showUdalostForm(typ) {
 
 function onTypAkceChange() {
   const typ = document.getElementById("typAkceSelect").value;
+  const vynosInput = document.getElementById("udalostVynos");
+  const plodinaSelect = document.getElementById("plodinaSelect");
+
   if (typ === "seti") {
     loadPlodiny();
-    document.getElementById("udalostVynos").disabled = true;
+    vynosInput.disabled = true;
   } else if (typ === "sklizen") {
+    // VYPRÁZDNIT pole a předvyplnit poslední zasetou plodinu  
+    plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
     prefillSklizenPlodina();
-    document.getElementById("udalostVynos").disabled = false;
+    vynosInput.disabled = false;
   }
 }
+
 
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
