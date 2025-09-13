@@ -404,23 +404,29 @@ function showUdalostForm(typ) {
   } else {
     // FORMULÁŘ PRO SETÍ/SKLIZEŇ
     c.innerHTML = `
-      <h4>Setí a sklizeň</h4>
-      <label>Datum:
-        <input type="date" id="udalostDatum"/>
-      </label><br>
-      <label>Plodina:
-        <select id="plodinaSelect"><option>Načítám…</option></select>
-      </label><br>
-      <label>Výnos (kg):
-        <input type="number" id="udalostVynos"/>
-      </label><br>
-      <div class="modal-btns">
-        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozSetiNeboSklizen()"/>
-        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-      </div>
-      <div id="udalostHistory" class="hnojeni-history">
-        <em>Načítám historii...</em>
-      </div>
+     <h4>Setí a sklizeň</h4>
+    <label>Typ akce:
+      <select id="typAkceSelect" onchange="onTypAkceChange()">
+        <option value="seti">Setí</option>
+        <option value="sklizen">Sklizeň</option>
+      </select>
+    </label><br>
+    <label>Datum:
+      <input type="date" id="udalostDatum"/>
+    </label><br>
+    <label>Plodina:
+      <select id="plodinaSelect"><option>Načítám…</option></select>
+    </label><br>
+    <label>Výnos (kg):
+      <input type="number" id="udalostVynos"/>
+    </label><br>
+    <div class="modal-btns">
+      <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
+      <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+    </div>
+    <div id="udalostHistory" class="hnojeni-history">
+      <em>Načítám historii...</em>
+    </div>
     `;
     loadPlodiny();
     loadSetiSklizenHistory();
