@@ -752,4 +752,19 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.fillStyle = "#d4a373"; // světle hnědá
   ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
 }
+function onTypAkceChange() {
+  const typ = document.getElementById("typAkceSelect").value;
+  const plodinaSelect = document.getElementById("plodinaSelect");
+
+  if (typ === "seti") {
+    // Načte seznam všech plodin k setí
+    loadPlodiny();
+    // Výnos pole (kg) vypnout (nepovinné)
+    document.getElementById("udalostVynos").disabled = true;
+  } else if (typ === "sklizen") {
+    // Předvyplní plodinu podle posledního setí (nebo „není zaseto“)
+    prefillSklizenPlodina();
+    document.getElementById("udalostVynos").disabled = false;
+  }
+}
 
