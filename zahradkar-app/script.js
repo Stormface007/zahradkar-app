@@ -376,10 +376,9 @@ function showUdalostForm(typ) {
   uv.classList.remove("analysis");
   uv.style.display = "block";
   const c = document.getElementById("udalostFormContainer");
-  c.innerHTML = `
-  
+
+  // VŠE ŘEŠIT AŽ V PODMÍNCE, NE V ŠABLONĚ!
   if (typ === "hnojeni") {
-    // FORMULÁŘ PRO HNOJENÍ
     c.innerHTML = `
       <h4>Hnojení</h4>
       <label>Datum:
@@ -393,46 +392,47 @@ function showUdalostForm(typ) {
       </label><br>
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
-        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
       </div>
       <div id="hnojeniHistory" class="hnojeni-history">
         <em>Načítám historii...</em>
       </div>
     `;
     loadHnojiva();
-    loadHnojeniHistory();   // musí existovat funkce, která načte historii hnojení
+    loadHnojeniHistory();   // musí existovat (viz předchozí funkce)
   } else {
-    // FORMULÁŘ PRO SETÍ/SKLIZEŇ
     c.innerHTML = `
-    <h4>Setí a sklizeň</h4>
-    <label>Typ akce:
-      <select id="typAkceSelect" onchange="onTypAkceChange()">
-        <option value="seti">Setí</option>
-        <option value="sklizen">Sklizeň</option>
-      </select>
-    </label><br>
-    <label>Datum:
-      <input type="date" id="udalostDatum"/>
-    </label><br>
-    <label>Plodina:
-      <select id="plodinaSelect"><option>Načítám…</option></select>
-    </label><br>
-    <label>Výnos (kg):
-      <input type="number" id="udalostVynos"/>
-    </label><br>
-    <div class="modal-btns">
-      <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
-      <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-    </div>
-    <div id="udalostHistory" class="hnojeni-history">
-      <em>Načítám historii...</em>
-    </div>
-  `;
-  loadSetiSklizenHistory();
-  // Výchozí režim: Setí
-  loadPlodiny();
-  document.getElementById("udalostVynos").disabled = true; // Výnos povolit jen pro sklizeň
+      <h4>Setí a sklizeň</h4>
+      <label>Typ akce:
+        <select id="typAkceSelect" onchange="onTypAkceChange()">
+          <option value="seti">Setí</option>
+          <option value="sklizen">Sklizeň</option>
+        </select>
+      </label><br>
+      <label>Datum:
+        <input type="date" id="udalostDatum"/>
+      </label><br>
+      <label>Plodina:
+        <select id="plodinaSelect"><option>Načítám…</option></select>
+      </label><br>
+      <label>Výnos (kg):
+        <input type="number" id="udalostVynos"/>
+      </label><br>
+      <div class="modal-btns">
+        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
+        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      </div>
+      <div id="udalostHistory" class="hnojeni-history">
+        <em>Načítám historii...</em>
+      </div>
+    `;
+    loadSetiSklizenHistory();
+    // Výchozí režim: Setí
+    loadPlodiny();
+    document.getElementById("udalostVynos").disabled = true; // Výnos povolit jen pro sklizeň
+  }
 }
+
 function onTypAkceChange() {
   const typ = document.getElementById("typAkceSelect").value;
   if (typ === "seti") {
