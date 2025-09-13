@@ -453,6 +453,7 @@ function onTypAkceChange() {
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
+  if (!plodinaSelect) return; // element neexistuje!
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     const arr = await res.json();
@@ -469,6 +470,7 @@ async function prefillSklizenPlodina() {
     plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
   }
 }
+
 
 
 
