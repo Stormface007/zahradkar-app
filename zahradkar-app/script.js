@@ -474,6 +474,7 @@ async function prefillSklizenPlodina() {
 
 
 
+
 // — Načtení historie setí a sklizně —
 function loadSetiSklizenHistory() {
   const cont = document.getElementById("udalostHistory");
