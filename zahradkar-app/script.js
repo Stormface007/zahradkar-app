@@ -783,4 +783,73 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
 }
 
+async function ulozHnojeni() {
+  const zahonID = aktualniZahon?.ZahonID;
+  const datum = document.getElementById("hnojeniDatum").value;
+  const hnojivo = document.getElementById("hnojivoSelect").value;
+  const mnozstvi = document.getElementById("hnojeniMnozstvi").value;
+  if (!zahonID || !datum || !hnojivo || !mnozstvi) {
+    alert("Vyplňte všechny povinné údaje.");
+    return;
+  }
+  const ps = new URLSearchParams();
+  ps.append("action", "addUdalost");
+  ps.append("zahonID", zahonID);
+  ps.append("datum", datum);
+  ps.append("typ", "Hnojení");
+  ps.append("hnojivo", hnojivo);
+  ps.append("mnozstvi", mnozstvi);
+  ps.append("plodina", "");
+  ps.append("vynos", "");
+  ps.append("poznamka", "");
+
+  try {
+    showActionIndicator?.();
+    const res = await fetch(SERVER_URL, { method: "POST", body: ps });
+    const text = await res.text();
+    if (text.trim() === "OK") {
+      zpetNaDetailZahonu();
+      loadHnojeniHistory();
+    } else {
+      alert("Chyba při ukládání hnojení: " + text);
+    }
+  } catch (e) {
+    console.error("ulozHnojeni error:", e);
+    alert("Chyba při odesílání hnojení.");
+  } finally {
+    hideActionIndicator?.();
+  }
+}
+function loadHnojeniHistory() {
+  const cont = document.getElementById("hnojeniHistory");
+  if (!cont || !aktualniZahon) return;
+  
+  fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
+    .then(r => r.json())
+    .then(arr => {
+      const data = arr.filter(u => u.Typ === "Hnojení");
+      if (!data.length) {
+        cont.innerHTML = "<p>Žádná historie hnojení.</p>";
+        return;
+      }
+      let html = `<table>
+        <thead><tr><th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th></tr></thead><tbody>`;
+      data.reverse().slice(0, 5).forEach(u => {
+        html += `<tr>
+          <td>${formatDate(u.Datum)}</td>
+          <td>${u.hnojivo || ""}</td>
+          <td>${u.mnozstvi || ""}</td>
+        </tr>`;
+      });
+      html += "</tbody></table>";
+      cont.innerHTML = html;
+    })
+    .catch(e => {
+      console.error("Chyba historie hnojení:", e);
+      cont.innerHTML = "<p>Chyba při načítání historie.</p>";
+    });
+}
+
+
+
 
