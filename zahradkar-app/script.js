@@ -837,8 +837,8 @@ function loadHnojeniHistory() {
       data.reverse().slice(0, 5).forEach(u => {
         html += `<tr>
           <td>${formatDate(u.Datum)}</td>
-          <td>${u.hnojivo || ""}</td>
-          <td>${u.mnozstvi || ""}</td>
+          <td>${u.Hnojivo || ""}</td>
+          <td>${u.mnozstvi_kg || ""}</td>
         </tr>`;
       });
       html += "</tbody></table>";
