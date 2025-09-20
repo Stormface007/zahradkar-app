@@ -838,7 +838,7 @@ function loadHnojeniHistory() {
         html += `<tr>
           <td>${formatDate(u.Datum)}</td>
           <td>${u.Hnojivo || ""}</td>
-          <td>${u.množství || ""}</td>
+          <td>${u.Množství_kg || ""}</td>
         </tr>`;
       });
       html += "</tbody></table>";
