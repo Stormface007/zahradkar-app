@@ -401,53 +401,52 @@ function showUdalostForm(typ) {
     loadHnojiva();
     loadHnojeniHistory();   // musí existovat (viz předchozí funkce)
   } else {
-    c.innerHTML = `
-      <h4>Setí a sklizeň</h4>
-      <label>Typ akce:
-        <select id="typAkceSelect" onchange="onTypAkceChange()">
-          <option value="seti">Setí</option>
-          <option value="sklizen">Sklizeň</option>
-        </select>
-      </label><br>
-      <label>Datum:
-        <input type="date" id="udalostDatum"/>
-      </label><br>
-      <label>Plodina:
-        <select id="plodinaSelect"><option>Načítám…</option></select>
-      </label><br>
-      <label>Výnos (kg):
-        <input type="number" id="udalostVynos"/>
-      </label><br>
-      <div class="modal-btns">
-        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
-        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-      </div>
-      <div id="udalostHistory" class="hnojeni-history">
-        <em>Načítám historii...</em>
-      </div>
-    `;
-    loadSetiSklizenHistory();
-    // Výchozí režim: Setí
-    loadPlodiny();
-    document.getElementById("udalostVynos").disabled = true; // Výnos povolit jen pro sklizeň
+   c.innerHTML = `
+  <h4>Setí a sklizeň</h4>
+  <div class="typAkceBtns">
+    <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
+    <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
+  </div>
+  <label>Datum:
+    <input type="date" id="udalostDatum"/>
+  </label><br>
+  <label>Plodina:
+    <select id="plodinaSelect"><option>Načítám…</option></select>
+  </label><br>
+  <label>Výnos (kg):
+    <input type="number" id="udalostVynos"/>
+  </label><br>
+  <div class="modal-btns">
+    <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
+    <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+  </div>
+  <div id="udalostHistory" class="hnojeni-history">
+    <em>Načítám historii...</em>
+  </div>
+`;
+loadSetiSklizenHistory();
+loadPlodiny();
+document.getElementById("udalostVynos").disabled = true;
+window.typAkce = "seti";
   }
 }
 
-function onTypAkceChange() {
-  const typ = document.getElementById("typAkceSelect").value;
+function changeTypAkce(typ) {
+  document.getElementById("btnSeti").classList.toggle("active", typ === "seti");
+  document.getElementById("btnSklizen").classList.toggle("active", typ === "sklizen");
+  window.typAkce = typ;
   const vynosInput = document.getElementById("udalostVynos");
   const plodinaSelect = document.getElementById("plodinaSelect");
-
   if (typ === "seti") {
     loadPlodiny();
     vynosInput.disabled = true;
   } else if (typ === "sklizen") {
-    // VYPRÁZDNIT pole a předvyplnit poslední zasetou plodinu  
     plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
     prefillSklizenPlodina();
     vynosInput.disabled = false;
   }
 }
+
 
 
 async function prefillSklizenPlodina() {
@@ -583,7 +582,7 @@ function onIconClick(typ){
 // - ulozeni udalosti - 
 // - uložení události (sjednocený formulář setí + sklizeň) -
 async function ulozUdalost() {
-  const typ = document.getElementById("typAkceSelect").value;
+  const typ = window.typAkce;
   const zahonID = aktualniZahon?.ZahonID;
   const datum   = document.getElementById("udalostDatum").value;
   const plodina = document.getElementById("plodinaSelect").value.trim();
