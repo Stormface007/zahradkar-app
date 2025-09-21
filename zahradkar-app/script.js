@@ -391,16 +391,16 @@ function showUdalostForm(typ) {
       </label><br>
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
-        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
       </div>
       <div id="hnojeniHistory" class="hnojeni-history">
         <em>Načítám historii...</em>
       </div>
     `;
     loadHnojiva();
-    loadHnojeniHistory();   // musí existovat (viz předchozí funkce)
+    loadHnojeniHistory();
   } else {
-    // Setí/Sklizeň modal
+    // SETÍ/SKLIZEŇ blok
     c.innerHTML = `
       <h4>Setí a sklizeň</h4>
       <div class="typAkceBtns">
@@ -418,7 +418,7 @@ function showUdalostForm(typ) {
       </label><br>
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
-        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
       </div>
       <div id="udalostHistory" class="hnojeni-history">
         <em>Načítám historii...</em>
@@ -426,9 +426,10 @@ function showUdalostForm(typ) {
     `;
     loadSetiSklizenHistory();
     window.typAkce = "seti";
-    changeTypAkce("seti"); // Správné naplnění podle režimu
+    changeTypAkce("seti"); // defaultně setí při otevření modalu
   }
 }
+
 
 
 function changeTypAkce(typ) {
@@ -437,6 +438,7 @@ function changeTypAkce(typ) {
   window.typAkce = typ;
   const vynosInput = document.getElementById("udalostVynos");
   const plodinaSelect = document.getElementById("plodinaSelect");
+  if (!plodinaSelect) return;
   if (typ === "seti") {
     loadPlodiny();
     vynosInput.disabled = true;
@@ -450,36 +452,37 @@ function changeTypAkce(typ) {
 
 
 
+
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
-  if (!plodinaSelect) return;
+  if (!plodinaSelect) {
+    console.warn("plodinaSelect select není renderován!");
+    return;
+  }
 
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     const arr = await res.json();
-
-    // Filtruj pouze aktuální záhon
     const seti = arr.filter(u => u.Typ === "Setí" && u.ZahonID == aktualniZahon.ZahonID);
     const sklizne = arr.filter(u => u.Typ === "Sklizeň" && u.ZahonID == aktualniZahon.ZahonID);
+
     if (!seti.length) {
       plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
       return;
     }
 
-    // Najdi poslední ne-skližený záznam setí
+    // Hledáme poslední ne-skliženou plodinu pro záhon
     let posledniZaseta = null;
     for (let i = seti.length - 1; i >= 0; i--) {
       const datumSeti = new Date(seti[i].Datum);
-      // Sklizeň po setí?
-      const bylaSklizeno = sklizne.some(sk => new Date(sk.Datum) > datumSeti);
-      if (!bylaSklizeno) {
+      const bylaSklizena = sklizne.some(sk => new Date(sk.Datum) > datumSeti);
+      if (!bylaSklizena) {
         posledniZaseta = seti[i];
         break;
       }
     }
 
-    // Naplň select správně
     if (posledniZaseta && posledniZaseta.Plodina) {
       plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
     } else {
@@ -490,6 +493,7 @@ async function prefillSklizenPlodina() {
     console.error("prefillSklizenPlodina error:", e);
   }
 }
+
 
 
 
