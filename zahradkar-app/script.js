@@ -457,7 +457,7 @@ async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
   if (!plodinaSelect) {
-    console.warn("plodinaSelect select není renderován!");
+    console.warn("plodinaSelect neexistuje");
     return;
   }
 
@@ -465,20 +465,15 @@ async function prefillSklizenPlodina() {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     const arr = await res.json();
 
-    console.log("RAW arr:", arr);
-    console.log("AKTUÁLNÍ ZÁHON:", aktualniZahon);
-
-    const seti = arr.filter(u => u.Typ === "Setí" && u.ZahonID == aktualniZahon.ZahonID);
-    const sklizne = arr.filter(u => u.Typ === "Sklizeň" && u.ZahonID == aktualniZahon.ZahonID);
-
-    console.log("SETI:", seti);
-    console.log("SKLIZNE:", sklizne);
-
+    // Filtrovat jen daný záhon
+    const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
+    const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
     if (!seti.length) {
       plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
       return;
     }
 
+    // Najít poslední setí, které ještě nebylo sklizeno
     let posledniZaseta = null;
     for (let i = seti.length - 1; i >= 0; i--) {
       const datumSeti = new Date(seti[i].Datum);
@@ -488,8 +483,6 @@ async function prefillSklizenPlodina() {
         break;
       }
     }
-
-    console.log("Posledni zaseta:", posledniZaseta);
 
     if (posledniZaseta && posledniZaseta.Plodina) {
       plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
