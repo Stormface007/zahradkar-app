@@ -321,4 +321,28 @@ button:hover {
   letter-spacing: 1px;
 }
 
+.typAkceBtns {
+  display: flex;
+  gap: 0.8em;
+  margin-bottom: 1em;
+}
+.typ-akce-btn {
+  background: #b9eeb9;
+  color: #155a15;
+  border: 2px solid #36bb36;
+  padding: 0.7em 2.3em;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: none;
+  cursor: pointer;
+}
+.typ-akce-btn.active {
+  background: #2dd22d;
+  color: white;
+  box-shadow: 0 0 7px 2px #33aa33a0;
+  border-color: #118c11;
+}
+
 
