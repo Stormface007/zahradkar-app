@@ -337,21 +337,26 @@ function saveZahon(){
 }
 
 // — Načtení plodin z backend - 
-function loadPlodiny(){
-  fetch(`${SERVER_URL}?action=getPlodiny`)
-    .then(r=>r.json())
-    .then(arr=>{
-      const sel=document.getElementById("plodinaSelect");
-      if(!sel) return;
-      sel.innerHTML=`<option value="">– vyber plodinu –</option>`;
-      arr.forEach(p=>{
-        const o=document.createElement("option");
-        o.value=p.nazev; o.textContent=p.nazev;
-        sel.appendChild(o);
-      });
-    })
-    .catch(e=>console.error("Chyba plodin:",e));
+async function loadPlodiny() {
+  const sel = document.getElementById("plodinaSelect");
+  let arr = [];
+  try {
+    const res = await fetch(`${SERVER_URL}?action=getPlodiny`);
+    arr = await res.json();
+  } catch (e) {
+    console.error("Chyba plodin:", e);
+    if (sel) sel.innerHTML = '<option value="">Chyba načítání</option>';
+    return;
+  }
+  if (!sel) return;
+  sel.innerHTML = `<option value="">– vyber plodinu –</option>`;
+  arr.forEach(p => {
+    const o = document.createElement("option");
+    o.value = p.nazev; o.textContent = p.nazev;
+    sel.appendChild(o);
+  });
 }
+
 // - načtení hnojiv z backend-
 function loadHnojiva(){
   fetch(`${SERVER_URL}?action=getHnojiva`)
@@ -380,15 +385,9 @@ function showUdalostForm(typ) {
   if (typ === "hnojeni") {
     c.innerHTML = `
       <h4>Hnojení</h4>
-      <label>Datum:
-        <input type="date" id="hnojeniDatum"/>
-      </label><br>
-      <label>Hnojivo:
-        <select id="hnojivoSelect"><option>Načítám…</option></select>
-      </label><br>
-      <label>Množství (kg):
-        <input type="number" id="hnojeniMnozstvi"/>
-      </label><br>
+      <label>Datum: <input type="date" id="hnojeniDatum"/></label><br>
+      <label>Hnojivo: <select id="hnojivoSelect"><option>Načítám…</option></select></label><br>
+      <label>Množství (kg): <input type="number" id="hnojeniMnozstvi"/></label><br>
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
         <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
@@ -400,22 +399,15 @@ function showUdalostForm(typ) {
     loadHnojiva();
     loadHnojeniHistory();
   } else {
-    // SETÍ/SKLIZEŇ blok
     c.innerHTML = `
       <h4>Setí a sklizeň</h4>
       <div class="typAkceBtns">
         <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
         <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
       </div>
-      <label>Datum:
-        <input type="date" id="udalostDatum"/>
-      </label><br>
-      <label>Plodina:
-        <select id="plodinaSelect"><option>Načítám…</option></select>
-      </label><br>
-      <label>Výnos (kg):
-        <input type="number" id="udalostVynos"/>
-      </label><br>
+      <label>Datum: <input type="date" id="udalostDatum"/></label><br>
+      <label>Plodina: <select id="plodinaSelect"><option>Načítám…</option></select></label><br>
+      <label>Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
         <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
@@ -426,7 +418,7 @@ function showUdalostForm(typ) {
     `;
     loadSetiSklizenHistory();
     window.typAkce = "seti";
-    changeTypAkce("seti"); // defaultně setí při otevření modalu
+    changeTypAkce("seti");
   }
 }
 
@@ -453,6 +445,7 @@ function changeTypAkce(typ) {
 
 
 
+
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
@@ -461,37 +454,38 @@ async function prefillSklizenPlodina() {
     return;
   }
 
+  let arr = [];
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
-    const arr = await res.json();
-
-    // Filtrovat jen daný záhon
-    const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
-    const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
-    if (!seti.length) {
-      plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
-      return;
-    }
-
-    // Najít poslední setí, které ještě nebylo sklizeno
-    let posledniZaseta = null;
-    for (let i = seti.length - 1; i >= 0; i--) {
-      const datumSeti = new Date(seti[i].Datum);
-      const bylaSklizena = sklizne.some(sk => new Date(sk.Datum) > datumSeti);
-      if (!bylaSklizena) {
-        posledniZaseta = seti[i];
-        break;
-      }
-    }
-
-    if (posledniZaseta && posledniZaseta.Plodina) {
-      plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
-    } else {
-      plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
-    }
+    arr = await res.json();
   } catch (e) {
+    console.error("Chyba načítání dat z backendu (prefillSklizenPlodina):", e);
     plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
-    console.error("prefillSklizenPlodina error:", e);
+    return;
+  }
+
+  const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
+  const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
+
+  if (!seti.length) {
+    plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
+    return;
+  }
+
+  let posledniZaseta = null;
+  for (let i = seti.length - 1; i >= 0; i--) {
+    const datumSeti = new Date(seti[i].Datum);
+    const bylaSklizena = sklizne.some(sk => new Date(sk.Datum) > datumSeti);
+    if (!bylaSklizena) {
+      posledniZaseta = seti[i];
+      break;
+    }
+  }
+
+  if (posledniZaseta && posledniZaseta.Plodina) {
+    plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
+  } else {
+    plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
   }
 }
 
