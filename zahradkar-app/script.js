@@ -449,6 +449,7 @@ function changeTypAkce(typ) {
 
 
 
+
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
