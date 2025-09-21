@@ -377,7 +377,6 @@ function showUdalostForm(typ) {
   uv.style.display = "block";
   const c = document.getElementById("udalostFormContainer");
 
-  // VŠE ŘEŠIT AŽ V PODMÍNCE, NE V ŠABLONĚ!
   if (typ === "hnojeni") {
     c.innerHTML = `
       <h4>Hnojení</h4>
@@ -392,7 +391,7 @@ function showUdalostForm(typ) {
       </label><br>
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
-        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
       </div>
       <div id="hnojeniHistory" class="hnojeni-history">
         <em>Načítám historii...</em>
@@ -401,35 +400,36 @@ function showUdalostForm(typ) {
     loadHnojiva();
     loadHnojeniHistory();   // musí existovat (viz předchozí funkce)
   } else {
-   c.innerHTML = `
-  <h4>Setí a sklizeň</h4>
-  <div class="typAkceBtns">
-    <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
-    <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
-  </div>
-  <label>Datum:
-    <input type="date" id="udalostDatum"/>
-  </label><br>
-  <label>Plodina:
-    <select id="plodinaSelect"><option>Načítám…</option></select>
-  </label><br>
-  <label>Výnos (kg):
-    <input type="number" id="udalostVynos"/>
-  </label><br>
-  <div class="modal-btns">
-    <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
-    <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-  </div>
-  <div id="udalostHistory" class="hnojeni-history">
-    <em>Načítám historii...</em>
-  </div>
-`;
-loadSetiSklizenHistory();
-loadPlodiny();
-document.getElementById("udalostVynos").disabled = true;
-window.typAkce = "seti";
+    // Setí/Sklizeň modal
+    c.innerHTML = `
+      <h4>Setí a sklizeň</h4>
+      <div class="typAkceBtns">
+        <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
+        <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
+      </div>
+      <label>Datum:
+        <input type="date" id="udalostDatum"/>
+      </label><br>
+      <label>Plodina:
+        <select id="plodinaSelect"><option>Načítám…</option></select>
+      </label><br>
+      <label>Výnos (kg):
+        <input type="number" id="udalostVynos"/>
+      </label><br>
+      <div class="modal-btns">
+        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
+        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      </div>
+      <div id="udalostHistory" class="hnojeni-history">
+        <em>Načítám historii...</em>
+      </div>
+    `;
+    loadSetiSklizenHistory();
+    window.typAkce = "seti";
+    changeTypAkce("seti"); // Správné naplnění podle režimu
   }
 }
+
 
 function changeTypAkce(typ) {
   document.getElementById("btnSeti").classList.toggle("active", typ === "seti");
