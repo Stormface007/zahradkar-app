@@ -450,7 +450,7 @@ async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
   if (!plodinaSelect) {
-    console.warn("plodinaSelect neexistuje");
+    console.warn("plodinaSelect (select) nebyl nalezen!");
     return;
   }
 
@@ -488,6 +488,7 @@ async function prefillSklizenPlodina() {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
   }
 }
+
 
 
 
