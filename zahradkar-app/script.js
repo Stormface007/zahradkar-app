@@ -453,7 +453,6 @@ async function prefillSklizenPlodina() {
     console.warn("plodinaSelect (select) nebyl nalezen!");
     return;
   }
-
   let arr = [];
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
@@ -463,15 +462,12 @@ async function prefillSklizenPlodina() {
     plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
     return;
   }
-
   const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
   const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
-
   if (!seti.length) {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
     return;
   }
-
   let posledniZaseta = null;
   for (let i = seti.length - 1; i >= 0; i--) {
     const datumSeti = new Date(seti[i].Datum);
@@ -481,7 +477,6 @@ async function prefillSklizenPlodina() {
       break;
     }
   }
-
   if (posledniZaseta && posledniZaseta.Plodina) {
     plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
   } else {
@@ -663,46 +658,6 @@ function fmt(x) {
 // Pokud záhon obsahuje záznam o posledním "Setí", který ještě nebyl sklizen,
 // plodina z tohoto setí se automaticky doplní do pole "Plodina" ve formuláři sklizně.
 // Pokud už sklizeň po posledním setí existuje, pole zůstane prázdné.
-async function prefillSklizenPlodina() {
-  if (!aktualniZahon) return;
-  showActionIndicator?.();
-  try {
-    const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
-    const arr = await res.json();
-
-    // Najdi poslední setí (nejnovější)
-    const seti = arr.filter(u => u.Typ === "Setí");
-    if (!seti.length) {
-      document.getElementById("udalostPlodina").value = "";
-      document.getElementById("udalostPlodina").placeholder = "není zaseto...";
-      return;
-    }
-    const posledniSeti = seti.reduce((a, b) =>
-      new Date(a.Datum) > new Date(b.Datum) ? a : b
-    );
-
-    // Je po tomto setí už nějaká sklizeň?
-    const sklizne = arr.filter(u => u.Typ === "Sklizeň");
-    const sklizenPoSeti = sklizne.find(sk =>
-      new Date(sk.Datum) > new Date(posledniSeti.Datum)
-    );
-
-    if (!sklizenPoSeti) {
-      // Není sklizeno – předvyplň plodinu
-      document.getElementById("udalostPlodina").value = posledniSeti.Plodina || "";
-      document.getElementById("udalostPlodina").placeholder = "";
-    } else {
-      // Už sklizeno – pole prázdné, zobraz placeholder
-      document.getElementById("udalostPlodina").value = "";
-      document.getElementById("udalostPlodina").placeholder = "není zaseto...";
-    }
-  } catch (e) {
-    document.getElementById("udalostPlodina").placeholder = "Chyba načítání";
-    console.error("Prefill Sklizen Plodina error:", e);
-  } finally {
-    hideActionIndicator?.();
-  }
-}
 
 // - otevřeni zoommodalu - 
 function openZoom() {
