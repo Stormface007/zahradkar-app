@@ -446,6 +446,13 @@ function changeTypAkce(typ) {
 
 
 
+function czDateStringToDate(str) {
+  // "20.5.2025" => Date
+  if (!str) return new Date("1970-01-01");
+  const [d, m, y] = str.split(".");
+  return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
+}
+
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
@@ -463,37 +470,44 @@ async function prefillSklizenPlodina() {
     return;
   }
   console.log("arr:", arr);
-console.log("aktualniZahon:", aktualniZahon);
+  console.log("aktualniZahon:", aktualniZahon);
 
-const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
-const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
+  const seti = arr.filter(
+    u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID)
+  );
+  const sklizne = arr.filter(
+    u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID)
+  );
 
-console.log("Setí:", seti);
-console.log("Sklizne:", sklizne);
+  console.log("Setí:", seti);
+  console.log("Sklizne:", sklizne);
 
   if (!seti.length) {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
     return;
   }
+
   let posledniZaseta = null;
   for (let i = seti.length - 1; i >= 0; i--) {
-  const datumSeti = czDateStringToDate(seti[i].Datum);
-  const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
-  console.log(`Testuji setí ${seti[i].Plodina} (${seti[i].Datum}), byla sklizena?`, bylaSklizena);
-  if (!bylaSklizena) {
-    posledniZaseta = seti[i];
-    break;
+    const datumSeti = czDateStringToDate(seti[i].Datum);
+    const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
+    console.log(
+      `Testuji setí ${seti[i].Plodina} (${seti[i].Datum}), byla sklizena?`, bylaSklizena
+    );
+    if (!bylaSklizena) {
+      posledniZaseta = seti[i];
+      break;
+    }
   }
-}
-console.log("Výsledek posledniZaseta:", posledniZaseta);
+  console.log("Výsledek posledniZaseta:", posledniZaseta);
 
-  }
   if (posledniZaseta && posledniZaseta.Plodina) {
     plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
   } else {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
   }
 }
+
 
 
 
@@ -834,12 +848,6 @@ function loadHnojeniHistory() {
       console.error("Chyba historie hnojení:", e);
       cont.innerHTML = "<p>Chyba při načítání historie.</p>";
     });
-}
-
-function czDateStringToDate(str) {
-  if (!str) return new Date("1970-01-01");
-  const [d, m, y] = str.split(".");
-  return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
 }
 
 
