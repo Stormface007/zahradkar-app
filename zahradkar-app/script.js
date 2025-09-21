@@ -453,37 +453,43 @@ function changeTypAkce(typ) {
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
-  if (!plodinaSelect) return; // select neexistuje
-
+  if (!plodinaSelect) {
+    console.warn("Select plodinaSelect neexistuje!");
+    return;
+  }
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     const arr = await res.json();
 
-    // Vyfiltruj všechny záznamy typu "Setí"
     const seti = arr.filter(u => u.Typ === "Setí");
     if (!seti.length) {
       plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
       return;
     }
-    // Najdi poslední (nejnovější) setí podle data
     const posledniSeti = seti.reduce((a, b) =>
       new Date(a.Datum) > new Date(b.Datum) ? a : b
     );
 
-    const plodina = posledniSeti.Plodina || "";
+    // Pro ladění
+    console.log("==== posledniSeti ====", posledniSeti);
+
+    // Univerzální řešení nezávisle na case/diakrit. názvu pole:
+    let plodina = "";
+    Object.keys(posledniSeti).forEach(k => {
+      if (k.toLowerCase().replace(/[áéíýóúůěšřčžďťň]/g, "a") === "plodina") {
+        plodina = posledniSeti[k];
+      }
+    });
+    if (!plodina) plodina = posledniSeti.Plodina || posledniSeti.plodina || "";
 
     plodinaSelect.innerHTML = plodina
       ? `<option value="${plodina}">${plodina}</option>`
       : '<option value="">není zaseto…</option>';
   } catch (e) {
     plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
-    console.error("Chyba při načítání plodiny pro sklizeň:", e);
+    console.error("prefillSklizenPlodina error:", e);
   }
 }
-
-
-
-
 
 
 // — Načtení historie setí a sklizně —
