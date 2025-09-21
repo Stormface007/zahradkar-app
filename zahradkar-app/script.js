@@ -452,23 +452,34 @@ function changeTypAkce(typ) {
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
-  if (!plodinaSelect) return; // element neexistuje!
+  if (!plodinaSelect) return; // select neexistuje
+
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     const arr = await res.json();
+
+    // Vyfiltruj všechny záznamy typu "Setí"
     const seti = arr.filter(u => u.Typ === "Setí");
     if (!seti.length) {
       plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
       return;
     }
+    // Najdi poslední (nejnovější) setí podle data
     const posledniSeti = seti.reduce((a, b) =>
       new Date(a.Datum) > new Date(b.Datum) ? a : b
     );
-    plodinaSelect.innerHTML = `<option value="${posledniSeti.Plodina}">${posledniSeti.Plodina}</option>`;
+
+    const plodina = posledniSeti.Plodina || "";
+
+    plodinaSelect.innerHTML = plodina
+      ? `<option value="${plodina}">${plodina}</option>`
+      : '<option value="">není zaseto…</option>';
   } catch (e) {
     plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
+    console.error("Chyba při načítání plodiny pro sklizeň:", e);
   }
 }
+
 
 
 
