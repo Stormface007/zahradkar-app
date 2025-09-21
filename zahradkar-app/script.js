@@ -464,15 +464,21 @@ async function prefillSklizenPlodina() {
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     const arr = await res.json();
+
+    console.log("RAW arr:", arr);
+    console.log("AKTUÁLNÍ ZÁHON:", aktualniZahon);
+
     const seti = arr.filter(u => u.Typ === "Setí" && u.ZahonID == aktualniZahon.ZahonID);
     const sklizne = arr.filter(u => u.Typ === "Sklizeň" && u.ZahonID == aktualniZahon.ZahonID);
+
+    console.log("SETI:", seti);
+    console.log("SKLIZNE:", sklizne);
 
     if (!seti.length) {
       plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
       return;
     }
 
-    // Hledáme poslední ne-skliženou plodinu pro záhon
     let posledniZaseta = null;
     for (let i = seti.length - 1; i >= 0; i--) {
       const datumSeti = new Date(seti[i].Datum);
@@ -482,6 +488,8 @@ async function prefillSklizenPlodina() {
         break;
       }
     }
+
+    console.log("Posledni zaseta:", posledniZaseta);
 
     if (posledniZaseta && posledniZaseta.Plodina) {
       plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
@@ -493,6 +501,7 @@ async function prefillSklizenPlodina() {
     console.error("prefillSklizenPlodina error:", e);
   }
 }
+
 
 
 
