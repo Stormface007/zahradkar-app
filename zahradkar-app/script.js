@@ -462,8 +462,15 @@ async function prefillSklizenPlodina() {
     plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
     return;
   }
-  const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
-  const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
+  console.log("arr:", arr);
+console.log("aktualniZahon:", aktualniZahon);
+
+const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
+const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID));
+
+console.log("Setí:", seti);
+console.log("Sklizne:", sklizne);
+
   if (!seti.length) {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
     return;
@@ -472,10 +479,14 @@ async function prefillSklizenPlodina() {
   for (let i = seti.length - 1; i >= 0; i--) {
   const datumSeti = czDateStringToDate(seti[i].Datum);
   const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
+  console.log(`Testuji setí ${seti[i].Plodina} (${seti[i].Datum}), byla sklizena?`, bylaSklizena);
   if (!bylaSklizena) {
     posledniZaseta = seti[i];
     break;
-    }
+  }
+}
+console.log("Výsledek posledniZaseta:", posledniZaseta);
+
   }
   if (posledniZaseta && posledniZaseta.Plodina) {
     plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
@@ -826,11 +837,11 @@ function loadHnojeniHistory() {
 }
 
 function czDateStringToDate(str) {
-  // "20.5.2025" => Date
   if (!str) return new Date("1970-01-01");
   const [d, m, y] = str.split(".");
-  return new Date(`${y}-${m.padStart(2,"0")}-${d.padStart(2,"0")}`);
+  return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
 }
+
 
 
 
