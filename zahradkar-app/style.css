@@ -337,6 +337,10 @@ button:hover {
   transition: background 0.2s, box-shadow 0.2s;
   box-shadow: none;
   cursor: pointer;
+  min-width: 100px;
+  max-width: 160px;
+  padding: 0.5em 1.2em;
+  font-size: 1em;
 }
 .typ-akce-btn.active {
   background: #2dd22d;
@@ -344,5 +348,17 @@ button:hover {
   box-shadow: 0 0 7px 2px #33aa33a0;
   border-color: #118c11;
 }
+@media (max-width: 500px) {
+  .typ-akce-btn {
+    min-width: 72px;
+    max-width: 120px;
+    font-size: 0.98em;
+    padding: 0.4em 0.7em;
+  }
+  .typAkceBtns {
+    gap: 0.3em;
+  }
+}
+
 
 
