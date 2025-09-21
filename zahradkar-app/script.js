@@ -470,11 +470,11 @@ async function prefillSklizenPlodina() {
   }
   let posledniZaseta = null;
   for (let i = seti.length - 1; i >= 0; i--) {
-    const datumSeti = new Date(seti[i].Datum);
-    const bylaSklizena = sklizne.some(sk => new Date(sk.Datum) > datumSeti);
-    if (!bylaSklizena) {
-      posledniZaseta = seti[i];
-      break;
+  const datumSeti = czDateStringToDate(seti[i].Datum);
+  const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
+  if (!bylaSklizena) {
+    posledniZaseta = seti[i];
+    break;
     }
   }
   if (posledniZaseta && posledniZaseta.Plodina) {
@@ -825,6 +825,12 @@ function loadHnojeniHistory() {
     });
 }
 
+function czDateStringToDate(str) {
+  // "20.5.2025" => Date
+  if (!str) return new Date("1970-01-01");
+  const [d, m, y] = str.split(".");
+  return new Date(`${y}-${m.padStart(2,"0")}-${d.padStart(2,"0")}`);
+}
 
 
 
