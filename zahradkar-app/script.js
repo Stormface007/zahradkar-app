@@ -265,6 +265,53 @@ function saveZahon(){
     })
     .finally(()=>hideActionIndicator());
 }
+function showUdalostForm(typ) {
+  document.getElementById("modalViewDefault").style.display = "none";
+  const uv = document.getElementById("modalViewUdalost");
+  uv.classList.remove("analysis");
+  uv.style.display = "block";
+  const c = document.getElementById("udalostFormContainer");
+
+  if (typ === "hnojeni") {
+    c.innerHTML = `
+      <h4>Hnojení</h4>
+      <label>Datum: <input type="date" id="hnojeniDatum"/></label><br>
+      <label>Hnojivo: <select id="hnojivoSelect"><option>Načítám…</option></select></label><br>
+      <label>Množství (kg): <input type="number" id="hnojeniMnozstvi"/></label><br>
+      <div class="modal-btns">
+        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
+        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      </div>
+      <div id="hnojeniHistory" class="hnojeni-history">
+        <em>Načítám historii...</em>
+      </div>
+    `;
+    loadHnojiva();
+    loadHnojeniHistory();
+  } else {
+    c.innerHTML = `
+      <h4>Setí a sklizeň</h4>
+      <div class="typAkceBtns">
+        <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
+        <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
+      </div>
+      <label>Datum: <input type="date" id="udalostDatum"/></label><br>
+      <label>Plodina: <select id="plodinaSelect"><option>Načítám…</option></select></label><br>
+      <label>Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
+      <div class="modal-btns">
+        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
+        <img src="img/Goback.png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      </div>
+      <div id="udalostHistory" class="hnojeni-history">
+        <em>Načítám historii...</em>
+      </div>
+    `;
+    loadSetiSklizenHistory();
+    window.typAkce = "seti";
+    changeTypAkce("seti");
+  }
+}
+
 
 // — Načtení plodin z backend - 
 async function loadPlodiny() {
