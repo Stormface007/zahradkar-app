@@ -312,6 +312,46 @@ function showUdalostForm(typ) {
   }
 }
 
+function formatDate(d) {
+  if (!d) return "";
+  const dateObj = new Date(d);
+  if (isNaN(dateObj)) return d;
+  const day = ("0" + dateObj.getDate()).slice(-2);
+  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+  const yr  = dateObj.getFullYear();
+  return `${day}.${mon}.${yr}`;
+}
+
+function loadSetiSklizenHistory() {
+  const cont = document.getElementById("udalostHistory");
+  if (!cont || !aktualniZahon) return;
+  fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
+    .then(r => r.json())
+    .then(arr => {
+      const data = arr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
+      if (!data.length) {
+        cont.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
+        return;
+      }
+      let html = `<table>
+        <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th></tr></thead><tbody>`;
+      data.reverse().slice(0, 3).forEach(u => {
+        html += `<tr>
+          <td>${formatDate(u.Datum)}</td>
+          <td>${u.Typ}</td>
+          <td>${u.Plodina || ""}</td>
+          <td>${u.Vynos_kg || ""}</td>
+        </tr>`;
+      });
+      html += "</tbody></table>";
+      cont.innerHTML = html;
+    })
+    .catch(e => {
+      cont.innerHTML = "<p>Chyba při načítání historie.</p>";
+    });
+}
+
+
 
 // — Načtení plodin z backend - 
 async function loadPlodiny() {
