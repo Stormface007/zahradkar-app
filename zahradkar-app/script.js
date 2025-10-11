@@ -179,6 +179,22 @@ function setActiveIcon(active){
     });
 }
 
+function onIconClick(typ){
+  setActiveIcon(typ);
+  document.getElementById("modalViewDefault").style.display="none";
+  document.getElementById("modalViewUdalost").style.display="none";
+  if (typ === "seti") {
+    showUdalostForm("plodina");
+  } else if (typ === "hnojeni") {
+    showUdalostForm("hnojeni");
+  } else if (typ === "mereni") {
+    document.getElementById("modalViewDefault").style.display = "block";
+  } else if (typ === "analyza") {
+    showAnalysisForm();
+  }
+}
+
+
 
 // — Otevření/zavření detailu záhonu (modal) —
 function otevriModal(z) {
