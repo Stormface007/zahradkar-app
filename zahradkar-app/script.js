@@ -384,6 +384,44 @@ function loadHnojiva(){
     .catch(e => console.error("Chyba hnojiv:", e));
 }
 
+async function ulozHnojeni() {
+  const zahonID = aktualniZahon?.ZahonID;
+  const datum = document.getElementById("hnojeniDatum").value;
+  const hnojivo = document.getElementById("hnojivoSelect").value;
+  const mnozstvi = document.getElementById("hnojeniMnozstvi").value;
+  if (!zahonID || !datum || !hnojivo || !mnozstvi) {
+    alert("Vyplňte všechny povinné údaje.");
+    return;
+  }
+  const ps = new URLSearchParams();
+  ps.append("action", "addUdalost");
+  ps.append("zahonID", zahonID);
+  ps.append("datum", datum);
+  ps.append("typ", "Hnojení");
+  ps.append("hnojivo", hnojivo);
+  ps.append("mnozstvi", mnozstvi);
+  ps.append("plodina", "");
+  ps.append("vynos", "");
+  ps.append("poznamka", "");
+
+  try {
+    showActionIndicator?.();
+    const res = await fetch(SERVER_URL, { method: "POST", body: ps });
+    const text = await res.text();
+    if (text.trim() === "OK") {
+      zpetNaDetailZahonu();
+      loadHnojeniHistory?.();
+    } else {
+      alert("Chyba při ukládání hnojení: " + text);
+    }
+  } catch (e) {
+    alert("Chyba při odesílání hnojení.");
+  } finally {
+    hideActionIndicator?.();
+  }
+}
+
+
 
 function formatDate(d) {
   if (!d) return "";
