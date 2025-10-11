@@ -419,19 +419,11 @@ async function prefillSklizenPlodina() {
     return;
   }
 
-  if (arr.length > 0) {
-    console.log("Detail objektu z backendu:", arr[0]);
-    console.log("Klíče objektu:", Object.keys(arr[0]));
-  }
+  if (arr.length > 0) console.log("Detail objektu z backendu:", arr[0], "ZahonID?", arr[0].ZahonID);
 
-  // --- zbytek původní logiky (zatím takto, protože neznáme přesný klíč a hodnotu):
-  function getTyp(u) {
-    return (u.Typ || u.typ || "").toLowerCase();
-  }
-
-  const zahonID = String(aktualniZahon.ZahonID).trim();
-  const seti = arr.filter(u => getTyp(u) === "setí" && String(u.ZahonID).trim() === zahonID);
-  const sklizne = arr.filter(u => getTyp(u) === "sklizeň" && String(u.ZahonID).trim() === zahonID);
+  // BEZ ZahonID filtru
+  const seti = arr.filter(u => (u.Typ || "").toLowerCase() === "setí");
+  const sklizne = arr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
 
   console.log("Filtrované setí:", seti);
   console.log("Filtrované sklizně:", sklizne);
@@ -457,8 +449,6 @@ async function prefillSklizenPlodina() {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
   }
 }
-
-
 
 
 
