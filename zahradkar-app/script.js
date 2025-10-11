@@ -311,6 +311,14 @@ function showUdalostForm(typ) {
     changeTypAkce("seti");
   }
 }
+function zpetNaDetailZahonu(){
+  const uv = document.getElementById("modalViewUdalost");
+  uv.style.display = "none";
+  uv.classList.remove("analysis");
+  document.getElementById("modalViewDefault").style.display = "block";
+  setActiveIcon(null);
+}
+
 
 async function ulozUdalost() {
   const typ = window.typAkce;
