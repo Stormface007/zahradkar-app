@@ -472,6 +472,18 @@ async function loadPlodiny() {
     sel.appendChild(o);
   });
 }
+function czDateStringToDate(str) {
+  if (!str) return new Date("1970-01-01");
+  // ISO (2025-03-28T00:00:00.000Z) = lze převést přímo
+  if (str.includes("-") || str.includes("T")) {
+    return new Date(str);
+  }
+  // CZ formát DD.MM.YYYY
+  const [d, m, y] = str.split(".");
+  return new Date(`${y.trim()}-${m.trim().padStart(2, "0")}-${d.trim().padStart(2, "0")}`);
+}
+
+
 
 // ...POKRAČUJ DALŠÍMI FUNKCEMI, které JS skutečně využívá:
 // - loadHnojiva
