@@ -351,6 +351,62 @@ function loadSetiSklizenHistory() {
     });
 }
 
+function resizeAndDrawCanvas(canvas, delka, sirka) {
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const parent = canvas.parentElement;
+  const padding = 10;
+
+  // Nastav rozměr canvasu podle rodiče
+  const width = parent.clientWidth;
+  const height = parent.clientHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  ctx.clearRect(0, 0, width, height);
+
+  // Poměr stran záhonu
+  const aspectRatio = delka / sirka;
+
+  // Maximální šířka/výška pro obdélník se započítáním paddingu
+  const maxDrawWidth = width - padding * 2;
+  const maxDrawHeight = height - padding * 2;
+
+  // Najdi ideální velikost obdélníku
+  let drawWidth = maxDrawWidth;
+  let drawHeight = drawWidth / aspectRatio;
+
+  if (drawHeight > maxDrawHeight) {
+    drawHeight = maxDrawHeight;
+    drawWidth = drawHeight * aspectRatio;
+  }
+
+  // Centrování
+  const offsetX = (width - drawWidth) / 2;
+  const offsetY = (height - drawHeight) / 2;
+
+  // Kresli záhon
+  ctx.fillStyle = "#d4a373"; // světle hnědá
+  ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
+}
+function changeTypAkce(typ) {
+  document.getElementById("btnSeti").classList.toggle("active", typ === "seti");
+  document.getElementById("btnSklizen").classList.toggle("active", typ === "sklizen");
+  window.typAkce = typ;
+  const vynosInput = document.getElementById("udalostVynos");
+  const plodinaSelect = document.getElementById("plodinaSelect");
+  if (!plodinaSelect) return;
+  if (typ === "seti") {
+    loadPlodiny();
+    vynosInput.disabled = true;
+  } else if (typ === "sklizen") {
+    plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
+    prefillSklizenPlodina();
+    vynosInput.disabled = false;
+  }
+}
+
+
 
 
 // — Načtení plodin z backend - 
