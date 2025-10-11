@@ -419,11 +419,18 @@ async function prefillSklizenPlodina() {
     return;
   }
 
+  console.log("Data z backendu:", arr, "ZahonID:", aktualniZahon.ZahonID);
+  if (arr.length > 0) console.log("První datum:", arr[0].Datum, "typeof", typeof arr[0].Datum);
+
   const zahonID = String(aktualniZahon.ZahonID).trim();
   const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID).trim() === zahonID);
   const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID).trim() === zahonID);
 
+  console.log("Filtrované setí:", seti);
+  console.log("Filtrované sklizně:", sklizne);
+
   if (!seti.length) {
+    console.log("Nenalezeno žádné setí, výběr opravdu 'není zaseto…'");
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
     return;
   }
@@ -432,11 +439,15 @@ async function prefillSklizenPlodina() {
   for (let i = seti.length - 1; i >= 0; i--) {
     const datumSeti = czDateStringToDate(seti[i].Datum);
     const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
+    console.log(
+      `Testuji setí ${seti[i].Plodina} (${seti[i].Datum}), byla sklizena?`, bylaSklizena
+    );
     if (!bylaSklizena) {
       posledniZaseta = seti[i];
       break;
     }
   }
+  console.log("Výsledek posledniZaseta:", posledniZaseta);
 
   if (posledniZaseta && posledniZaseta.Plodina) {
     plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
@@ -444,6 +455,7 @@ async function prefillSklizenPlodina() {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
   }
 }
+
 
 
 
