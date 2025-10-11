@@ -406,6 +406,46 @@ function changeTypAkce(typ) {
   }
 }
 
+async function prefillSklizenPlodina() {
+  if (!aktualniZahon) return;
+  const plodinaSelect = document.getElementById("plodinaSelect");
+  if (!plodinaSelect) return;
+  let arr = [];
+  try {
+    const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
+    arr = await res.json();
+  } catch (e) {
+    plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
+    return;
+  }
+
+  const zahonID = String(aktualniZahon.ZahonID).trim();
+  const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID).trim() === zahonID);
+  const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID).trim() === zahonID);
+
+  if (!seti.length) {
+    plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
+    return;
+  }
+
+  let posledniZaseta = null;
+  for (let i = seti.length - 1; i >= 0; i--) {
+    const datumSeti = czDateStringToDate(seti[i].Datum);
+    const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
+    if (!bylaSklizena) {
+      posledniZaseta = seti[i];
+      break;
+    }
+  }
+
+  if (posledniZaseta && posledniZaseta.Plodina) {
+    plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
+  } else {
+    plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
+  }
+}
+
+
 
 
 
