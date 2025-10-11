@@ -419,13 +419,16 @@ async function prefillSklizenPlodina() {
     return;
   }
 
-  // Prohlédni strukturu pro ladění
-  if (arr.length) console.log("arr[0] detail:", arr[0]);
+  if (arr.length > 0) {
+    console.log("Detail objektu z backendu:", arr[0]);
+    console.log("Klíče objektu:", Object.keys(arr[0]));
+  }
 
+  // --- zbytek původní logiky (zatím takto, protože neznáme přesný klíč a hodnotu):
   function getTyp(u) {
-    // vezme 'Typ', 'typ' nebo jakoukoli podobnou variantu
     return (u.Typ || u.typ || "").toLowerCase();
   }
+
   const zahonID = String(aktualniZahon.ZahonID).trim();
   const seti = arr.filter(u => getTyp(u) === "setí" && String(u.ZahonID).trim() === zahonID);
   const sklizne = arr.filter(u => getTyp(u) === "sklizeň" && String(u.ZahonID).trim() === zahonID);
