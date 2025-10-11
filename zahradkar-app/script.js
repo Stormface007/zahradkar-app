@@ -421,6 +421,35 @@ async function ulozHnojeni() {
   }
 }
 
+function loadHnojeniHistory() {
+  const cont = document.getElementById("hnojeniHistory");
+  if (!cont || !aktualniZahon) return;
+  fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
+    .then(r => r.json())
+    .then(arr => {
+      const data = arr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
+      if (!data.length) {
+        cont.innerHTML = "<p>Žádná historie hnojení.</p>";
+        return;
+      }
+      let html = `<table>
+        <thead><tr><th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th></tr></thead><tbody>`;
+      data.reverse().slice(0, 5).forEach(u => {
+        html += `<tr>
+          <td>${formatDate(u.Datum)}</td>
+          <td>${u.Hnojivo || ""}</td>
+          <td>${u.Mnozstvi || u.Mnozstvi_kg || ""}</td>
+        </tr>`;
+      });
+      html += "</tbody></table>";
+      cont.innerHTML = html;
+    })
+    .catch(e => {
+      cont.innerHTML = "<p>Chyba při načítání historie.</p>";
+    });
+}
+
+
 
 
 function formatDate(d) {
