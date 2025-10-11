@@ -146,6 +146,53 @@ function deleteSelected() {
   });
   Promise.all(promises).then(loadZahony);
 }
+// — Boční ikony: aktivace, přepínání obsahu modalu —
+function setActiveIcon(active) {
+  ["mereni","seti","hnojeni","analyza","nastaveni"]
+    .forEach(t => {
+      const e = document.getElementById("icon-" + t);
+      if (e) e.classList.toggle("active", t === active);
+    });
+}
+
+function onIconClick(typ) {
+  setActiveIcon(typ);
+  document.getElementById("modalViewDefault").style.display = "none";
+  document.getElementById("modalViewUdalost").style.display = "none";
+  if (typ === "seti") {
+    showUdalostForm("plodina");
+  } else if (typ === "hnojeni") {
+    showUdalostForm("hnojeni");
+  } else if (typ === "mereni") {
+    showDefaultModalView();
+  } else if (typ === "analyza") {
+    showAnalysisForm();
+  }
+}
+
+// — Analýza záhonu —
+function showAnalysisForm() {
+  document.getElementById("modalViewDefault").style.display = "none";
+  const uv = document.getElementById("modalViewUdalost");
+  uv.classList.add("analysis");
+  uv.style.display = "block";
+  const c = document.getElementById("udalostFormContainer");
+  c.innerHTML = `
+    <h4>Analýza</h4>
+    <label>Datum: <input type="date" id="analDatum"/></label><br>
+    <div class="nutrients">
+      <div class="nutrient"><label>pH:</label><input type="number" step="0.1" id="analPH"/></div>
+      <div class="nutrient"><label>N:</label><input type="number" id="analN"/></div>
+      <div class="nutrient"><label>P:</label><input type="number" id="analP"/></div>
+      <div class="nutrient"><label>K:</label><input type="number" id="analK"/></div>
+    </div>
+    <div class="soil-info">
+      <label>Typ půdy:<input type="text" id="soilType"/></label><br>
+      <label>Barva půdy:<input type="text" id="soilColor"/></label>
+    </div>
+    <button onclick="zpetNaDetailZahonu()">Zpět</button>
+  `;
+}
 
 // — view modalu přepínač, defaultní —
 function showDefaultModalView() {
