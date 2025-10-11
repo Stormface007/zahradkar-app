@@ -456,28 +456,21 @@ function czDateStringToDate(str) {
 async function prefillSklizenPlodina() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
-  if (!plodinaSelect) {
-    console.warn("plodinaSelect (select) nebyl nalezen!");
-    return;
-  }
+  if (!plodinaSelect) return;
   let arr = [];
   try {
     const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
     arr = await res.json();
   } catch (e) {
-    console.error("Chyba načítání dat z backendu (prefillSklizenPlodina):", e);
     plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
     return;
   }
-  console.log("arr:", arr);
-  console.log("aktualniZahon:", aktualniZahon);
 
-  const seti = arr.filter(
-    u => u.Typ === "Setí" && String(u.ZahonID) === String(aktualniZahon.ZahonID)
-  );
-  const sklizne = arr.filter(
-    u => u.Typ === "Sklizeň" && String(u.ZahonID) === String(aktualniZahon.ZahonID)
-  );
+  console.log("arr:", arr, "aktualniZahon:", aktualniZahon);
+
+  const zahonID = String(aktualniZahon.ZahonID).trim();
+  const seti = arr.filter(u => u.Typ === "Setí" && String(u.ZahonID).trim() === zahonID);
+  const sklizne = arr.filter(u => u.Typ === "Sklizeň" && String(u.ZahonID).trim() === zahonID);
 
   console.log("Setí:", seti);
   console.log("Sklizne:", sklizne);
@@ -507,12 +500,6 @@ async function prefillSklizenPlodina() {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
   }
 }
-
-
-
-
-
-
 
 
 // — Načtení historie setí a sklizně —
@@ -848,6 +835,11 @@ function loadHnojeniHistory() {
       console.error("Chyba historie hnojení:", e);
       cont.innerHTML = "<p>Chyba při načítání historie.</p>";
     });
+}
+function czDateStringToDate(str) {
+  if (!str) return new Date("1970-01-01");
+  const [d, m, y] = str.split(".");
+  return new Date(`${y.trim()}-${m.trim().padStart(2, "0")}-${d.trim().padStart(2, "0")}`);
 }
 
 
