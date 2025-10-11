@@ -367,6 +367,22 @@ async function ulozUdalost() {
     hideActionIndicator?.();
   }
 }
+function loadHnojiva(){
+  fetch(`${SERVER_URL}?action=getHnojiva`)
+    .then(r=>r.json())
+    .then(arr=>{
+      const sel = document.getElementById("hnojivoSelect");
+      if(!sel) return;
+      sel.innerHTML = `<option value="">– vyber hnojivo –</option>`;
+      arr.forEach(h=>{
+        const o = document.createElement("option");
+        o.value = h.nazev; 
+        o.textContent = h.nazev;
+        sel.appendChild(o);
+      });
+    })
+    .catch(e => console.error("Chyba hnojiv:", e));
+}
 
 
 function formatDate(d) {
