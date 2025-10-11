@@ -171,6 +171,15 @@ async function addZahon(){
   }
 }
 
+function setActiveIcon(active){
+  ["mereni","seti","hnojeni","analyza","nastaveni"]
+    .forEach(t=>{
+      const e=document.getElementById("icon-"+t);
+      if(e) e.classList.toggle("active", t===active);
+    });
+}
+
+
 // — Otevření/zavření detailu záhonu (modal) —
 function otevriModal(z) {
   document.getElementById("nazevZahonu").textContent = z.NazevZahonu || "";
