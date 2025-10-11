@@ -312,6 +312,55 @@ function showUdalostForm(typ) {
   }
 }
 
+async function ulozUdalost() {
+  const typ = window.typAkce;
+  const zahonID = aktualniZahon?.ZahonID;
+  const datum   = document.getElementById("udalostDatum").value;
+  const plodina = document.getElementById("plodinaSelect").value.trim();
+  let vynos = document.getElementById("udalostVynos").value.replace(",", ".");
+  vynos = vynos === "" ? "" : parseFloat(vynos);
+
+  if (!zahonID || !datum || !plodina) {
+    alert("Záhon, datum a plodina jsou povinné.");
+    return;
+  }
+
+  const ps = new URLSearchParams();
+  ps.append("action", "addUdalost");
+  ps.append("zahonID", zahonID);
+  ps.append("datum", datum);
+
+  if (typ === "seti") {
+    ps.append("typ", "Setí");
+    ps.append("plodina", plodina);
+    ps.append("vynos", "");
+  } else if (typ === "sklizen") {
+    ps.append("typ", "Sklizeň");
+    ps.append("plodina", plodina);
+    ps.append("vynos", vynos);
+  }
+
+  ps.append("hnojivo", "");
+  ps.append("mnozstvi", "");
+  ps.append("poznamka", "");
+
+  try {
+    showActionIndicator?.();
+    const res = await fetch(SERVER_URL, { method: "POST", body: ps });
+    const text = await res.text();
+    if (text.trim() === "OK") {
+      zpetNaDetailZahonu();
+    } else {
+      alert("Chyba při ukládání události: " + text);
+    }
+  } catch (e) {
+    alert("Chyba při odesílání události.");
+  } finally {
+    hideActionIndicator?.();
+  }
+}
+
+
 function formatDate(d) {
   if (!d) return "";
   const dateObj = new Date(d);
