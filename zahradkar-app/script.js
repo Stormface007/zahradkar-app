@@ -228,6 +228,52 @@ function otevriModal(z) {
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   modal.style.display = "flex";
+  preloadModalData(z);
+}
+// CACHE OBJEKT
+let modalDataCache = {
+  hnojeniHistory: null,
+  setiSklizenHistory: null,
+  plodiny: null,
+  posledniSetaPlodina: null
+};
+
+// PRELOAD FUNKCE
+function preloadModalData(zahon) {
+  const zahonID = zahon.ZahonID;
+  const hnojPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
+  const setiSklPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
+  const plodinyPromise = fetch(`${SERVER_URL}?action=getPlodiny`).then(r => r.json());
+
+  return Promise.all([hnojPromise, setiSklPromise, plodinyPromise])
+    .then(([hnojArr, setiSklArr, plodinyArr]) => {
+      modalDataCache.hnojeniHistory = hnojArr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
+      modalDataCache.setiSklizenHistory = setiSklArr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
+      modalDataCache.plodiny = plodinyArr;
+
+      // Poslední zasetá plodina (logika z původní prefill funkce)
+      const seti = setiSklArr.filter(u => (u.Typ || "").toLowerCase() === "setí");
+      const sklizne = setiSklArr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
+      let posledniZaseta = null;
+      for (let i = seti.length - 1; i >= 0; i--) {
+        const datumSeti = czDateStringToDate(seti[i].Datum);
+        const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
+        if (!bylaSklizena) {
+          posledniZaseta = seti[i];
+          break;
+        }
+      }
+      modalDataCache.posledniSetaPlodina = posledniZaseta ? posledniZaseta.Plodina : null;
+    })
+    .catch(e => {
+      modalDataCache = {
+        hnojeniHistory: [],
+        setiSklizenHistory: [],
+        plodiny: [],
+        posledniSetaPlodina: null
+      };
+      console.error("Chyba při preloadu modal dat:", e);
+    });
 }
 function closeModal(){
   aktualniZahon = null;
@@ -357,6 +403,8 @@ async function ulozUdalost() {
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
     const text = await res.text();
     if (text.trim() === "OK") {
+      // Hned po zápisu obnov (refresh) cache modal dat
+      await preloadModalData(aktualniZahon);
       zpetNaDetailZahonu();
     } else {
       alert("Chyba při ukládání události: " + text);
@@ -367,6 +415,11 @@ async function ulozUdalost() {
     hideActionIndicator?.();
   }
 }
+await preloadModalData(aktualniZahon);
+zobrazHnojeniHistory();
+zobrazSetiSklizenHistory();
+// a tak dále dle potřeby
+
 function loadHnojiva(){
   fetch(`${SERVER_URL}?action=getHnojiva`)
     .then(r=>r.json())
@@ -421,32 +474,26 @@ async function ulozHnojeni() {
   }
 }
 
-function loadHnojeniHistory() {
+// FUNKCE PRO ZOBRAZENÍ HISTORIE HNOJENÍ
+function zobrazHnojeniHistory() {
   const cont = document.getElementById("hnojeniHistory");
-  if (!cont || !aktualniZahon) return;
-  fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
-    .then(r => r.json())
-    .then(arr => {
-      const data = arr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
-      if (!data.length) {
-        cont.innerHTML = "<p>Žádná historie hnojení.</p>";
-        return;
-      }
-      let html = `<table>
-        <thead><tr><th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th></tr></thead><tbody>`;
-      data.reverse().slice(0, 5).forEach(u => {
-        html += `<tr>
-          <td>${formatDate(u.Datum)}</td>
-          <td>${u.Hnojivo || ""}</td>
-          <td>${u.Mnozstvi || u.Mnozstvi_kg || ""}</td>
-        </tr>`;
-      });
-      html += "</tbody></table>";
-      cont.innerHTML = html;
-    })
-    .catch(e => {
-      cont.innerHTML = "<p>Chyba při načítání historie.</p>";
-    });
+  if (!cont) return;
+  const data = modalDataCache.hnojeniHistory || [];
+  if (!data.length) {
+    cont.innerHTML = "<p>Žádná historie hnojení.</p>";
+    return;
+  }
+  let html = `<table>
+    <thead><tr><th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th></tr></thead><tbody>`;
+  data.slice().reverse().slice(0, 5).forEach(u => {
+    html += `<tr>
+      <td>${formatDate(u.Datum)}</td>
+      <td>${u.Hnojivo || ""}</td>
+      <td>${u.Mnozstvi || u.Mnozstvi_kg || ""}</td>
+    </tr>`;
+  });
+  html += "</tbody></table>";
+  cont.innerHTML = html;
 }
 
 
@@ -462,33 +509,27 @@ function formatDate(d) {
   return `${day}.${mon}.${yr}`;
 }
 
-function loadSetiSklizenHistory() {
+// FUNKCE PRO ZOBRAZENÍ HISTORIE SETÍ/SKLIZNĚ
+function zobrazSetiSklizenHistory() {
   const cont = document.getElementById("udalostHistory");
-  if (!cont || !aktualniZahon) return;
-  fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`)
-    .then(r => r.json())
-    .then(arr => {
-      const data = arr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
-      if (!data.length) {
-        cont.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
-        return;
-      }
-      let html = `<table>
-        <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th></tr></thead><tbody>`;
-      data.reverse().slice(0, 3).forEach(u => {
-        html += `<tr>
-          <td>${formatDate(u.Datum)}</td>
-          <td>${u.Typ}</td>
-          <td>${u.Plodina || ""}</td>
-          <td>${u.Vynos_kg || ""}</td>
-        </tr>`;
-      });
-      html += "</tbody></table>";
-      cont.innerHTML = html;
-    })
-    .catch(e => {
-      cont.innerHTML = "<p>Chyba při načítání historie.</p>";
-    });
+  if (!cont) return;
+  const data = modalDataCache.setiSklizenHistory || [];
+  if (!data.length) {
+    cont.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
+    return;
+  }
+  let html = `<table>
+    <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th></tr></thead><tbody>`;
+  data.slice().reverse().slice(0, 3).forEach(u => {
+    html += `<tr>
+      <td>${formatDate(u.Datum)}</td>
+      <td>${u.Typ}</td>
+      <td>${u.Plodina || ""}</td>
+      <td>${u.Vynos_kg || ""}</td>
+    </tr>`;
+  });
+  html += "</tbody></table>";
+  cont.innerHTML = html;
 }
 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
@@ -546,45 +587,15 @@ function changeTypAkce(typ) {
   }
 }
 
-async function prefillSklizenPlodina() {
+// FUNKCE PRO PREFILL SKLIZEN PLODINY Z CACHE
+function prefillSklizenPlodinaFromCache() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
   if (!plodinaSelect) return;
-  let arr = [];
-  try {
-    const res = await fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${aktualniZahon.ZahonID}`);
-    arr = await res.json();
-  } catch (e) {
-    plodinaSelect.innerHTML = '<option value="">Chyba načítání</option>';
-    return;
-  }
 
-  if (arr.length > 0) console.log("Detail objektu z backendu:", arr[0], "ZahonID?", arr[0].ZahonID);
-
-  // BEZ ZahonID filtru
-  const seti = arr.filter(u => (u.Typ || "").toLowerCase() === "setí");
-  const sklizne = arr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
-
-  console.log("Filtrované setí:", seti);
-  console.log("Filtrované sklizně:", sklizne);
-
-  if (!seti.length) {
-    plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
-    return;
-  }
-
-  let posledniZaseta = null;
-  for (let i = seti.length - 1; i >= 0; i--) {
-    const datumSeti = czDateStringToDate(seti[i].Datum);
-    const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
-    if (!bylaSklizena) {
-      posledniZaseta = seti[i];
-      break;
-    }
-  }
-
-  if (posledniZaseta && posledniZaseta.Plodina) {
-    plodinaSelect.innerHTML = `<option value="${posledniZaseta.Plodina}">${posledniZaseta.Plodina}</option>`;
+  const plodina = modalDataCache.posledniSetaPlodina;
+  if (plodina) {
+    plodinaSelect.innerHTML = `<option value="${plodina}">${plodina}</option>`;
   } else {
     plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
   }
@@ -593,17 +604,10 @@ async function prefillSklizenPlodina() {
 
 
 
-// — Načtení plodin z backend - 
-async function loadPlodiny() {
+// FUNKCE PRO VYPLNĚNÍ SELECTU PLODIN
+function naplnPlodinySelect() {
   const sel = document.getElementById("plodinaSelect");
-  let arr = [];
-  try {
-    const res = await fetch(`${SERVER_URL}?action=getPlodiny`);
-    arr = await res.json();
-  } catch {
-    if (sel) sel.innerHTML = '<option value="">Chyba načítání</option>';
-    return;
-  }
+  const arr = modalDataCache.plodiny || [];
   if (!sel) return;
   sel.innerHTML = `<option value="">– vyber plodinu –</option>`;
   arr.forEach(p => {
@@ -621,6 +625,57 @@ function czDateStringToDate(str) {
   // CZ formát DD.MM.YYYY
   const [d, m, y] = str.split(".");
   return new Date(`${y.trim()}-${m.trim().padStart(2, "0")}-${d.trim().padStart(2, "0")}`);
+}
+let modalDataCache = {
+  hnojeniHistory: null,
+  setiSklizenHistory: null,
+  plodiny: null,
+  posledniSetaPlodina: null
+};
+
+function preloadModalData(zahon) {
+  // Zahaj načítání všech klíčových dat paralelně
+  const zahonID = zahon.ZahonID;
+  // Hnojení
+  const hnojPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
+  // Setí/sklizeň
+  const setiSklPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
+  // Plodiny
+  const plodinyPromise = fetch(`${SERVER_URL}?action=getPlodiny`).then(r => r.json());
+
+  Promise.all([hnojPromise, setiSklPromise, plodinyPromise])
+    .then(([hnojArr, setiSklArr, plodinyArr]) => {
+      // Hnojení
+      modalDataCache.hnojeniHistory = hnojArr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
+      // Setí/sklizeň
+      modalDataCache.setiSklizenHistory = setiSklArr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
+      // Plodiny
+      modalDataCache.plodiny = plodinyArr;
+
+      // Urči poslední zasetou plodinu (logika přizpůsobená z prefillSklizenPlodina)
+      const seti = setiSklArr.filter(u => (u.Typ || "").toLowerCase() === "setí");
+      const sklizne = setiSklArr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
+      let posledniZaseta = null;
+      for (let i = seti.length - 1; i >= 0; i--) {
+        const datumSeti = czDateStringToDate(seti[i].Datum);
+        const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
+        if (!bylaSklizena) {
+          posledniZaseta = seti[i];
+          break;
+        }
+      }
+      modalDataCache.posledniSetaPlodina = posledniZaseta ? posledniZaseta.Plodina : null;
+    })
+    .catch(e => {
+      // Ošetři chyby, případně nastav fallback hodnoty
+      modalDataCache = {
+        hnojeniHistory: [],
+        setiSklizenHistory: [],
+        plodiny: [],
+        posledniSetaPlodina: null
+      };
+      console.error("Chyba při preloadu modal dat:", e);
+    });
 }
 
 
