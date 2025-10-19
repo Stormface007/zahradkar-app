@@ -657,77 +657,67 @@ modalDataCache = {
   posledniSetaPlodina: null
 };
 
+// ASYNCHRONNÍ FUNKCE PRO NAČTENÍ DAT DO CACHE MODALU
 async function preloadModalData(zahon) {
-  // Zahaj načítání všech klíčových dat paralelně
-   if (!zahon || !zahon.ZahonID) {
-    console.warn("preloadModalData: Chybí záhon nebo jeho ZahonID", zahon);
+  // Očisti starou cache hned na začátku, aby nemohla zůstat přenesená z předchozího záhonu
+  modalDataCache = {
+    hnojeniHistory: [],
+    setiSklizenHistory: [],
+    plodiny: [],
+    posledniSetaPlodina: null
+  };
+
+  // Ověření vstupu
+  if (!zahon || !zahon.ZahonID) {
+    console.warn("preloadModalData: Chybí platný záhon nebo ZahonID", zahon);
     return;
   }
-  const zahonID = zahon.ZahonID;
-  // Hnojení
-  const hnojPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
-  // Setí/sklizeň
-  const setiSklPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
-  // Plodiny
-  const plodinyPromise = fetch(`${SERVER_URL}?action=getPlodiny`).then(r => r.json());
 
-  Promise.all([hnojPromise, setiSklPromise, plodinyPromise])
-    .then(([hnojArr, setiSklArr, plodinyArr]) => {
-      // Hnojení
-      modalDataCache.hnojeniHistory = hnojArr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
-      // Setí/sklizeň
-      modalDataCache.setiSklizenHistory = setiSklArr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
-      // Plodiny
-      modalDataCache.plodiny = plodinyArr;
+  try {
+    const zahonID = zahon.ZahonID;
 
-      // Urči poslední zasetou plodinu (logika přizpůsobená z prefillSklizenPlodina)
-      const seti = setiSklArr.filter(u => (u.Typ || "").toLowerCase() === "setí");
-      const sklizne = setiSklArr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
-      let posledniZaseta = null;
-      for (let i = seti.length - 1; i >= 0; i--) {
-        const datumSeti = czDateStringToDate(seti[i].Datum);
-        const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
-        if (!bylaSklizena) {
-          posledniZaseta = seti[i];
-          break;
-        }
+    // Spusť dotazy paralelně
+    const [udalostiArr, plodinyArr] = await Promise.all([
+      fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json()),
+      fetch(`${SERVER_URL}?action=getPlodiny`).then(r => r.json())
+    ]);
+
+    // Filtrování jednotlivých typů událostí
+    const hnojArr = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
+    const setiSklArr = udalostiArr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
+
+    modalDataCache.hnojeniHistory = hnojArr;
+    modalDataCache.setiSklizenHistory = setiSklArr;
+    modalDataCache.plodiny = plodinyArr;
+
+    // Logika pro určení posledního neukončeného setí (přizpůsobeno původnímu prefillSklizenPlodina)
+    const seti = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "setí");
+    const sklizne = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
+
+    let posledniZaseta = null;
+    for (let i = seti.length - 1; i >= 0; i--) {
+      const datumSeti = czDateStringToDate(seti[i].Datum);
+      const bylaSklizena = sklizne.some(sk => czDateStringToDate(sk.Datum) > datumSeti);
+      if (!bylaSklizena) {
+        posledniZaseta = seti[i];
+        break;
       }
-      modalDataCache.posledniSetaPlodina = posledniZaseta ? posledniZaseta.Plodina : null;
-    })
-    .catch(e => {
-      // Ošetři chyby, případně nastav fallback hodnoty
-      modalDataCache = {
-        hnojeniHistory: [],
-        setiSklizenHistory: [],
-        plodiny: [],
-        posledniSetaPlodina: null
-      };
-      console.error("Chyba při preloadu modal dat:", e);
-    });
+    }
+
+    modalDataCache.posledniSetaPlodina = posledniZaseta ? posledniZaseta.Plodina : null;
+
+    // Log pro kontrolu
+    console.log("preloadModalData: Načteno pro záhon", zahonID, modalDataCache);
+  } catch (e) {
+    // V případě chyby je cache vyprazdněna a nahlášena
+    modalDataCache = {
+      hnojeniHistory: [],
+      setiSklizenHistory: [],
+      plodiny: [],
+      posledniSetaPlodina: null
+    };
+    console.error("Chyba při preloadu modal dat:", e);
+  }
 }
 
-
-
-// ...POKRAČUJ DALŠÍMI FUNKCEMI, které JS skutečně využívá:
-// - loadHnojiva
-// - showUdalostForm
-// - changeTypAkce
-// - czDateStringToDate (pokud volaná jinde! jinak odstranit)
-// - prefillSklizenPlodina
-// - loadSetiSklizenHistory
-// - formatDate
-// - showAnalysisForm
-// - saveAnalysis
-// - zpetNaDetailZahonu
-// - setActiveIcon
-// - onIconClick
-// - ulozUdalost
-// - ulozHnojeni
-// - loadHnojeniHistory
-// - openZoom
-// - closeZoomModal
-// - drawZoomCanvas
-// - resizeAndDrawCanvas
-
-// ...atd.
 
