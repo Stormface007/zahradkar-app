@@ -588,7 +588,7 @@ function changeTypAkce(typ) {
     vynosInput.disabled = true;
   } else if (typ === "sklizen") {
     plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
-    prefillSklizenPlodina();
+    prefillSklizenPlodinaFromCache();
     vynosInput.disabled = false;
   }
 }
