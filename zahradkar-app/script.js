@@ -204,11 +204,11 @@ function onIconClick(typ){
 
 // — Otevření/zavření detailu záhonu (modal) —
 async function otevriModal(z) {
-   const udalostHistElem = document.getElementById("udalostHistory");
-if (udalostHistElem) udalostHistElem.innerHTML = "<p>Načítám…</p>";
-
-const hnojeniHistElem = document.getElementById("hnojeniHistory");
-if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Načítám…</p>";
+  // Nastav loader před načítáním
+  const udalostHistElem = document.getElementById("udalostHistory");
+  if (udalostHistElem) udalostHistElem.innerHTML = "<p>Načítám…</p>";
+  const hnojeniHistElem = document.getElementById("hnojeniHistory");
+  if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Načítám…</p>";
 
   document.getElementById("nazevZahonu").textContent = z.NazevZahonu || "";
   aktualniZahon = z;
@@ -241,13 +241,12 @@ if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Načítám…</p>";
   document.getElementById("modalViewUdalost").style.display = "none";
   modal.style.display = "flex";
   
-
-   // Načtení/obnovení dat a jejich zobrazení
+  // Načti data nové historie a teprve pak vyrenderuj
   await preloadModalData(z);
   zobrazSetiSklizenHistory();
   zobrazHnojeniHistory();
   naplnPlodinySelect();
-};
+}
 
 
 // PRELOAD FUNKCE
