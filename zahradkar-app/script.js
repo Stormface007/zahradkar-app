@@ -202,23 +202,9 @@ function onIconClick(typ){
 
 
 
-// — Otevření/zavření detailu záhonu (modal) —
 async function otevriModal(z) {
-    if (!z || !z.ZahonID) {
-    console.warn('otevriModal: Chybí platný záhon nebo ZahonID!', z);
-    return; // Bez záhonu nemůže modal ani data fungovat!
-  }
-
-  console.log('[otevriModal] Volám zobrazSetiSklizenHistory: ', modalDataCache.setiSklizenHistory, 'pro záhon', aktualniZahon.ZahonID);
-console.log('[otevriModal] Volám zobrazHnojeniHistory: ', modalDataCache.hnojeniHistory, 'pro záhon', aktualniZahon.ZahonID);
-
-  // Nastav loader před načítáním
-  const udalostHistElem = document.getElementById("udalostHistory");
-  if (udalostHistElem) udalostHistElem.innerHTML = "<p>Načítám…</p>";
-  const hnojeniHistElem = document.getElementById("hnojeniHistory");
-  if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Načítám…</p>";
-
-  document.getElementById("nazevZahonu").textContent = z.NazevZahonu || "";
+  // --- UI příprava ---
+  document.getElementById("nazevZahonu").textContent = z?.NazevZahonu || "";
   aktualniZahon = z;
   setActiveIcon(null);
 
@@ -230,17 +216,16 @@ console.log('[otevriModal] Volám zobrazHnojeniHistory: ', modalDataCache.hnojen
 
   if (!nazevInput || !delkaInput || !sirkaInput || !modal || !canvas) return;
 
-  nazevInput.value = z.NazevZahonu;
-  delkaInput.value = z.Delka || 0;
-  sirkaInput.value = z.Sirka || 0;
-
+  nazevInput.value = z?.NazevZahonu || "";
+  delkaInput.value = z?.Delka || 0;
+  sirkaInput.value = z?.Sirka || 0;
   updatePlocha();
 
   try {
     requestAnimationFrame(() => {
       const canvas = document.getElementById("zahonCanvas");
       if (canvas) {
-        resizeAndDrawCanvas(canvas, aktualniZahon.Delka, aktualniZahon.Sirka);
+        resizeAndDrawCanvas(canvas, aktualniZahon?.Delka, aktualniZahon?.Sirka);
       }
     });
   } catch {}
@@ -248,13 +233,27 @@ console.log('[otevriModal] Volám zobrazHnojeniHistory: ', modalDataCache.hnojen
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   modal.style.display = "flex";
-  
-  // Načti data nové historie a teprve pak vyrenderuj
-  await preloadModalData(z);
-  zobrazSetiSklizenHistory();
-  zobrazHnojeniHistory();
-  naplnPlodinySelect();
+
+  // --- Loader do historie vždy ---
+  const udalostHistElem = document.getElementById("udalostHistory");
+  if (udalostHistElem) udalostHistElem.innerHTML = "<p>Načítám…</p>";
+  const hnojeniHistElem = document.getElementById("hnojeniHistory");
+  if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Načítám…</p>";
+
+  // --- Pokud má záhon platné ZahonID, načti historii ---
+  if (z?.ZahonID) {
+    await preloadModalData(z);
+    zobrazSetiSklizenHistory();
+    zobrazHnojeniHistory();
+    naplnPlodinySelect();
+  } else {
+    // Pokud záhon nemá ID (např. nový ještě neuložený), zobraz info/fallback nebo prázdnou historii
+    if (udalostHistElem) udalostHistElem.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
+    if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Žádná historie hnojení.</p>";
+    naplnPlodinySelect();
+  }
 }
+
 
 
 // PRELOAD FUNKCE
