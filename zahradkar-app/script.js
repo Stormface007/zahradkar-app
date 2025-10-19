@@ -204,6 +204,9 @@ function onIconClick(typ){
 
 // — Otevření/zavření detailu záhonu (modal) —
 async function otevriModal(z) {
+  console.log('[otevriModal] Volám zobrazSetiSklizenHistory: ', modalDataCache.setiSklizenHistory, 'pro záhon', aktualniZahon.ZahonID);
+console.log('[otevriModal] Volám zobrazHnojeniHistory: ', modalDataCache.hnojeniHistory, 'pro záhon', aktualniZahon.ZahonID);
+
   // Nastav loader před načítáním
   const udalostHistElem = document.getElementById("udalostHistory");
   if (udalostHistElem) udalostHistElem.innerHTML = "<p>Načítám…</p>";
@@ -493,6 +496,11 @@ async function ulozHnojeni() {
 
 // FUNKCE PRO ZOBRAZENÍ HISTORIE HNOJENÍ
 function zobrazHnojeniHistory() {
+  function zobrazSetiSklizenHistory() {
+  console.log('[zobrazSetiSklizenHistory] Redner s cache:', modalDataCache.setiSklizenHistory);
+  // zbytek funkce ...
+}
+
   const cont = document.getElementById("hnojeniHistory");
   if (!cont) return;
   const data = modalDataCache.hnojeniHistory || [];
