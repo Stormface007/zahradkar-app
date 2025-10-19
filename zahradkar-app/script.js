@@ -628,7 +628,7 @@ function czDateStringToDate(str) {
   const [d, m, y] = str.split(".");
   return new Date(`${y.trim()}-${m.trim().padStart(2, "0")}-${d.trim().padStart(2, "0")}`);
 }
-let modalDataCache = {
+modalDataCache = {
   hnojeniHistory: null,
   setiSklizenHistory: null,
   plodiny: null,
