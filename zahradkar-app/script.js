@@ -580,7 +580,7 @@ function changeTypAkce(typ) {
   const plodinaSelect = document.getElementById("plodinaSelect");
   if (!plodinaSelect) return;
   if (typ === "seti") {
-    loadPlodiny();
+    naplnPlodinySelect();
     vynosInput.disabled = true;
   } else if (typ === "sklizen") {
     plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
