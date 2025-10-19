@@ -240,7 +240,11 @@ let modalDataCache = {
 
 // PRELOAD FUNKCE
 async function preloadModalData(zahon) {
-  try {
+  if (!zahon || !zahon.ZahonID) {
+    console.warn("preloadModalData: Chybí platný záhon nebo ZahonID", zahon);
+    return;
+  }
+  try{
     const zahonID = zahon.ZahonID;
     const [hnojArr, setiSklArr, plodinyArr] = await Promise.all([
       fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json()),
