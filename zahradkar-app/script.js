@@ -204,6 +204,11 @@ function onIconClick(typ){
 
 // — Otevření/zavření detailu záhonu (modal) —
 async function otevriModal(z) {
+    if (!z || !z.ZahonID) {
+    console.warn('otevriModal: Chybí platný záhon nebo ZahonID!', z);
+    return; // Bez záhonu nemůže modal ani data fungovat!
+  }
+
   console.log('[otevriModal] Volám zobrazSetiSklizenHistory: ', modalDataCache.setiSklizenHistory, 'pro záhon', aktualniZahon.ZahonID);
 console.log('[otevriModal] Volám zobrazHnojeniHistory: ', modalDataCache.hnojeniHistory, 'pro záhon', aktualniZahon.ZahonID);
 
