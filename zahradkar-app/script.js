@@ -239,7 +239,7 @@ let modalDataCache = {
 };
 
 // PRELOAD FUNKCE
-function preloadModalData(zahon) {
+async function preloadModalData(zahon) {
   const zahonID = zahon.ZahonID;
   const hnojPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
   const setiSklPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
