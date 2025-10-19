@@ -416,10 +416,11 @@ async function ulozUdalost() {
     hideActionIndicator?.();
   }
 }
-await preloadModalData(aktualniZahon);
-zobrazHnojeniHistory();
-zobrazSetiSklizenHistory();
-// a tak dále dle potřeby
+preloadModalData(aktualniZahon).then(() => {
+  zobrazHnojeniHistory();
+  zobrazSetiSklizenHistory();
+  // případně další akce s načtenými daty
+});
 
 function loadHnojiva(){
   fetch(`${SERVER_URL}?action=getHnojiva`)
