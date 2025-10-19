@@ -228,19 +228,22 @@ async function otevriModal(z) {
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   modal.style.display = "flex";
-    preloadModalData(z).then(() => {
-    zobrazSetiSklizenHistory();
-    zobrazHnojeniHistory();
-    naplnPlodinySelect();
+  
+  // Načtení/obnovení dat a jejich zobrazení
+  await preloadModalData(z);
+  zobrazSetiSklizenHistory();
+  zobrazHnojeniHistory();
+  naplnPlodinySelect();
 }
+
 // CACHE OBJEKT
 let modalDataCache = {
   hnojeniHistory: null,
   setiSklizenHistory: null,
   plodiny: null,
   posledniSetaPlodina: null
-  
 };
+
 
 // PRELOAD FUNKCE
 async function preloadModalData(zahon) {
