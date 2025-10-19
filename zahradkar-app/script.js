@@ -235,19 +235,18 @@ if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Načítám…</p>";
   document.getElementById("modalViewUdalost").style.display = "none";
   modal.style.display = "flex";
   
-  // Načtení/obnovení dat a jejich zobrazení
-  await preloadModalData(z);
-  zobrazSetiSklizenHistory();
-  zobrazHnojeniHistory();
-  naplnPlodinySelect();
-}
-
 // CACHE OBJEKT
 let modalDataCache = {
   hnojeniHistory: null,
   setiSklizenHistory: null,
   plodiny: null,
   posledniSetaPlodina: null
+}
+   // Načtení/obnovení dat a jejich zobrazení
+  await preloadModalData(z);
+  zobrazSetiSklizenHistory();
+  zobrazHnojeniHistory();
+  naplnPlodinySelect();
 };
 
 
