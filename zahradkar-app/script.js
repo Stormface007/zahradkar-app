@@ -2,7 +2,13 @@
 const SERVER_URL = "/.netlify/functions/proxy";
 
 let aktualniZahon = null;
-
+// CACHE OBJEKT
+let modalDataCache = {
+  hnojeniHistory: null,
+  setiSklizenHistory: null,
+  plodiny: null,
+  posledniSetaPlodina: null
+};
 // — Počasí dle geolokace —
 function loadWeatherByGeolocation(){
   const ic = document.getElementById("weatherIcon"),
@@ -241,14 +247,6 @@ if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Načítám…</p>";
   zobrazSetiSklizenHistory();
   zobrazHnojeniHistory();
   naplnPlodinySelect();
-}
-
-// CACHE OBJEKT
-let modalDataCache = {
-  hnojeniHistory: null,
-  setiSklizenHistory: null,
-  plodiny: null,
-  posledniSetaPlodina: null
 };
 
 
