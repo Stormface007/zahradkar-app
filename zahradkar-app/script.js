@@ -198,8 +198,12 @@ function onIconClick(typ){
 
 // — Otevření/zavření detailu záhonu (modal) —
 async function otevriModal(z) {
-   document.getElementById("udalostHistory").innerHTML = "<p>Načítám…</p>";
-  document.getElementById("hnojeniHistory").innerHTML = "<p>Načítám…</p>";
+   const udalostHistElem = document.getElementById("udalostHistory");
+if (udalostHistElem) udalostHistElem.innerHTML = "<p>Načítám…</p>";
+
+const hnojeniHistElem = document.getElementById("hnojeniHistory");
+if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Načítám…</p>";
+
   document.getElementById("nazevZahonu").textContent = z.NazevZahonu || "";
   aktualniZahon = z;
   setActiveIcon(null);
