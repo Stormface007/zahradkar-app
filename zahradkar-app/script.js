@@ -500,14 +500,10 @@ async function ulozHnojeni() {
 
 // FUNKCE PRO ZOBRAZENÍ HISTORIE HNOJENÍ
 function zobrazHnojeniHistory() {
-  function zobrazSetiSklizenHistory() {
-  console.log('[zobrazSetiSklizenHistory] Redner s cache:', modalDataCache.setiSklizenHistory);
-  // zbytek funkce ...
-}
-
   const cont = document.getElementById("hnojeniHistory");
   if (!cont) return;
   const data = modalDataCache.hnojeniHistory || [];
+  console.log('[zobrazHnojeniHistory] Render s cache:', data);
   if (!data.length) {
     cont.innerHTML = "<p>Žádná historie hnojení.</p>";
     return;
@@ -525,24 +521,12 @@ function zobrazHnojeniHistory() {
   cont.innerHTML = html;
 }
 
-
-
-
-function formatDate(d) {
-  if (!d) return "";
-  const dateObj = new Date(d);
-  if (isNaN(dateObj)) return d;
-  const day = ("0" + dateObj.getDate()).slice(-2);
-  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
-  const yr  = dateObj.getFullYear();
-  return `${day}.${mon}.${yr}`;
-}
-
 // FUNKCE PRO ZOBRAZENÍ HISTORIE SETÍ/SKLIZNĚ
 function zobrazSetiSklizenHistory() {
   const cont = document.getElementById("udalostHistory");
   if (!cont) return;
   const data = modalDataCache.setiSklizenHistory || [];
+  console.log('[zobrazSetiSklizenHistory] Render s cache:', data);
   if (!data.length) {
     cont.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
     return;
@@ -559,6 +543,17 @@ function zobrazSetiSklizenHistory() {
   });
   html += "</tbody></table>";
   cont.innerHTML = html;
+}
+
+// FORMÁTOVÁNÍ DATA
+function formatDate(d) {
+  if (!d) return "";
+  const dateObj = new Date(d);
+  if (isNaN(dateObj)) return d;
+  const day = ("0" + dateObj.getDate()).slice(-2);
+  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+  const yr  = dateObj.getFullYear();
+  return `${day}.${mon}.${yr}`;
 }
 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
