@@ -353,7 +353,7 @@ function showUdalostForm(typ) {
         <em>Načítám historii...</em>
       </div>
     `;
-    loadSetiSklizenHistory();
+    zobrazSetiSklizenHistory();
     window.typAkce = "seti";
     changeTypAkce("seti");
   }
