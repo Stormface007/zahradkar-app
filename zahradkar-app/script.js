@@ -197,7 +197,7 @@ function onIconClick(typ){
 
 
 // — Otevření/zavření detailu záhonu (modal) —
-function otevriModal(z) {
+async function otevriModal(z) {
   document.getElementById("nazevZahonu").textContent = z.NazevZahonu || "";
   aktualniZahon = z;
   setActiveIcon(null);
@@ -228,7 +228,10 @@ function otevriModal(z) {
   document.getElementById("modalViewDefault").style.display = "block";
   document.getElementById("modalViewUdalost").style.display = "none";
   modal.style.display = "flex";
-  preloadModalData(z);
+    preloadModalData(z).then(() => {
+    zobrazSetiSklizenHistory();
+    zobrazHnojeniHistory();
+    naplnPlodinySelect();
 }
 // CACHE OBJEKT
 let modalDataCache = {
@@ -236,6 +239,7 @@ let modalDataCache = {
   setiSklizenHistory: null,
   plodiny: null,
   posledniSetaPlodina: null
+  
 };
 
 // PRELOAD FUNKCE
