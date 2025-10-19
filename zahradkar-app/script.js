@@ -334,7 +334,7 @@ function showUdalostForm(typ) {
       </div>
     `;
     loadHnojiva();
-    loadHnojeniHistory();
+    zobrazHnojeniHistory();
   } else {
     c.innerHTML = `
       <h4>Setí a sklizeň</h4>
