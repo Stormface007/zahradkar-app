@@ -637,6 +637,10 @@ modalDataCache = {
 
 function preloadModalData(zahon) {
   // Zahaj načítání všech klíčových dat paralelně
+   if (!zahon || !zahon.ZahonID) {
+    console.warn("preloadModalData: Chybí záhon nebo jeho ZahonID", zahon);
+    return;
+  }
   const zahonID = zahon.ZahonID;
   // Hnojení
   const hnojPromise = fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json());
