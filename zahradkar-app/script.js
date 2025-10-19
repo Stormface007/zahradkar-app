@@ -639,7 +639,7 @@ modalDataCache = {
   posledniSetaPlodina: null
 };
 
-function preloadModalData(zahon) {
+async function preloadModalData(zahon) {
   // Zahaj načítání všech klíčových dat paralelně
    if (!zahon || !zahon.ZahonID) {
     console.warn("preloadModalData: Chybí záhon nebo jeho ZahonID", zahon);
