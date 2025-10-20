@@ -590,7 +590,7 @@ data.slice().reverse().slice(0, 6).forEach(u => {
     <td>${formatDate(u.Datum)}</td>
     <td>${u.Typ}</td>
     <td>${u.Plodina || ""}</td>
-    <td>${u.Vynos_kg || ""}</td>
+    <td>${u.Vynos || ""}</td>
     <td><button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button>
       <button onclick="otevriUpravuUdalosti(${u.UdalostID}, '${u.Typ}')">✏️</button></td>
   </tr>`;
