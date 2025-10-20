@@ -2,7 +2,7 @@
 const fetch = require("node-fetch");
 
 // Základní adresa vašeho GAS webappu
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqNqvm7OXgo2E5HYbusxM4ZBn10zwV5ZkfTEnB4zepGI8w_DdLZanDgLyWexwvAI71/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwx5CvHE16cXbGTPJGX6t67TBbvcN-M8VqBKHvjjykg9VnijqHqwhYWg0Yh0tT2gTvj/exec";
 
 // Pokud není GAS_URL v env, použijeme tuhle konstantu
 const GAS_URL = process.env.GAS_URL || APPS_SCRIPT_URL;
