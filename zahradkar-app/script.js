@@ -611,6 +611,7 @@ function formatDate(d) {
   return `${day}.${mon}.${yr}`;
 }
 
+// FUNKCE – otevření formuláře pro úpravu existující události
 function otevriUpravuUdalosti(id, typ) {
   // Najdi událost v cache
   const vsechny = [
@@ -620,24 +621,53 @@ function otevriUpravuUdalosti(id, typ) {
   const udalost = vsechny.find(u => u.UdalostID === id);
   if (!udalost) return alert("Událost nenalezena!");
 
-  // Přepni modal do režimu „úpravy“
+  // Zapni režim úprav
   window.editMode = true;
   window.editUdalostID = id;
 
-  // Přepni zobrazení
+  // Přepni modal — zobraz formulář události
   document.getElementById("modalViewDefault").style.display = "none";
   document.getElementById("modalViewUdalost").style.display = "block";
 
-  // Předvyplň formulář
+  // Naplň hodnoty dle typu události
   document.getElementById("udalostDatum").value = udalost.Datum.split("T")[0];
-  document.getElementById("plodinaSelect").value = udalost.Plodina || "";
-  document.getElementById("udalostVynos").value = udalost.Vynos_kg || "";
-  document.getElementById("udalostHnojivo").value = udalost.Hnojivo || "";
-  document.getElementById("udalostMnozstvi").value = udalost.Mnozstvi || "";
-  document.getElementById("udalostPoznamka").value = udalost.Poznamka || "";
 
-  window.typAkce = typ.toLowerCase() === "hnojení" ? "hnojeni" : "sklizen";
+  // Pokud jde o setí nebo sklizeň — vyplň plodinu, výnos
+  const plodinaSelect = document.getElementById("plodinaSelect");
+  if (plodinaSelect) {
+    // nastav původní hodnotu (nepřepisuj ji novější sadbou)
+    plodinaSelect.innerHTML = `<option value="${udalost.Plodina || ""}">${udalost.Plodina || ""}</option>`;
+  }
+
+  if (udalost.Typ === "Sklizeň") {
+    document.getElementById("udalostVynos").disabled = false;
+    document.getElementById("udalostVynos").value = udalost.Vynos_kg || "";
+  } else {
+    document.getElementById("udalostVynos").disabled = true;
+    document.getElementById("udalostVynos").value = "";
+  }
+
+  // Pokud jde o hnojení
+  const hnojivoInput = document.getElementById("udalostHnojivo");
+  const mnozstviInput = document.getElementById("udalostMnozstvi");
+  if (hnojivoInput && mnozstviInput) {
+    hnojivoInput.value = udalost.Hnojivo || "";
+    mnozstviInput.value = udalost.Mnozstvi || "";
+  }
+
+  // Poznámka (u všech typů)
+  const poznInput = document.getElementById("udalostPoznamka");
+  if (poznInput) poznInput.value = udalost.Poznamka || "";
+
+  // Nastavení typu akce
+  window.typAkce =
+    typ.toLowerCase() === "hnojení"
+      ? "hnojeni"
+      : udalost.Typ.toLowerCase() === "setí"
+      ? "seti"
+      : "sklizen";
 }
+
 
 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
@@ -695,12 +725,17 @@ function changeTypAkce(typ) {
   }
 }
 
+
 // FUNKCE PRO PREFILL SKLIZEN PLODINY Z CACHE
 function prefillSklizenPlodinaFromCache() {
   if (!aktualniZahon) return;
   const plodinaSelect = document.getElementById("plodinaSelect");
   if (!plodinaSelect) return;
 
+  // 🚫 1️⃣ Pokud je aktivní režim úprav, nezasahuj do selectu
+  if (window.editMode) return;
+
+  // ✅ 2️⃣ Jinak nabídni poslední zasetou plodinu
   const plodina = modalDataCache.posledniSetaPlodina;
   if (plodina) {
     plodinaSelect.innerHTML = `<option value="${plodina}">${plodina}</option>`;
