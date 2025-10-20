@@ -389,6 +389,7 @@ function zpetNaDetailZahonu(){
 }
 
 
+// FUNKCE — Uložení nebo úprava události
 async function ulozUdalost() {
   const typ = window.typAkce;
   const zahonID = aktualniZahon?.ZahonID;
@@ -403,7 +404,15 @@ async function ulozUdalost() {
   }
 
   const ps = new URLSearchParams();
-  ps.append("action", "addUdalost");
+
+  // 🔧 Rozlišení, zda jde o editaci nebo novou událost
+  if (window.editMode) {
+    ps.append("action", "updateUdalost");
+    ps.append("udalostID", window.editUdalostID);
+  } else {
+    ps.append("action", "addUdalost");
+  }
+
   ps.append("zahonID", zahonID);
   ps.append("datum", datum);
 
@@ -423,26 +432,33 @@ async function ulozUdalost() {
 
   try {
     showActionIndicator?.();
+
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
     const text = await res.text();
+
     if (text.trim() === "OK") {
-      // Hned po zápisu obnov (refresh) cache modal dat
+      alert(window.editMode ? "Událost byla upravena." : "Událost byla přidána.");
+
+      // Po úspěchu vždy vypni režim editace
+      window.editMode = false; 
+      window.editUdalostID = null;
+
+      // Znovu načti data a zobraz obsah
       await preloadModalData(aktualniZahon);
-      zpetNaDetailZahonu();
+      zobrazSetiSklizenHistory?.();
+      zobrazHnojeniHistory?.();
+      zpetNaDetailZahonu?.();
     } else {
       alert("Chyba při ukládání události: " + text);
     }
   } catch (e) {
+    console.error("Chyba při odesílání události:", e);
     alert("Chyba při odesílání události.");
   } finally {
     hideActionIndicator?.();
   }
 }
-preloadModalData(aktualniZahon).then(() => {
-  zobrazHnojeniHistory();
-  zobrazSetiSklizenHistory();
-  // případně další akce s načtenými daty
-});
+
 
 async function smazUdalost(id, typ) {
   if (!confirm(`Opravdu chceš smazat ${typ.toLowerCase()} (ID ${id})?`)) return;
@@ -546,7 +562,8 @@ function zobrazHnojeniHistory() {
       <td>${formatDate(u.Datum)}</td>
       <td>${u.Hnojivo || ""}</td>
       <td>${u.Mnozstvi || u.Mnozstvi_kg || ""}</td>
-      <td><button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button></td>
+      <td><button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button>
+      <button onclick="otevriUpravuUdalosti(${u.UdalostID}, '${u.Typ}')">✏️</button></td>
     </tr>`;
   });
 
@@ -574,7 +591,8 @@ data.slice().reverse().slice(0, 5).forEach(u => {
     <td>${u.Typ}</td>
     <td>${u.Plodina || ""}</td>
     <td>${u.Vynos_kg || ""}</td>
-    <td><button onclick="smazUdalost(${u.UdalostID}, '${u.Typ}')">🗑️</button></td>
+    <td><button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button>
+      <button onclick="otevriUpravuUdalosti(${u.UdalostID}, '${u.Typ}')">✏️</button></td>
   </tr>`;
 });
 
@@ -592,6 +610,35 @@ function formatDate(d) {
   const yr  = dateObj.getFullYear();
   return `${day}.${mon}.${yr}`;
 }
+
+function otevriUpravuUdalosti(id, typ) {
+  // Najdi událost v cache
+  const vsechny = [
+    ...modalDataCache.hnojeniHistory,
+    ...modalDataCache.setiSklizenHistory
+  ];
+  const udalost = vsechny.find(u => u.UdalostID === id);
+  if (!udalost) return alert("Událost nenalezena!");
+
+  // Přepni modal do režimu „úpravy“
+  window.editMode = true;
+  window.editUdalostID = id;
+
+  // Přepni zobrazení
+  document.getElementById("modalViewDefault").style.display = "none";
+  document.getElementById("modalViewUdalost").style.display = "block";
+
+  // Předvyplň formulář
+  document.getElementById("udalostDatum").value = udalost.Datum.split("T")[0];
+  document.getElementById("plodinaSelect").value = udalost.Plodina || "";
+  document.getElementById("udalostVynos").value = udalost.Vynos_kg || "";
+  document.getElementById("udalostHnojivo").value = udalost.Hnojivo || "";
+  document.getElementById("udalostMnozstvi").value = udalost.Mnozstvi || "";
+  document.getElementById("udalostPoznamka").value = udalost.Poznamka || "";
+
+  window.typAkce = typ.toLowerCase() === "hnojení" ? "hnojeni" : "sklizen";
+}
+
 
 function resizeAndDrawCanvas(canvas, delka, sirka) {
   if (!canvas) return;
