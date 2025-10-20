@@ -708,20 +708,29 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.fillStyle = "#d4a373"; // světle hnědá
   ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
 }
+// Volat JEDNOU při inicializaci stránky (např. v setup funkci)
+document.getElementById("plodinaSelect")?.addEventListener("change", zobrazDoporuceniHnojeni);
+
 function changeTypAkce(typ) {
   document.getElementById("btnSeti").classList.toggle("active", typ === "seti");
   document.getElementById("btnSklizen").classList.toggle("active", typ === "sklizen");
   window.typAkce = typ;
+
   const vynosInput = document.getElementById("udalostVynos");
   const plodinaSelect = document.getElementById("plodinaSelect");
+
   if (!plodinaSelect) return;
+
   if (typ === "seti") {
     naplnPlodinySelect();
     vynosInput.disabled = true;
+    // Zobraz doporučení hnojení i po prvním načtení selectu
+    setTimeout(zobrazDoporuceniHnojeni, 100); // až bude select naplněn
   } else if (typ === "sklizen") {
     plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
     prefillSklizenPlodinaFromCache();
     vynosInput.disabled = false;
+    document.getElementById("doporuceniHnojeni").textContent = ""; // při sklizni doporučení skryj
   }
 }
 
@@ -838,5 +847,29 @@ async function preloadModalData(zahon) {
     console.error("Chyba při preloadu modal dat:", e);
   }
 }
+
+function getHnojeniDoporuceni(proPlodinu) {
+  // Najde objekt z plodin podle názvu (může být z modalDataCache.plodiny)
+  const plod = modalDataCache.plodiny?.find(p => (p.nazev || p.NazevPlodiny)?.toLowerCase() === proPlodinu?.toLowerCase());
+  if (!plod) return null;
+
+  // Získá hodnoty, případně nastaví decentní fallback jednotky (g/m2)
+  return `Doporučené hnojení: 
+  Dusík (N): ${plod.N || plod.N_g_m2} g/m², 
+  Fosfor (P): ${plod.P || plod.P_g_m2} g/m², 
+  Draslík (K): ${plod.K || plod.K_g_m2} g/m² 
+  ${plod.Mg ? ", Hořčík (Mg): " + plod.Mg + " g/m²" : ""}`;
+}
+function zobrazDoporuceniHnojeni() {
+  const select = document.getElementById("plodinaSelect");
+  const plodina = select?.value.trim();
+  const elem = document.getElementById("doporuceniHnojeni"); // přidej DIV do modalu
+
+  if (plodina && elem) {
+    const doporuceni = getHnojeniDoporuceni(plodina);
+    elem.textContent = doporuceni ? doporuceni : "Žádné údaje o hnojení pro tuto plodinu nenalezeny.";
+  }
+}
+
 
 
