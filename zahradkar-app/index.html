@@ -85,9 +85,21 @@
           <img src="img/Goback .png"  alt="Zavřít" class="modal-btn" onclick="closeModal()"/>
         </div>
 
-        <!-- Formulář událostí / analýzy -->
-        <div id="modalViewUdalost" style="display:none;">
-          <div id="udalostFormContainer"></div>
+       <!-- Formulář událostí / analýzy -->
+<div id="modalViewUdalost" style="display:none;">
+  <div id="udalostFormContainer">
+    <label for="udalostDatum">Datum setí:</label>
+    <input type="date" id="udalostDatum"/>
+    <label for="plodinaSelect">Plodina:</label>
+    <select id="plodinaSelect"></select>
+    <!-- SEM PŘIDEJ BLOK -->
+    <div id="doporuceniHnojeni" style="font-size:0.95em;color:#33691e; margin-top:5px;"></div>
+    <!-- zbytek formuláře: -->
+    <input id="udalostVynos" ...>
+    <!-- další pole -->
+  </div>
+</div>
+
         </div>
       </div>
     </div>
