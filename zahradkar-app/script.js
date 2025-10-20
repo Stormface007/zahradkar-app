@@ -585,7 +585,7 @@ function zobrazSetiSklizenHistory() {
   <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th><th></th></tr></thead>
   <tbody>`;
 
-data.slice().reverse().slice(0, 5).forEach(u => {
+data.slice().reverse().slice(0, 6).forEach(u => {
   html += `<tr>
     <td>${formatDate(u.Datum)}</td>
     <td>${u.Typ}</td>
