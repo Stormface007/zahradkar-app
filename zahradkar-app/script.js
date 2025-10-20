@@ -450,23 +450,24 @@ async function smazUdalost(id, typ) {
   try {
     const ps = new URLSearchParams();
     ps.append("action", "deleteUdalost");
-    ps.append("udalostID", id); // musí odpovídat e.parameter.udalostID na backendu
+    ps.append("udalostID", id); // odpovídá e.parameter.udalostID
 
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
     const text = await res.text();
 
     if (text.trim() === "OK") {
-      alert(`${typ} byla úspěšně odstraněna.`);
-      // znovu načti cache a aktualizuj historii pro aktuální záhon
+      alert(`${typ} bylo úspěšně smazáno.`);
       await preloadModalData(aktualniZahon);
+      zobrazHnojeniHistory();
       zobrazSetiSklizenHistory();
     } else {
-      alert("Chyba při mazání události: " + text);
+      alert("Chyba při mazání: " + text);
     }
   } catch (e) {
     alert("Chyba při odesílání požadavku: " + e.message);
   }
 }
+
 
 
 function loadHnojiva(){
@@ -528,20 +529,26 @@ function zobrazHnojeniHistory() {
   const cont = document.getElementById("hnojeniHistory");
   if (!cont) return;
   const data = modalDataCache.hnojeniHistory || [];
-  console.log('[zobrazHnojeniHistory] Render s cache:', data);
   if (!data.length) {
     cont.innerHTML = "<p>Žádná historie hnojení.</p>";
     return;
   }
+
   let html = `<table>
-    <thead><tr><th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th></tr></thead><tbody>`;
+    <thead>
+      <tr><th>Datum</th><th>Hnojivo</th><th>Množství (kg)</th><th></th></tr>
+    </thead>
+    <tbody>`;
+
   data.slice().reverse().slice(0, 5).forEach(u => {
     html += `<tr>
       <td>${formatDate(u.Datum)}</td>
       <td>${u.Hnojivo || ""}</td>
       <td>${u.Mnozstvi || u.Mnozstvi_kg || ""}</td>
+      <td><button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button></td>
     </tr>`;
   });
+
   html += "</tbody></table>";
   cont.innerHTML = html;
 }
