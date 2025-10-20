@@ -580,7 +580,7 @@ data.slice().reverse().slice(0, 5).forEach(u => {
 
 html += "</tbody></table>";
 cont.innerHTML = html;
-
+}
 
 // FORMÁTOVÁNÍ DATA
 function formatDate(d) {
