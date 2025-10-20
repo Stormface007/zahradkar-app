@@ -470,6 +470,7 @@ async function smazUdalost(id, typ) {
 
 
 
+
 function loadHnojiva(){
   fetch(`${SERVER_URL}?action=getHnojiva`)
     .then(r=>r.json())
