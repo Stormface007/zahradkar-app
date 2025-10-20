@@ -444,6 +444,31 @@ preloadModalData(aktualniZahon).then(() => {
   // případně další akce s načtenými daty
 });
 
+async function smazUdalost(id, typ) {
+  if (!confirm(`Opravdu chceš smazat ${typ.toLowerCase()} (ID ${id})?`)) return;
+
+  try {
+    const ps = new URLSearchParams();
+    ps.append("action", "deleteUdalost");
+    ps.append("udalostID", id); // musí odpovídat e.parameter.udalostID na backendu
+
+    const res = await fetch(SERVER_URL, { method: "POST", body: ps });
+    const text = await res.text();
+
+    if (text.trim() === "OK") {
+      alert(`${typ} byla úspěšně odstraněna.`);
+      // znovu načti cache a aktualizuj historii pro aktuální záhon
+      await preloadModalData(aktualniZahon);
+      zobrazSetiSklizenHistory();
+    } else {
+      alert("Chyba při mazání události: " + text);
+    }
+  } catch (e) {
+    alert("Chyba při odesílání požadavku: " + e.message);
+  }
+}
+
+
 function loadHnojiva(){
   fetch(`${SERVER_URL}?action=getHnojiva`)
     .then(r=>r.json())
@@ -531,19 +556,23 @@ function zobrazSetiSklizenHistory() {
     cont.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
     return;
   }
-  let html = `<table>
-    <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th></tr></thead><tbody>`;
-  data.slice().reverse().slice(0, 3).forEach(u => {
-    html += `<tr>
-      <td>${formatDate(u.Datum)}</td>
-      <td>${u.Typ}</td>
-      <td>${u.Plodina || ""}</td>
-      <td>${u.Vynos_kg || ""}</td>
-    </tr>`;
-  });
-  html += "</tbody></table>";
-  cont.innerHTML = html;
-}
+ let html = `<table>
+  <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th><th></th></tr></thead>
+  <tbody>`;
+
+data.slice().reverse().slice(0, 5).forEach(u => {
+  html += `<tr>
+    <td>${formatDate(u.Datum)}</td>
+    <td>${u.Typ}</td>
+    <td>${u.Plodina || ""}</td>
+    <td>${u.Vynos_kg || ""}</td>
+    <td><button onclick="smazUdalost(${u.UdalostID}, '${u.Typ}')">🗑️</button></td>
+  </tr>`;
+});
+
+html += "</tbody></table>";
+cont.innerHTML = html;
+
 
 // FORMÁTOVÁNÍ DATA
 function formatDate(d) {
