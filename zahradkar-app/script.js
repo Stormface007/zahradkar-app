@@ -766,12 +766,15 @@ function naplnPlodinySelect() {
   sel.innerHTML = `<option value="">– vyber plodinu –</option>`;
   arr.forEach(p => {
     const o = document.createElement("option");
-    o.value = p.nazev; o.textContent = p.nazev;
+    o.value = p.nazev; 
+    o.textContent = p.nazev;
     sel.appendChild(o);
   });
-  // Zobraz doporučení ihned po naplnění selectu
-  zobrazDoporuceniHnojeni();
+  
+  // ✅ Zobraz doporučení ihned (pokud je něco předvybrané)
+  setTimeout(zobrazDoporuceniHnojeni, 50);
 }
+
 
 function czDateStringToDate(str) {
   if (!str) return new Date("1970-01-01");
