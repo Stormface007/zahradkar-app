@@ -756,7 +756,6 @@ function prefillSklizenPlodinaFromCache() {
 
 
 
-// FUNKCE PRO VYPLNĚNÍ SELECTU PLODIN
 function naplnPlodinySelect() {
   const sel = document.getElementById("plodinaSelect");
   const arr = modalDataCache.plodiny || [];
@@ -767,7 +766,10 @@ function naplnPlodinySelect() {
     o.value = p.nazev; o.textContent = p.nazev;
     sel.appendChild(o);
   });
+  // Zobraz doporučení ihned po naplnění selectu
+  zobrazDoporuceniHnojeni();
 }
+
 function czDateStringToDate(str) {
   if (!str) return new Date("1970-01-01");
   // ISO (2025-03-28T00:00:00.000Z) = lze převést přímo
