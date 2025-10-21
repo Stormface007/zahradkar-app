@@ -369,14 +369,15 @@ function showUdalostForm(typ) {
     c.innerHTML = `
       <h4>Setí a sklizeň</h4>
       <div class="typAkceBtns">
-        <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
-        <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
-      </div>
-      <label>Datum: <input type="date" id="udalostDatum"/></label><br>
-      <label>Plodina: <select id="plodinaSelect"><option>Načítám…</option></select></label><br>
+    <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
+    <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
+  </div>
+  <label>Datum: <input type="date" id="udalostDatum"/></label><br>
+  <label>Plodina: <select id="plodinaSelect"><option>Načítám…</option></select></label><br>
       <!-- ✅ SEM PŘIDEJ BLOK PRO DOPORUČENÍ -->
       <div id="doporuceniHnojeni" style="font-size:0.9em; color:#33691e; margin:8px 0; padding:5px; background:#f0f8e8; border-radius:4px;"></div>
-      <label>Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
+       <label id="vynosLabel" style="display:none;">Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
+  ... další pole ...
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
         <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
@@ -728,22 +729,25 @@ function changeTypAkce(typ) {
   window.typAkce = typ;
 
   const vynosInput = document.getElementById("udalostVynos");
+  const vynosLabel = document.getElementById("vynosLabel");
   const plodinaSelect = document.getElementById("plodinaSelect");
 
-  if (!plodinaSelect) return;
+  if (!plodinaSelect || !vynosLabel) return;
 
   if (typ === "seti") {
     naplnPlodinySelect();
     vynosInput.disabled = true;
-    // Zobraz doporučení hnojení i po prvním načtení selectu
-    setTimeout(zobrazDoporuceniHnojeni, 100); // až bude select naplněn
+    vynosLabel.style.display = "none";  // SKRYJ label u setí
+    setTimeout(zobrazDoporuceniHnojeni, 100);
   } else if (typ === "sklizen") {
     plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
     prefillSklizenPlodinaFromCache();
     vynosInput.disabled = false;
-    document.getElementById("doporuceniHnojeni").textContent = ""; // při sklizni doporučení skryj
+    vynosLabel.style.display = "inline"; // ZOBRAZ label u sklizně
+    document.getElementById("doporuceniHnojeni").textContent = "";
   }
 }
+
 
 
 // FUNKCE PRO PREFILL SKLIZEN PLODINY Z CACHE
