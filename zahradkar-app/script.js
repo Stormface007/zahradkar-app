@@ -848,28 +848,40 @@ async function preloadModalData(zahon) {
   }
 }
 
+// Volat JEDNOU při inicializaci stránky (ne při každém otevření modalu)
+document.addEventListener("DOMContentLoaded", () => {
+  // ... další inicializace
+  document.getElementById("plodinaSelect")?.addEventListener("change", zobrazDoporuceniHnojeni);
+});
+
+// FUNKCE: Vypíše doporučení hnojení podle vybrané plodiny — dynamicky z modalDataCache.plodiny
 function getHnojeniDoporuceni(proPlodinu) {
-  // Najde objekt z plodin podle názvu (může být z modalDataCache.plodiny)
-  const plod = modalDataCache.plodiny?.find(p => (p.nazev || p.NazevPlodiny)?.toLowerCase() === proPlodinu?.toLowerCase());
+  // Najde plodinu v poli modalDataCache.plodiny, bez ohledu na case/typ klíče
+  const plod = modalDataCache.plodiny?.find(
+    p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === (proPlodinu || "").toLowerCase()
+  );
   if (!plod) return null;
 
-  // Získá hodnoty, případně nastaví decentní fallback jednotky (g/m2)
-  return `Doporučené hnojení: 
-  Dusík (N): ${plod.N || plod.N_g_m2} g/m², 
-  Fosfor (P): ${plod.P || plod.P_g_m2} g/m², 
-  Draslík (K): ${plod.K || plod.K_g_m2} g/m² 
-  ${plod.Mg ? ", Hořčík (Mg): " + plod.Mg + " g/m²" : ""}`;
+  // Sestaví textový blok s doporučenými živinami
+  return `Doporučené hnojení pro ${proPlodinu}:
+  Dusík (N): ${plod.N || plod.N_g_m2} g/m²
+  Fosfor (P): ${plod.P || plod.P_g_m2} g/m²
+  Draslík (K): ${plod.K || plod.K_g_m2} g/m²
+  ${plod.Mg ? "Hořčík (Mg): " + plod.Mg + " g/m²" : ""}`;
 }
+
+// FUNKCE: Zobrazí doporučení v modalu
 function zobrazDoporuceniHnojeni() {
   const select = document.getElementById("plodinaSelect");
-  const plodina = select?.value.trim();
-  const elem = document.getElementById("doporuceniHnojeni"); // přidej DIV do modalu
+  const plodina = select?.value?.trim();
+  const elem = document.getElementById("doporuceniHnojeni");
+  if (!elem) return;
 
-  if (plodina && elem) {
+  // Zobraz jen když plodina existuje
+  if (plodina) {
     const doporuceni = getHnojeniDoporuceni(plodina);
-    elem.textContent = doporuceni ? doporuceni : "Žádné údaje o hnojení pro tuto plodinu nenalezeny.";
+    elem.textContent = doporuceni || "Žádné údaje o hnojení pro tuto plodinu nejsou k dispozici.";
+  } else {
+    elem.textContent = "";
   }
 }
-
-
-
