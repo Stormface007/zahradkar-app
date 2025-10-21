@@ -83,7 +83,15 @@ document.addEventListener("DOMContentLoaded", () => {
     onLoginSuccess();
   }
   loadWeatherByGeolocation();
+
+  // ✅ PŘIDEJ TENTO POSLUCHAČ PRO DYNAMICKÉ ELEMENTY
+  document.body.addEventListener("change", function(e) {
+    if (e.target && e.target.id === "plodinaSelect") {
+      zobrazDoporuceniHnojeni();
+    }
+  });
 });
+
 
 // — Načtení seznamu záhonů —
 async function loadZahony() {
