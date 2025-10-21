@@ -377,7 +377,6 @@ function showUdalostForm(typ) {
       <!-- ✅ SEM PŘIDEJ BLOK PRO DOPORUČENÍ -->
       <div id="doporuceniHnojeni" style="font-size:0.9em; color:#33691e; margin:8px 0; padding:5px; background:#f0f8e8; border-radius:4px;"></div>
        <label id="vynosLabel" style="display:none;">Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
-  ... další pole ...
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
         <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
