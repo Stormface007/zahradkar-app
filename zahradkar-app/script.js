@@ -730,22 +730,28 @@ function changeTypAkce(typ) {
   const vynosInput = document.getElementById("udalostVynos");
   const vynosLabel = document.getElementById("vynosLabel");
   const plodinaSelect = document.getElementById("plodinaSelect");
+  const doporuceniDiv = document.getElementById("doporuceniHnojeni");
 
-  if (!plodinaSelect || !vynosLabel) return;
+  if (!plodinaSelect) return;
 
   if (typ === "seti") {
     naplnPlodinySelect();
     vynosInput.disabled = true;
-    vynosLabel.style.display = "none";  // SKRYJ label u setí
+    if (vynosLabel) vynosLabel.style.display = "none";  // SKRYJ výnos u setí
+    if (doporuceniDiv) doporuceniDiv.style.display = "block";  // ZOBRAZ doporučení u setí
     setTimeout(zobrazDoporuceniHnojeni, 100);
   } else if (typ === "sklizen") {
     plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
     prefillSklizenPlodinaFromCache();
     vynosInput.disabled = false;
-    vynosLabel.style.display = "inline"; // ZOBRAZ label u sklizně
-    document.getElementById("doporuceniHnojeni").textContent = "";
+    if (vynosLabel) vynosLabel.style.display = "inline"; // ZOBRAZ výnos u sklizně
+    if (doporuceniDiv) {
+      doporuceniDiv.style.display = "none";  // SKRYJ doporučení u sklizně
+      doporuceniDiv.textContent = "";  // Vyprázdni obsah
+    }
   }
 }
+
 
 
 
