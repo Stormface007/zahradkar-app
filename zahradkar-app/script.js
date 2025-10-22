@@ -197,7 +197,19 @@ async function addZahon(){
     hideActionIndicator();
   }
 }
-
+function setActiveIcon(active) {
+  const icons = ["mereni", "seti", "hnojeni", "analyza", "nastaveni"];
+  icons.forEach(iconName => {
+    const elem = document.getElementById(`icon-${iconName}`);
+    if (elem) {
+      if (iconName === active) {
+        elem.classList.add("active");
+      } else {
+        elem.classList.remove("active");
+      }
+    }
+  });
+}
 
 function onIconClick(typ){
   setActiveIcon(typ);
