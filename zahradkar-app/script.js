@@ -895,17 +895,38 @@ function getHnojeniDoporuceni(proPlodinu) {
   ${plod.Mg ? "Hořčík (Mg): " + plod.Mg + " g/m²" : ""}`;
 }
 
-// FUNKCE: Zobrazí doporučení v modalu
+// ✅ AKTUALIZOVANÁ FUNKCE zobrazDoporuceniHnojeni
 function zobrazDoporuceniHnojeni() {
   const select = document.getElementById("plodinaSelect");
   const plodina = select?.value?.trim();
   const elem = document.getElementById("doporuceniHnojeni");
   if (!elem) return;
 
-  // Zobraz jen když plodina existuje
   if (plodina) {
-    const doporuceni = getHnojeniDoporuceni(plodina);
-    elem.textContent = doporuceni || "Žádné údaje o hnojení pro tuto plodinu nejsou k dispozici.";
+    const plod = modalDataCache.plodiny?.find(
+      p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === (plodina || "").toLowerCase()
+    );
+    
+    if (plod) {
+      const hnojeni = plod.doporuceniHnojeni || "Žádné specifické doporučení";
+      const vapneni = plod.vapneni || "";
+      const mikroprvky = plod.mikroprvky || "";
+      
+      let html = `<strong>🌱 Hnojení:</strong> ${hnojeni}`;
+      
+      if (vapneni) {
+        html += `<br><strong>🧂 Vápnění:</strong> ${vapneni}`;
+      }
+      
+      // ✅ NOVĚ PŘIDANÝ BLOK MIKROPRVKY
+      if (mikroprvky) {
+        html += `<br><strong>⚗️ Mikroprvky:</strong> ${mikroprvky}`;
+      }
+      
+      elem.innerHTML = html;
+    } else {
+      elem.textContent = "Žádné údaje o hnojení pro tuto plodinu.";
+    }
   } else {
     elem.textContent = "";
   }
