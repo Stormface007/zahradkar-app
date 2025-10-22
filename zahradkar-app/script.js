@@ -418,7 +418,6 @@ function zpetNaDetailZahonu(){
 }
 
 
-// FUNKCE — Uložení nebo úprava události
 async function ulozUdalost() {
   const typ = window.typAkce;
   const zahonID = aktualniZahon?.ZahonID;
@@ -434,7 +433,6 @@ async function ulozUdalost() {
 
   const ps = new URLSearchParams();
 
-  // 🔧 Rozlišení, zda jde o editaci nebo novou událost
   if (window.editMode) {
     ps.append("action", "updateUdalost");
     ps.append("udalostID", window.editUdalostID);
@@ -465,18 +463,28 @@ async function ulozUdalost() {
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
     const text = await res.text();
 
-    if (text.trim() === "OK") {
-      alert(window.editMode ? "Událost byla upravena." : "Událost byla přidána.");
+    // ✅ Zkus parsovat jako JSON, pokud ne, kontroluj "OK"
+    let success = false;
+    try {
+      const data = JSON.parse(text);
+      success = data.success === true;
+    } catch {
+      // Není JSON → předpokládej že "OK" = úspěch
+      success = text.trim() === "OK";
+    }
 
-      // Po úspěchu vždy vypni režim editace
+    if (success) {
+      // ✅ Úspěch - ale nezobrazuj alert, dokud není historie načtena
       window.editMode = false; 
       window.editUdalostID = null;
 
-      // Znovu načti data a zobraz obsah
       await preloadModalData(aktualniZahon);
       zobrazSetiSklizenHistory?.();
       zobrazHnojeniHistory?.();
       zpetNaDetailZahonu?.();
+      
+      // ✅ Alert až po úspěšném načtení
+      alert(window.editMode ? "Událost byla upravena." : "Událost byla přidána.");
     } else {
       alert("Chyba při ukládání události: " + text);
     }
@@ -487,6 +495,7 @@ async function ulozUdalost() {
     hideActionIndicator?.();
   }
 }
+
 
 
 async function smazUdalost(id, typ) {
