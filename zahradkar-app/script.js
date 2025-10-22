@@ -895,7 +895,6 @@ function getHnojeniDoporuceni(proPlodinu) {
   ${plod.Mg ? "Hořčík (Mg): " + plod.Mg + " g/m²" : ""}`;
 }
 
-// ✅ AKTUALIZOVANÁ FUNKCE zobrazDoporuceniHnojeni
 function zobrazDoporuceniHnojeni() {
   const select = document.getElementById("plodinaSelect");
   const plodina = select?.value?.trim();
@@ -908,17 +907,19 @@ function zobrazDoporuceniHnojeni() {
     );
     
     if (plod) {
+      const trat = plod.trat || "";
       const hnojeni = plod.doporuceniHnojeni || "Žádné specifické doporučení";
       const vapneni = plod.vapneni || "";
       const mikroprvky = plod.mikroprvky || "";
       
-      let html = `<strong>🌱 Hnojení:</strong> ${hnojeni}`;
+      // ✅ Trať zobrazíme jako první
+      let html = trat ? `<strong>🎯 Trať:</strong> ${trat}<br>` : "";
+      html += `<strong>🌱 Hnojení:</strong> ${hnojeni}`;
       
       if (vapneni) {
         html += `<br><strong>🧂 Vápnění:</strong> ${vapneni}`;
       }
       
-      // ✅ NOVĚ PŘIDANÝ BLOK MIKROPRVKY
       if (mikroprvky) {
         html += `<br><strong>⚗️ Mikroprvky:</strong> ${mikroprvky}`;
       }
