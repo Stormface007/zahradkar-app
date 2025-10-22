@@ -547,10 +547,12 @@ async function ulozHnojeni() {
   const datum = document.getElementById("hnojeniDatum").value;
   const hnojivo = document.getElementById("hnojivoSelect").value;
   const mnozstvi = document.getElementById("hnojeniMnozstvi").value;
+  
   if (!zahonID || !datum || !hnojivo || !mnozstvi) {
     alert("Vyplňte všechny povinné údaje.");
     return;
   }
+  
   const ps = new URLSearchParams();
   ps.append("action", "addUdalost");
   ps.append("zahonID", zahonID);
@@ -566,18 +568,33 @@ async function ulozHnojeni() {
     showActionIndicator?.();
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
     const text = await res.text();
-    if (text.trim() === "OK") {
-      zpetNaDetailZahonu();
-      loadHnojeniHistory?.();
+    
+    // ✅ Zkus parsovat jako JSON nebo kontroluj "OK"
+    let success = false;
+    try {
+      const data = JSON.parse(text);
+      success = data.success === true;
+    } catch {
+      // Není JSON → kontroluj "OK"
+      success = text.trim() === "OK";
+    }
+    
+    if (success) {
+      // ✅ Úspěch - obnovení dat
+      await preloadModalData(aktualniZahon);
+      zobrazHnojeniHistory?.();
+      zpetNaDetailZahonu?.();
     } else {
       alert("Chyba při ukládání hnojení: " + text);
     }
   } catch (e) {
+    console.error("Chyba při ukládání hnojení:", e);
     alert("Chyba při odesílání hnojení.");
   } finally {
     hideActionIndicator?.();
   }
 }
+
 
 // FUNKCE PRO ZOBRAZENÍ HISTORIE HNOJENÍ
 function zobrazHnojeniHistory() {
