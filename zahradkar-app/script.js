@@ -150,16 +150,17 @@ function deleteSelected() {
     .finally(() => hideActionIndicator());
 }
 
-// — Pridání záhonů —
 async function addZahon(){
   const uid = localStorage.getItem("userID");
   const n   = document.getElementById("newNazev").value.trim();
   const d   = parseFloat(document.getElementById("newDelka").value) || 0;
   const s   = parseFloat(document.getElementById("newSirka").value) || 0;
+  
   if (!n || d <= 0 || s <= 0) {
     alert("Vyplňte správně název, délku i šířku.");
     return;
   }
+  
   showActionIndicator();
   const ps = new URLSearchParams();
   ps.append("action", "addZahon");
@@ -167,9 +168,20 @@ async function addZahon(){
   ps.append("NazevZahonu", n);
   ps.append("Delka", d);
   ps.append("Sirka", s);
+  
   try {
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
-    const data = await res.json();
+    const text = await res.text(); // ✅ Nejdřív získej text
+    
+    // ✅ Zkus parsovat jako JSON
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      // ✅ Pokud to není JSON, předpokládej že "OK" = úspěch
+      data = { success: text.trim() === "OK" };
+    }
+    
     if (data.success) {
       document.getElementById("newNazev").value = "";
       document.getElementById("newDelka").value = "";
@@ -178,20 +190,14 @@ async function addZahon(){
     } else {
       alert("Nepodařilo se přidat záhon.");
     }
-  } catch {
+  } catch (err) {
+    console.error("Chyba při přidávání záhonu:", err);
     alert("Chyba při přidávání záhonu.");
   } finally {
     hideActionIndicator();
   }
 }
 
-function setActiveIcon(active){
-  ["mereni","seti","hnojeni","analyza","nastaveni"]
-    .forEach(t=>{
-      const e=document.getElementById("icon-"+t);
-      if(e) e.classList.toggle("active", t===active);
-    });
-}
 
 function onIconClick(typ){
   setActiveIcon(typ);
