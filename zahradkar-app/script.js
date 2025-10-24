@@ -976,3 +976,54 @@ function zobrazDoporuceniHnojeni() {
     elem.textContent = "";
   }
 }
+
+// ========================================
+// FUNKCE PRO DETAILNÍ DOPORUČENÍ
+// ========================================
+
+// Otevře modal s detailním doporučením pro vybranou plodinu
+function otevriDetailDoporuceni() {
+  const plodinaSelect = document.getElementById("plodinaSelect");
+  const plodina = plodinaSelect?.value?.trim();
+  
+  if (!plodina) {
+    alert("Nejprve vyber plodinu.");
+    return;
+  }
+  
+  // Najdi data plodiny
+  const plod = modalDataCache.plodiny?.find(
+    p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === plodina.toLowerCase()
+  );
+  
+  if (!plod || !plod.detailniDoporuceni) {
+    alert("Pro tuto plodinu není k dispozici detailní doporučení.");
+    return;
+  }
+  
+  // Zobraz modal
+  const modal = document.getElementById("modalDetailDoporuceni");
+  const obsah = document.getElementById("detailDoporuceniObsah");
+  
+  if (modal && obsah) {
+    // Převod markdown-like syntaxe na HTML
+    let html = plod.detailniDoporuceni
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Tučné
+      .replace(/\n/g, '<br>')  // Nové řádky
+      .replace(/\|(.+?)\|/g, function(match) {  // Tabulky
+        return match;  // Ponecháme pro jednoduchost
+      });
+    
+    obsah.innerHTML = `<div style="white-space: pre-wrap; font-family: inherit;">${html}</div>`;
+    modal.style.display = "flex";
+  }
+}
+
+// Zavře modal s detailním doporučením
+function zavriDetailDoporuceni() {
+  const modal = document.getElementById("modalDetailDoporuceni");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
