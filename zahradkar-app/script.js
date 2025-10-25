@@ -989,7 +989,10 @@ function zobrazDoporuceniHnojeni() {
 // FUNKCE PRO DETAILNÍ DOPORUČENÍ
 // ========================================
 
-// Otevře modal s detailním doporučením pro vybranou plodinu
+// Globální proměnná pro aktuální plodinu
+let aktualniPlodinaModal = null;
+
+// Otevře modal a načte doporučení
 function otevriDetailDoporuceni() {
   const plodinaSelect = document.getElementById("plodinaSelect");
   const plodina = plodinaSelect?.value?.trim();
@@ -1009,68 +1012,75 @@ function otevriDetailDoporuceni() {
     return;
   }
   
-  // ✅ Načti uživatelské preference
-  const pristup = localStorage.getItem("pristupPestovani") || "kombinace";
-  const typPlochy = aktualniZahon?.typ || "zahon"; // záhon/sklenik/nadoba
+  // Ulož plodinu do globální proměnné
+  aktualniPlodinaModal = plod;
   
-  // ✅ Dynamicky vytvoř klíč pro správné doporučení
-  // Formát: zahonChemicky, skleniKombinace, nadobaOrganicky
+  // ✅ Nastav typ plochy (z aktuálního záhonu - NEZMĚNITELNÝ)
+  const typPlochy = aktualniZahon?.typ || "zahon";
+  const typText = {
+    zahon: "🌾 Záhon",
+    sklenik: "🏠 Skleník",
+    nadoba: "🪴 Nádoba (truhlík/pytel)"
+  };
+  document.getElementById("typPlochyInfo").textContent = typText[typPlochy];
+  
+  // ✅ Načti uloženou preferenci přístupu
+  const pristup = localStorage.getItem("pristupPestovani") || "kombinace";
+  
+  // Zaškrtni správné radio
+  const radio = document.querySelector(`input[name="pristupModal"][value="${pristup}"]`);
+  if (radio) radio.checked = true;
+  
+  // Načti a zobraz doporučení
+  nactiAZobrazDoporuceni(pristup);
+  
+  // Zobraz modal
+  document.getElementById("modalDetailDoporuceni").style.display = "flex";
+}
+
+// ✅ Funkce pro změnu přístupu přímo v modalu
+function zmenPristupModal(novyPristup) {
+  // Ulož novou preferenci
+  localStorage.setItem("pristupPestovani", novyPristup);
+  
+  // Znovu načti doporučení s novým přístupem
+  nactiAZobrazDoporuceni(novyPristup);
+}
+
+// ✅ Načte a zobrazí doporučení podle přístupu
+function nactiAZobrazDoporuceni(pristup) {
+  if (!aktualniPlodinaModal) return;
+  
+  const typPlochy = aktualniZahon?.typ || "zahon";
+  
+  // Dynamicky vytvoř klíč: zahonChemicky, skleniKombinace, nadobaOrganicky
   const klic = `${typPlochy}${pristup.charAt(0).toUpperCase() + pristup.slice(1)}`;
   
-  // ✅ Načti doporučení podle klíče, fallback na základní
-  let doporuceni = plod[klic] || plod.detailniDoporuceni;
+  // Načti doporučení podle klíče
+  let doporuceni = aktualniPlodinaModal[klic] || aktualniPlodinaModal.detailniDoporuceni;
   
-  // Pokud ani základní doporučení není dostupné
   if (!doporuceni) {
-    alert("Pro tuto plodinu není k dispozici detailní doporučení.");
+    document.getElementById("detailDoporuceniObsah").innerHTML = 
+      "<p>Pro tuto kombinaci zatím není k dispozici doporučení.</p>";
     return;
   }
   
-  // Zobraz modal
-  const modal = document.getElementById("modalDetailDoporuceni");
-  const obsah = document.getElementById("detailDoporuceniObsah");
+  // Převod markdown na HTML
+  let html = doporuceni
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
   
-  if (modal && obsah) {
-    // Převod markdown-like syntaxe na HTML
-    let html = doporuceni
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Tučné
-      .replace(/\n/g, '<br>')  // Nové řádky
-      .replace(/\|(.+?)\|/g, function(match) {  // Tabulky
-        return match;  // Ponecháme pro jednoduchost
-      });
-    
-    // ✅ Přidej informaci o zvoleném přístupu
-    const pristupText = {
-      chemicky: "🧪 Chemický přístup",
-      kombinace: "🌿 Kombinovaný přístup",
-      organicky: "🌱 Organický přístup"
-    };
-    
-    const typText = {
-      zahon: "🌾 Záhon",
-      sklenik: "🏠 Skleník",
-      nadoba: "🪴 Nádoba"
-    };
-    
-    const headerInfo = `
-      <div style="background: #e8f5e9; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
-        <strong>${typText[typPlochy] || "🌾"} • ${pristupText[pristup] || ""}</strong>
-        <br>
-        <small style="color: #666;">
-          Můžeš změnit v nastavení profilu
-        </small>
-      </div>
-    `;
-    
-    obsah.innerHTML = `
-      ${headerInfo}
-      <div style="white-space: pre-wrap; font-family: inherit;">
-        ${html}
-      </div>
-    `;
-    
-    modal.style.display = "flex";
-  }
+  document.getElementById("detailDoporuceniObsah").innerHTML = `
+    <div style="white-space: pre-wrap; font-family: inherit;">
+      ${html}
+    </div>
+  `;
+}
+
+// Zavře modal
+function zavriDetailDoporuceni() {
+  document.getElementById("modalDetailDoporuceni").style.display = "none";
+  aktualniPlodinaModal = null;
 }
 
 
