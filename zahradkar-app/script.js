@@ -156,6 +156,9 @@ async function addZahon(){
   const d   = parseFloat(document.getElementById("newDelka").value) || 0;
   const s   = parseFloat(document.getElementById("newSirka").value) || 0;
   
+  // ✅ Načti typ plochy z radio buttonu
+  const typ = document.querySelector('input[name="typPlochy"]:checked')?.value || "zahon";
+  
   if (!n || d <= 0 || s <= 0) {
     alert("Vyplňte správně název, délku i šířku.");
     return;
@@ -168,17 +171,16 @@ async function addZahon(){
   ps.append("NazevZahonu", n);
   ps.append("Delka", d);
   ps.append("Sirka", s);
+  ps.append("typ", typ); // ✅ PŘIDEJ TYP PLOCHY
   
   try {
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
-    const text = await res.text(); // ✅ Nejdřív získej text
+    const text = await res.text();
     
-    // ✅ Zkus parsovat jako JSON
     let data;
     try {
       data = JSON.parse(text);
     } catch {
-      // ✅ Pokud to není JSON, předpokládej že "OK" = úspěch
       data = { success: text.trim() === "OK" };
     }
     
@@ -197,6 +199,7 @@ async function addZahon(){
     hideActionIndicator();
   }
 }
+
 function setActiveIcon(active) {
   const icons = ["mereni", "seti", "hnojeni", "analyza", "nastaveni"];
   icons.forEach(iconName => {
