@@ -1004,7 +1004,24 @@ function otevriDetailDoporuceni() {
     p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === plodina.toLowerCase()
   );
   
-  if (!plod || !plod.detailniDoporuceni) {
+  if (!plod) {
+    alert("Pro tuto plodinu nejsou k dispozici údaje.");
+    return;
+  }
+  
+  // ✅ Načti uživatelské preference
+  const pristup = localStorage.getItem("pristupPestovani") || "kombinace";
+  const typPlochy = aktualniZahon?.typ || "zahon"; // záhon/sklenik/nadoba
+  
+  // ✅ Dynamicky vytvoř klíč pro správné doporučení
+  // Formát: zahonChemicky, skleniKombinace, nadobaOrganicky
+  const klic = `${typPlochy}${pristup.charAt(0).toUpperCase() + pristup.slice(1)}`;
+  
+  // ✅ Načti doporučení podle klíče, fallback na základní
+  let doporuceni = plod[klic] || plod.detailniDoporuceni;
+  
+  // Pokud ani základní doporučení není dostupné
+  if (!doporuceni) {
     alert("Pro tuto plodinu není k dispozici detailní doporučení.");
     return;
   }
@@ -1015,17 +1032,47 @@ function otevriDetailDoporuceni() {
   
   if (modal && obsah) {
     // Převod markdown-like syntaxe na HTML
-    let html = plod.detailniDoporuceni
+    let html = doporuceni
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Tučné
       .replace(/\n/g, '<br>')  // Nové řádky
       .replace(/\|(.+?)\|/g, function(match) {  // Tabulky
         return match;  // Ponecháme pro jednoduchost
       });
     
-    obsah.innerHTML = `<div style="white-space: pre-wrap; font-family: inherit;">${html}</div>`;
+    // ✅ Přidej informaci o zvoleném přístupu
+    const pristupText = {
+      chemicky: "🧪 Chemický přístup",
+      kombinace: "🌿 Kombinovaný přístup",
+      organicky: "🌱 Organický přístup"
+    };
+    
+    const typText = {
+      zahon: "🌾 Záhon",
+      sklenik: "🏠 Skleník",
+      nadoba: "🪴 Nádoba"
+    };
+    
+    const headerInfo = `
+      <div style="background: #e8f5e9; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+        <strong>${typText[typPlochy] || "🌾"} • ${pristupText[pristup] || ""}</strong>
+        <br>
+        <small style="color: #666;">
+          Můžeš změnit v nastavení profilu
+        </small>
+      </div>
+    `;
+    
+    obsah.innerHTML = `
+      ${headerInfo}
+      <div style="white-space: pre-wrap; font-family: inherit;">
+        ${html}
+      </div>
+    `;
+    
     modal.style.display = "flex";
   }
 }
+
 
 // Zavře modal s detailním doporučením
 function zavriDetailDoporuceni() {
