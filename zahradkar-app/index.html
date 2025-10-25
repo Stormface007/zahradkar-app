@@ -45,11 +45,29 @@
       </table>
     </div>
 
-    <h3>Přidat nový záhon</h3>
-    <input type="text" id="newNazev" placeholder="Název záhonu"/>
-    <input type="number" id="newDelka" placeholder="Délka (m)" min="0"/>
-    <input type="number" id="newSirka" placeholder="Šířka (m)" min="0"/>
-    <button onclick="addZahon()">Přidat</button>
+    <div id="pridatZahonForm">
+  <h3>Přidat nový záhon</h3>
+  <label>Název: <input type="text" id="newNazev"/></label><br>
+  <label>Délka (m): <input type="number" id="newDelka"/></label><br>
+  <label>Šířka (m): <input type="number" id="newSirka"/></label><br>
+  
+  <!-- ✅ VÝBĚR TYPU PLOCHY -->
+  <div style="margin: 10px 0;">
+    <strong>Typ plochy:</strong><br>
+    <label style="display: block; margin: 5px 0;">
+      <input type="radio" name="typPlochy" value="zahon" checked> 🌾 Záhon
+    </label>
+    <label style="display: block; margin: 5px 0;">
+      <input type="radio" name="typPlochy" value="sklenik"> 🏠 Skleník
+    </label>
+    <label style="display: block; margin: 5px 0;">
+      <input type="radio" name="typPlochy" value="nadoba"> 🪴 Nádoba (truhlík/pytel)
+    </label>
+  </div>
+  
+  <button onclick="addZahon()">Přidat</button>
+</div>
+
   </div>
 
   <!-- MODÁLNÍ OKNO pro editaci záhonu a akce -->
