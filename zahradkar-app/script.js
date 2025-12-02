@@ -997,7 +997,7 @@ localStorage.setItem("pristupPestovani", novyPristup);
 nactiAZobrazDoporuceni(novyPristup);
 }
 
-// Mapování (typPlochy + přístup) → název sloupce (ZahonChemicky, SklenikKombinace atd.)
+// Vrátí název sloupce podle typu plochy a přístupu
 function getDoporuceniKey(typPlochy, pristup) {
 let base;
 if (typPlochy === "zahon") {
@@ -1017,7 +1017,7 @@ suffix = "Organicky";
 suffix = "Kombinace";
 }
 
-return base + suffix;
+return base + suffix; // např. ZahonKombinace
 }
 
 // Načte a zobrazí doporučení podle přístupu a typu plochy
@@ -1025,9 +1025,9 @@ function nactiAZobrazDoporuceni(pristup) {
 if (!aktualniPlodinaModal) return;
 
 const typPlochy = aktualniZahon?.typ || "zahon";
-
 const klic = getDoporuceniKey(typPlochy, pristup);
 
+// vezmi konkrétní sloupec, jinak fallback na detailniDoporuceni
 let doporuceni = aktualniPlodinaModal[klic] || aktualniPlodinaModal.detailniDoporuceni;
 
 const obsahEl = document.getElementById("detailDoporuceniObsah");
@@ -1038,12 +1038,12 @@ obsahEl.innerHTML = "<p>Pro tuto kombinaci zatím není k dispozici doporučení
 return;
 }
 
-let html = doporuceni
-.replace(/**(.*?)**/g, "<strong>$1</strong>")
-.replace(/\n/g, "
+// nejjednodušší: jen nahradit \n za
+
+const html = String(doporuceni).replace(/\n/g, "
 ");
 
-obsahEl.innerHTML = <div style="white-space: pre-wrap; font-family: inherit;"> ${html} </div> ;
+obsahEl.innerHTML = '<div style="white-space: pre-wrap; font-family: inherit;">' + html + '</div>';
 }
 
 // Zavře modal s detailním doporučením
