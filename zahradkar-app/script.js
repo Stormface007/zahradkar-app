@@ -1020,14 +1020,12 @@ suffix = "Kombinace";
 return base + suffix; // např. ZahonKombinace
 }
 
-// Načte a zobrazí doporučení podle přístupu a typu plochy
 function nactiAZobrazDoporuceni(pristup) {
 if (!aktualniPlodinaModal) return;
 
 const typPlochy = aktualniZahon?.typ || "zahon";
 const klic = getDoporuceniKey(typPlochy, pristup);
 
-// vezmi konkrétní sloupec, jinak fallback na detailniDoporuceni
 let doporuceni = aktualniPlodinaModal[klic] || aktualniPlodinaModal.detailniDoporuceni;
 
 const obsahEl = document.getElementById("detailDoporuceniObsah");
@@ -1038,14 +1036,11 @@ obsahEl.innerHTML = "<p>Pro tuto kombinaci zatím není k dispozici doporučení
 return;
 }
 
-// nejjednodušší: jen nahradit \n za
-
-const html = String(doporuceni).replace(/\n/g, "
-");
+// BEZ replace, jen holý text
+const html = String(doporuceni);
 
 obsahEl.innerHTML = '<div style="white-space: pre-wrap; font-family: inherit;">' + html + '</div>';
 }
-
 // Zavře modal s detailním doporučením
 function zavriDetailDoporuceni() {
 const modal = document.getElementById("modalDetailDoporuceni");
