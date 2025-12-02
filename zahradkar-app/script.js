@@ -1097,29 +1097,21 @@ obsahEl.innerHTML = "<p>Pro tuto kombinaci zatím není k dispozici doporučení
 return;
 }
 
-// Převod markdown na HTML – POZOR na správný regex a uvozovky
+// Převod markdown na HTML
 let html = doporuceni
 .replace(/**(.*?)**/g, "<strong>$1</strong>") // tučné
 .replace(/\n/g, "
-"); // nový řádek →
-
-obsahEl.innerHTML = <div style="white-space: pre-wrap; font-family: inherit;"> ${html} </div> ;
-}
-
-// Převod markdown na HTML
-let html = doporuceni
-.replace(/**(.*?)**/g, "<strong>$1</strong>")
-.replace(/\n/g, "
-");
+"); // nový řádek
 
 obsahEl.innerHTML = <div style="white-space: pre-wrap; font-family: inherit;"> ${html} </div> ;
 }
 
 // Zavře modal s detailním doporučením
 function zavriDetailDoporuceni() {
-  const modal = document.getElementById("modalDetailDoporuceni");
-  if (modal) {
-    modal.style.display = "none";
-  }
+const modal = document.getElementById("modalDetailDoporuceni");
+if (modal) {
+modal.style.display = "none";
+}
+aktualniPlodinaModal = null;
 }
 
