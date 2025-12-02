@@ -1115,16 +1115,6 @@ let html = doporuceni
 obsahEl.innerHTML = <div style="white-space: pre-wrap; font-family: inherit;"> ${html} </div> ;
 }
 
-// Zavře modal
-function zavriDetailDoporuceni() {
-const modal = document.getElementById("modalDetailDoporuceni");
-if (modal) {
-modal.style.display = "none";
-}
-aktualniPlodinaModal = null;
-}
-
-
 // Zavře modal s detailním doporučením
 function zavriDetailDoporuceni() {
   const modal = document.getElementById("modalDetailDoporuceni");
