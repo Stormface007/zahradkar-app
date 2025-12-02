@@ -1049,3 +1049,4 @@ modal.style.display = "none";
 }
 aktualniPlodinaModal = null;
 }
+}
