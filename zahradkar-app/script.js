@@ -1048,5 +1048,4 @@ if (modal) {
 modal.style.display = "none";
 }
 aktualniPlodinaModal = null;
-}
-}
+};
