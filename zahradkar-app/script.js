@@ -1097,14 +1097,15 @@ obsahEl.innerHTML = "<p>Pro tuto kombinaci zatím není k dispozici doporučení
 return;
 }
 
-// Převod markdown na HTML
+/ Převod markdown na HTML
 let html = doporuceni
 .replace(/**(.*?)**/g, "<strong>$1</strong>") // tučné
-.replace(/\n/g, "<br>");
+.replace(/\n/g, "
 "); // nový řádek
 
-obsahEl.innerHTML = <div style="white-space: pre-wrap; font-family: inherit;"> ${html} </div> ;
-}
+obsahEl.innerHTML = `
+
+<div style="white-space: pre-wrap; font-family: inherit;"> ${html} </div> `;
 
 // Zavře modal s detailním doporučením
 function zavriDetailDoporuceni() {
