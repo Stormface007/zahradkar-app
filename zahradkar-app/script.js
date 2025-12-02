@@ -1037,7 +1037,6 @@ return;
 }
 
 const html = String(doporuceni);
-
 obsahEl.innerHTML = '<div style="white-space: pre-wrap; font-family: inherit;">' + html + '</div>';
 }
 
@@ -1048,4 +1047,4 @@ if (modal) {
 modal.style.display = "none";
 }
 aktualniPlodinaModal = null;
-};
+}
