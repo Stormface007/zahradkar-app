@@ -942,51 +942,7 @@ function getHnojeniDoporuceni(proPlodinu) {
   );
   if (!plod) return null;
 
-  // Sestaví textový blok s doporučenými živinami
-  return `Doporučené hnojení pro ${proPlodinu}:
-  Dusík (N): ${plod.N || plod.N_g_m2} g/m²
-  Fosfor (P): ${plod.P || plod.P_g_m2} g/m²
-  Draslík (K): ${plod.K || plod.K_g_m2} g/m²
-  ${plod.Mg ? "Hořčík (Mg): " + plod.Mg + " g/m²" : ""}`;
-}
 
-function zobrazDoporuceniHnojeni() {
-  const select = document.getElementById("plodinaSelect");
-  const plodina = select?.value?.trim();
-  const elem = document.getElementById("doporuceniHnojeni");
-  if (!elem) return;
-
-  if (plodina) {
-    const plod = modalDataCache.plodiny?.find(
-      p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === (plodina || "").toLowerCase()
-    );
-    
-    if (plod) {
-      const trat = plod.trat || "";
-      const hnojeni = plod.doporuceniHnojeni || "Žádné specifické doporučení";
-      const vapneni = plod.vapneni || "";
-      const mikroprvky = plod.mikroprvky || "";
-      
-      // ✅ Trať zobrazíme jako první
-      let html = trat ? `<strong>🎯 Trať:</strong> ${trat}<br>` : "";
-      html += `<strong>🌱 Hnojení:</strong> ${hnojeni}`;
-      
-      if (vapneni) {
-        html += `<br><strong>🧂 Vápnění:</strong> ${vapneni}`;
-      }
-      
-      if (mikroprvky) {
-        html += `<br><strong>⚗️ Mikroprvky:</strong> ${mikroprvky}`;
-      }
-      
-      elem.innerHTML = html;
-    } else {
-      elem.textContent = "Žádné údaje o hnojení pro tuto plodinu.";
-    }
-  } else {
-    elem.textContent = "";
-  }
-}
 
 // ========================================
 // FUNKCE PRO DETAILNÍ DOPORUČENÍ
