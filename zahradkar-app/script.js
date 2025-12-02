@@ -1036,11 +1036,11 @@ obsahEl.innerHTML = "<p>Pro tuto kombinaci zatím není k dispozici doporučení
 return;
 }
 
-// BEZ replace, jen holý text
 const html = String(doporuceni);
 
 obsahEl.innerHTML = '<div style="white-space: pre-wrap; font-family: inherit;">' + html + '</div>';
 }
+
 // Zavře modal s detailním doporučením
 function zavriDetailDoporuceni() {
 const modal = document.getElementById("modalDetailDoporuceni");
