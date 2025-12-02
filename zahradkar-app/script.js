@@ -1100,7 +1100,7 @@ return;
 // Převod markdown na HTML
 let html = doporuceni
 .replace(/**(.*?)**/g, "<strong>$1</strong>") // tučné
-.replace(/\n/g, "
+.replace(/\n/g, "<br>");
 "); // nový řádek
 
 obsahEl.innerHTML = <div style="white-space: pre-wrap; font-family: inherit;"> ${html} </div> ;
