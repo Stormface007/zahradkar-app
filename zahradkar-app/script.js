@@ -1048,3 +1048,19 @@ function zavriDetailDoporuceni() {
   }
   aktualniPlodinaModal = null;
 }
+function zobrazDoporuceniHnojeni() {
+  const plodinaSelect = document.getElementById("plodinaSelect");
+  const div = document.getElementById("doporuceniHnojeni");
+  if (!plodinaSelect || !div) return;
+
+  const plodina = plodinaSelect.value;
+  const plod = modalDataCache.plodiny?.find(
+    p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === (plodina || "").toLowerCase()
+  );
+  if (!plod) {
+    div.textContent = "";
+    return;
+  }
+  div.textContent = plod.doporuceniHnojeni || plod.doporuceni || "";
+}
+
