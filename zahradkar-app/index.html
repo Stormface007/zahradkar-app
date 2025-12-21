@@ -110,10 +110,7 @@
     <input type="date" id="udalostDatum"/>
     <label for="plodinaSelect">Plodina:</label>
     <select id="plodinaSelect"></select>
-    <!-- SEM PŘIDEJ BLOK -->
-    <div id="doporuceniHnojeni" style="font-size:0.95em;color:#33691e; margin-top:5px;"></div>
-    <!-- zbytek formuláře: -->
-    <input id="udalostVynos" ...>
+        <input id="udalostVynos" ...>
     <!-- další pole -->
   </div>
 </div>
@@ -132,46 +129,7 @@
       <button onclick="closeZoomModal()">Zavřít</button>
     </div>
   </div>
-<!-- MODÁLNÍ OKNO PRO DETAILNÍ DOPORUČENÍ -->
-<div id="modalDetailDoporuceni" class="modal" style="display:none;">
-  <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
-    <h3 style="margin-top:0;">📋 Detailní doporučení hnojení a mikroprvků</h3>
-    
-    <!-- ✅ PŘEPÍNAČ PŘÍSTUPU -->
-    <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-      <div style="margin-bottom: 10px;">
-        <strong>Typ plochy:</strong> 
-        <span id="typPlochyInfo"></span>
-      </div>
-      
-      <div>
-        <strong>Přístup k hnojení:</strong>
-        <div style="display: flex; gap: 15px; margin-top: 8px;">
-          <label style="cursor: pointer;">
-            <input type="radio" name="pristupModal" value="chemicky" onchange="zmenPristupModal('chemicky')">
-            🧪 Chemicky
-          </label>
-          <label style="cursor: pointer;">
-            <input type="radio" name="pristupModal" value="kombinace" checked onchange="zmenPristupModal('kombinace')">
-            🌿 Kombinovaně
-          </label>
-          <label style="cursor: pointer;">
-            <input type="radio" name="pristupModal" value="organicky" onchange="zmenPristupModal('organicky')">
-            🌱 Organicky
-          </label>
-        </div>
-      </div>
-    </div>
-    
-    <!-- OBSAH DOPORUČENÍ -->
-    <div id="detailDoporuceniObsah" style="line-height: 1.6;">
-      <!-- Obsah se dynamicky načte -->
-    </div>
-    
-    <br>
-    <button onclick="zavriDetailDoporuceni()" style="padding: 10px 20px;">Zavřít</button>
-  </div>
-</div>
+
 
 </body>
 </html>
