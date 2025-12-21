@@ -928,11 +928,7 @@ async function preloadModalData(zahon) {
   }
 }
 
-// Volat JEDNOU při inicializaci stránky (ne při každém otevření modalu)
-document.addEventListener("DOMContentLoaded", () => {
-  // ... další inicializace
-  document.getElementById("plodinaSelect")?.addEventListener("change", zobrazDoporuceniHnojeni);
-});
+
 
 // FUNKCE: Vypíše doporučení hnojení podle vybrané plodiny — dynamicky z modalDataCache.plodiny
 function getHnojeniDoporuceni(proPlodinu) {
