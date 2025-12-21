@@ -937,7 +937,8 @@ function getHnojeniDoporuceni(proPlodinu) {
     p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === (proPlodinu || "").toLowerCase()
   );
   if (!plod) return null;
-
+  
+}
 
 
 // ========================================
