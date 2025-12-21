@@ -397,13 +397,9 @@ function showUdalostForm(typ) {
       <label>Datum: <input type="date" id="udalostDatum"/></label><br>
       <label>Plodina: 
         <select id="plodinaSelect"><option>Načítám…</option></select>
-        <button type="button" onclick="otevriDetailDoporuceni()" 
-                style="margin-left:5px; padding:5px 10px; cursor:pointer;" 
-                title="Zobrazit detailní doporučení hnojení">
-          ℹ️ Detailní doporučení
-        </button>
+       
       </label><br>
-      <div id="doporuceniHnojeni" style="font-size:0.9em; color:#33691e; margin:8px 0; padding:5px; background:#f0f8e8; border-radius:4px;"></div>
+      
       <label id="vynosLabel" style="display:none;">Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
       <div class="modal-btns">
         <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
