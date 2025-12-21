@@ -949,99 +949,102 @@ let aktualniPlodinaModal = null;
 
 // Otevře modal a načte doporučení
 function otevriDetailDoporuceni() {
-const plodinaSelect = document.getElementById("plodinaSelect");
-const plodina = plodinaSelect?.value?.trim();
+  const plodinaSelect = document.getElementById("plodinaSelect");
+  const plodina = plodinaSelect?.value?.trim();
 
-if (!plodina) {
-alert("Nejprve vyber plodinu.");
-return;
+  if (!plodina) {
+    alert("Nejprve vyber plodinu.");
+    return;
+  }
+
+  // najdi plodinu v modalDataCache.plodiny
+  const plod = modalDataCache.plodiny?.find(
+    p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === plodina.toLowerCase()
+  );
+
+  if (!plod) {
+    alert("Pro tuto plodinu nejsou k dispozici údaje.");
+    return;
+  }
+
+  aktualniPlodinaModal = plod;
+
+  const typPlochy = aktualniZahon?.typ || "zahon";
+  const typText = {
+    zahon: "🌾 Záhon",
+    sklenik: "🏠 Skleník",
+    nadoba: "🪴 Nádoba (truhlík/pytel)"
+  };
+  const typInfoEl = document.getElementById("typPlochyInfo");
+  if (typInfoEl) {
+    typInfoEl.textContent = typText[typPlochy] || "";
+  }
+
+  const pristup = localStorage.getItem("pristupPestovani") || "kombinace";
+  const radio = document.querySelector(`input[name="pristupModal"][value="${pristup}"]`);
+  if (radio) radio.checked = true;
+
+  nactiAZobrazDoporuceni(pristup);
+
+  const modal = document.getElementById("modalDetailDoporuceni");
+  if (modal) modal.style.display = "flex";
 }
 
-const plod = modalDataCache.plodiny?.find(
-p => (p.nazev || p.NazevPlodiny || "").toLowerCase() === plodina.toLowerCase()
-);
-
-if (!plod) {
-alert("Pro tuto plodinu nejsou k dispozici údaje.");
-return;
-}
-
-aktualniPlodinaModal = plod;
-
-const typPlochy = aktualniZahon?.typ || "zahon";
-const typText = {
-zahon: "🌾 Záhon",
-sklenik: "🏠 Skleník",
-nadoba: "🪴 Nádoba (truhlík/pytel)"
-};
-const typInfoEl = document.getElementById("typPlochyInfo");
-if (typInfoEl) {
-typInfoEl.textContent = typText[typPlochy] || "";
-}
-
-const pristup = localStorage.getItem("pristupPestovani") || "kombinace";
-const radio = document.querySelector(input[name="pristupModal"][value="${pristup}"]);
-if (radio) radio.checked = true;
-
-nactiAZobrazDoporuceni(pristup);
-
-document.getElementById("modalDetailDoporuceni").style.display = "flex";
-}
-
-// Změna přístupu přímo v modalu
+// změna přístupu v modalu
 function zmenPristupModal(novyPristup) {
-localStorage.setItem("pristupPestovani", novyPristup);
-nactiAZobrazDoporuceni(novyPristup);
+  localStorage.setItem("pristupPestovani", novyPristup);
+  nactiAZobrazDoporuceni(novyPristup);
 }
 
 // Vrátí název sloupce podle typu plochy a přístupu
 function getDoporuceniKey(typPlochy, pristup) {
-let base;
-if (typPlochy === "zahon") {
-base = "Zahon";
-} else if (typPlochy === "sklenik") {
-base = "Sklenik";
-} else {
-base = "Nadoba";
+  let base;
+  if (typPlochy === "zahon") {
+    base = "Zahon";
+  } else if (typPlochy === "sklenik") {
+    base = "Sklenik";
+  } else {
+    base = "Nadoba";
+  }
+
+  let suffix;
+  if (pristup === "chemicky") {
+    suffix = "Chemicky";
+  } else if (pristup === "organicky") {
+    suffix = "Organicky";
+  } else {
+    suffix = "Kombinace";
+  }
+
+  return base + suffix; // např. ZahonKombinace
 }
 
-let suffix;
-if (pristup === "chemicky") {
-suffix = "Chemicky";
-} else if (pristup === "organicky") {
-suffix = "Organicky";
-} else {
-suffix = "Kombinace";
-}
-
-return base + suffix; // např. ZahonKombinace
-}
-
+// Načte a zobrazí doporučení podle přístupu a typu plochy
 function nactiAZobrazDoporuceni(pristup) {
-if (!aktualniPlodinaModal) return;
+  if (!aktualniPlodinaModal) return;
 
-const typPlochy = aktualniZahon?.typ || "zahon";
-const klic = getDoporuceniKey(typPlochy, pristup);
+  const typPlochy = aktualniZahon?.typ || "zahon";
+  const klic = getDoporuceniKey(typPlochy, pristup);
 
-let doporuceni = aktualniPlodinaModal[klic] || aktualniPlodinaModal.detailniDoporuceni;
+  let doporuceni = aktualniPlodinaModal[klic] || aktualniPlodinaModal.detailniDoporuceni;
 
-const obsahEl = document.getElementById("detailDoporuceniObsah");
-if (!obsahEl) return;
+  const obsahEl = document.getElementById("detailDoporuceniObsah");
+  if (!obsahEl) return;
 
-if (!doporuceni) {
-obsahEl.innerHTML = "<p>Pro tuto kombinaci zatím není k dispozici doporučení.</p>";
-return;
-}
+  if (!doporuceni) {
+    obsahEl.innerHTML = "<p>Pro tuto kombinaci zatím není k dispozici doporučení.</p>";
+    return;
+  }
 
-const html = String(doporuceni);
-obsahEl.innerHTML = '<div style="white-space: pre-wrap; font-family: inherit;">' + html + '</div>';
+  const html = String(doporuceni);
+  obsahEl.innerHTML = '<div style="white-space: pre-wrap; font-family: inherit;">' + html + '</div>';
 }
 
 // Zavře modal s detailním doporučením
 function zavriDetailDoporuceni() {
-const modal = document.getElementById("modalDetailDoporuceni");
-if (modal) {
-modal.style.display = "none";
-}
-aktualniPlodinaModal = null;
+  const modal = document.getElementById("modalDetailDoporuceni");
+  if (modal) {
+    modal.style.display = "none";
+  }
+  aktualniPlodinaModal = null;
 }
