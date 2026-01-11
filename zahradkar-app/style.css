@@ -360,5 +360,28 @@ button:hover {
   }
 }
 
+.udalost-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.udalost-label {
+  width: 110px;           /* stejná šířka pro všechny labely */
+  font-weight: 500;
+}
+
+.udalost-input {
+  flex: 1;                /* input/select vyplní zbytek řádku */
+  max-width: 100%;
+}
+
+.udalost-actions {
+  display: flex;
+  gap: 8px;
+}
+
+
 
 
