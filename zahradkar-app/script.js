@@ -915,36 +915,24 @@ function changeTypAkce(typ) {
   const btnSklizen    = document.getElementById("btnSklizen");
   const vynosRow      = document.getElementById("vynosRow");
   const vynosInput    = document.getElementById("udalostVynos");
-  const doporuceniDiv = document.getElementById("doporuceniHnojeni");
 
-  // přepnutí aktivního tlačítka
   if (btnSeti && btnSklizen) {
     btnSeti.classList.toggle("active",   typ === "seti");
     btnSklizen.classList.toggle("active", typ === "sklizen");
   }
 
   if (typ === "seti") {
-    // setí → jen datum + plodina
     if (vynosRow)   vynosRow.style.display = "none";
     if (vynosInput) {
       vynosInput.disabled = true;
       vynosInput.value = "";
     }
-    if (doporuceniDiv) {
-      doporuceniDiv.style.display = "block";   // pokud chceš doporučení vidět u setí
-    }
   } else if (typ === "sklizen") {
-    // sklizeň → zobraz výnos
     if (vynosRow)   vynosRow.style.display = "flex";
     if (vynosInput) vynosInput.disabled = false;
-    if (doporuceniDiv) {
-      doporuceniDiv.style.display = "none";
-      doporuceniDiv.textContent = "";
-    }
   }
-
-  // případná další logika (naplnPlodinySelect, prefillSklizenPlodinaFromCache, ...)
 }
+
 
 
 
