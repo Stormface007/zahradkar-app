@@ -995,5 +995,34 @@ async function preloadModalData(zahon) {
   }
 }
 
+function formatDate(d) {
+  if (!d) return "";
+
+  if (typeof d === "string") {
+    const s = d.trim();
+
+    // ISO string: 2025-10-10T22:00:00.000Z nebo 2025-10-10
+    const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (isoMatch) {
+      const [, y, m, day] = isoMatch;
+      return `${day}.${m}.${y}`;      // 10.10.2025
+    }
+
+    // už je to CZ formát → vrať jak je
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(s)) {
+      return s;
+    }
+  }
+
+  // fallback pro Date objekty apod.
+  const dateObj = new Date(d);
+  if (isNaN(dateObj)) return d;
+  const day = ("0" + dateObj.getDate()).slice(-2);
+  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+  const yr  = dateObj.getFullYear();
+  return `${day}.${mon}.${yr}`;
+}
+
+
 
 
