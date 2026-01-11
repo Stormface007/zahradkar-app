@@ -997,31 +997,30 @@ function formatDate(d) {
   if (!d) return "";
   let s = String(d).trim();
 
-  // když je tam čas ("11.11.2025 1:00:00" nebo "2025-11-11 01:00:00")
+  // pokud je tam čas → necháme jen část před mezerou / T
   if (s.includes(" ")) {
     s = s.split(" ")[0];
   }
+  if (s.includes("T")) {
+    s = s.split("T")[0];
+  }
 
-  // ISO: 2025-11-11 nebo 2025-11-11T...
-  const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  // ISO: 2025-11-10 → 10.11.2025
+  const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (isoMatch) {
     const [, y, m, day] = isoMatch;
     return `${day}.${m}.${y}`;
   }
 
-  // CZ: 11.11.2025
+  // CZ: 10.11.2025
   if (/^\d{2}\.\d{2}\.\d{4}$/.test(s)) {
     return s;
   }
 
-  // fallback – snaž se new Date používat jen pro jiné případy
-  const dateObj = new Date(s);
-  if (isNaN(dateObj)) return s;
-  const day = ("0" + dateObj.getDate()).slice(-2);
-  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
-  const yr  = dateObj.getFullYear();
-  return `${day}.${mon}.${yr}`;
+  // fallback – pokud přijde něco jiného, vrať syrově
+  return s;
 }
+
 
 
 
