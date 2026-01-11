@@ -848,9 +848,6 @@ function naplnPlodinySelect() {
     o.textContent = p.nazev;
     sel.appendChild(o);
   });
-  
-  // ✅ Zobraz doporučení ihned (pokud je něco předvybrané)
-  setTimeout(zobrazDoporuceniHnojeni, 50);
 }
 
 
