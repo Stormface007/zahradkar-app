@@ -177,20 +177,15 @@ button:hover {
   margin-top: 10px;
   position: relative;
   z-index: 1;
-  background-image: url("img/soil.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 #zahonVizualizace canvas {
   display: block;
   margin: 0 auto;
-  background: transparent;   /* žádná barva */
+  background: #ffffff;          /* bílý podklad */
   border: 2px solid #2e7d32;
   border-radius: 6px;
 }
-
 
 
 /* Modal-btn */
