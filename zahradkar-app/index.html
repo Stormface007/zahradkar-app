@@ -104,21 +104,45 @@
         </div>
 
        <!-- Formulář událostí / analýzy -->
+<!-- Formulář událostí / analýzy -->
 <div id="modalViewUdalost" style="display:none;">
   <div id="udalostFormContainer">
-    <label for="udalostDatum">Datum setí:</label>
-    <input type="date" id="udalostDatum"/>
-    <label for="plodinaSelect">Plodina:</label>
-    <select id="plodinaSelect"></select>
-        <input id="udalostVynos" ...>
-    <!-- další pole -->
+    <h4>Setí a sklizeň</h4>
+
+    <div class="typAkceBtns">
+      <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
+      <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label" for="udalostDatum">Datum:</label>
+      <input type="date" id="udalostDatum" class="udalost-input"/>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label" for="plodinaSelect">Plodina:</label>
+      <select id="plodinaSelect" class="udalost-input"></select>
+    </div>
+
+    <div class="udalost-row" id="vynosRow">
+      <label class="udalost-label" id="vynosLabel">Výnos (kg):</label>
+      <input type="number" id="udalostVynos" class="udalost-input"/>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label">&nbsp;</label>
+      <div class="udalost-actions">
+        <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
+        <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+      </div>
+    </div>
+
+    <div id="udalostHistory" class="hnojeni-history">
+      <em>Načítám historii...</em>
+    </div>
   </div>
 </div>
 
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED -->
   <div id="zoomModal" class="modal">
