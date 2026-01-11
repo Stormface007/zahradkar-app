@@ -416,10 +416,11 @@ function showUdalostForm(typ) {
   zobrazHnojeniHistory();
   } else {
     // ✅ OPRAVENÁ VERZE PRO SETÍ/SKLIZEŇ
-    c.innerHTML = `
-    
-      <h4>Setí a sklizeň</h4>
-      <div class="typAkceBtns">
+if (typ === "plodina") {
+  c.innerHTML = `
+    <h4>Setí a sklizeň</h4>
+
+    <div class="typAkceBtns">
       <button type="button" id="btnSeti"
               class="typ-akce-btn active"
               onclick="changeTypAkce('seti')">Setí</button>
@@ -428,16 +429,21 @@ function showUdalostForm(typ) {
               onclick="changeTypAkce('sklizen')">Sklizeň</button>
     </div>
 
-    <input type="date" id="udalostDatum" class="udalost-input"/>
-
-<select id="plodinaSelect" class="udalost-input">
-  <option value="">– vyber plodinu –</option>
-</select>
-
-<input type="number" id="udalostVynos" class="udalost-input" placeholder="Výnos v kg"/>
+    <div class="udalost-row">
+      <input type="date" id="udalostDatum" class="udalost-input"/>
+    </div>
 
     <div class="udalost-row">
-      <label class="udalost-label">&nbsp;</label>
+      <select id="plodinaSelect" class="udalost-input">
+        <option value="">– vyber plodinu –</option>
+      </select>
+    </div>
+
+    <div class="udalost-row" id="vynosRow">
+      <input type="number" id="udalostVynos" class="udalost-input" placeholder="Výnos (kg)"/>
+    </div>
+
+    <div class="udalost-row">
       <div class="udalost-actions">
         <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
         <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
@@ -447,12 +453,14 @@ function showUdalostForm(typ) {
     <div id="udalostHistory" class="hnojeni-history">
       <em>Načítám historii...</em>
     </div>
-    `;
-    const datumInput = document.getElementById("udalostDatum");
+  `;
+  
+  // předvyplnění dnešního datumu při novém zadání
+  const datumInput = document.getElementById("udalostDatum");
   if (datumInput && !window.editMode) {
     datumInput.value = todayForInput();
   }
-    zobrazSetiSklizenHistory();
+  zobrazSetiSklizenHistory();
     window.typAkce = "seti";
     changeTypAkce("seti");
   }
