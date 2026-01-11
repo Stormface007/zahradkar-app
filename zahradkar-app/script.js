@@ -702,6 +702,23 @@ function zobrazSetiSklizenHistory() {
   html += "</tbody></table>";
   cont.innerHTML = html;
 }
+function formatDateForInput(d) {
+  if (!d) return "";
+  let s = String(d).trim();
+
+  // už je YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+
+  // DD.MM.YYYY → YYYY-MM-DD
+  if (/^\d{2}\.\d{2}\.\d{4}$/.test(s)) {
+    const [day, mon, yr] = s.split(".");
+    return `${yr}-${mon}-${day}`;
+  }
+
+  // fallback – vezmi jen první část před mezerou
+  if (s.includes(" ")) s = s.split(" ")[0];
+  return s;
+}
 
 
 // FUNKCE – otevření formuláře pro úpravu existující události
@@ -724,12 +741,12 @@ if (t === "hnojení") {
   window.typAkce = "hnojeni";
   showUdalostForm("hnojeni");
 
-  const datumInput    = document.getElementById("hnojeniDatum");
+  const datumInput = document.getElementById("hnojeniDatum");
   const hnojivoSelect = document.getElementById("hnojivoSelect");
   const mnozstviInput = document.getElementById("hnojeniMnozstvi");
 
-  if (datumInput && udalost.Datum) {
-    datumInput.value = udalost.Datum.split("T")[0];
+  if (datumInput) {
+  datumInput.value = formatDateForInput(udalost.Datum);
   }
 
   const vybraneHnojivo = udalost.Hnojivo || "";
@@ -777,9 +794,10 @@ if (t === "hnojení") {
 
   // Datum
   const datumInput = document.getElementById("udalostDatum");
-  if (datumInput && udalost.Datum) {
-    datumInput.value = udalost.Datum.split("T")[0];
-  }
+if (datumInput) {
+  datumInput.value = formatDateForInput(udalost.Datum);
+}
+
 
   // Plodina
   const plodinaSelect = document.getElementById("plodinaSelect");
