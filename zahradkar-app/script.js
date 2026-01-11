@@ -627,14 +627,7 @@ function zobrazHnojeniHistory() {
     <tbody>`;
 
   data.slice().reverse().slice(0, 5).forEach(u => {
-    let datumText;
-    try {
-      datumText = formatDate(u.Datum);
-    } catch (e) {
-      console.error("Chyba při formátování datumu hnojení:", u.Datum, e);
-      datumText = u.Datum || "";
-    }
-
+    const datumText = formatDate(u.Datum);
     html += `<tr>
       <td>${datumText}</td>
       <td>${u.Hnojivo || ""}</td>
@@ -651,12 +644,12 @@ function zobrazHnojeniHistory() {
 }
 
 
+
 // FUNKCE PRO ZOBRAZENÍ HISTORIE SETÍ/SKLIZNĚ
 function zobrazSetiSklizenHistory() {
   const cont = document.getElementById("udalostHistory");
   if (!cont) return;
   const data = modalDataCache.setiSklizenHistory || [];
-  console.log("[zobrazSetiSklizenHistory] Render s cache:", data);
   if (!data.length) {
     cont.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
     return;
@@ -667,14 +660,7 @@ function zobrazSetiSklizenHistory() {
     <tbody>`;
 
   data.slice().reverse().slice(0, 6).forEach(u => {
-    let datumText;
-    try {
-      datumText = formatDate(u.Datum);
-    } catch (e) {
-      console.error("Chyba při formátování datumu setí/sklizně:", u.Datum, e);
-      datumText = u.Datum || "";
-    }
-
+    const datumText = formatDate(u.Datum);
     html += `<tr>
       <td>${datumText}</td>
       <td>${u.Typ}</td>
@@ -690,6 +676,7 @@ function zobrazSetiSklizenHistory() {
   html += "</tbody></table>";
   cont.innerHTML = html;
 }
+
 
 // FUNKCE – otevření formuláře pro úpravu existující události
 function otevriUpravuUdalosti(id, typ) {
