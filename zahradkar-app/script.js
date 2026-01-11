@@ -684,8 +684,8 @@ function formatDate(d) {
 function otevriUpravuUdalosti(id, typ) {
   // Najdi událost v cache
   const vsechny = [
-    ...modalDataCache.hnojeniHistory,
-    ...modalDataCache.setiSklizenHistory
+    ...(modalDataCache.hnojeniHistory || []),
+    ...(modalDataCache.setiSklizenHistory || [])
   ];
   const udalost = vsechny.find(u => u.UdalostID === id);
   if (!udalost) return alert("Událost nenalezena!");
@@ -694,48 +694,82 @@ function otevriUpravuUdalosti(id, typ) {
   window.editMode = true;
   window.editUdalostID = id;
 
-  // Přepni modal — zobraz formulář události
-  document.getElementById("modalViewDefault").style.display = "none";
-  document.getElementById("modalViewUdalost").style.display = "block";
+  const t = (typ || udalost.Typ || "").toLowerCase();
 
-  // Naplň hodnoty dle typu události
-  document.getElementById("udalostDatum").value = udalost.Datum.split("T")[0];
+  if (t === "hnojení") {
+    // === REŽIM HNOJENÍ ===
+    window.typAkce = "hnojeni";
 
-  // Pokud jde o setí nebo sklizeň — vyplň plodinu, výnos
+    // přepni na formulář hnojení (vloží do DOM hnojeniDatum, hnojivoSelect, hnojeniMnozstvi…)
+    showUdalostForm("hnojeni");
+
+    // naplň hodnoty pro hnojení
+    const datumInput    = document.getElementById("hnojeniDatum");
+    const hnojivoSelect = document.getElementById("hnojivoSelect");
+    const mnozstviInput = document.getElementById("hnojeniMnozstvi");
+
+    if (datumInput && udalost.Datum) {
+      datumInput.value = udalost.Datum.split("T")[0];
+    }
+
+    if (hnojivoSelect) {
+      hnojivoSelect.innerHTML =
+        `<option value="${udalost.Hnojivo || ""}">${udalost.Hnojivo || ""}</option>`;
+    }
+
+    if (mnozstviInput) {
+      mnozstviInput.value = udalost.Mnozstvi || udalost.Mnozstvi_kg || "";
+    }
+
+    return;
+  }
+
+  // === REŽIM SETÍ / SKLIZEŇ ===
+  window.typAkce =
+    udalost.Typ.toLowerCase() === "setí" ? "seti" : "sklizen";
+
+  // přepni na formulář setí/sklizně
+  showUdalostForm("plodina");
+
+  // Přepni modal — zobraz formulář události (showUdalostForm už dělá, ale pro jistotu)
+  const viewDefault = document.getElementById("modalViewDefault");
+  const viewUdalost = document.getElementById("modalViewUdalost");
+  if (viewDefault) viewDefault.style.display = "none";
+  if (viewUdalost) viewUdalost.style.display = "block";
+
+  // Datum
+  const datumInput = document.getElementById("udalostDatum");
+  if (datumInput && udalost.Datum) {
+    datumInput.value = udalost.Datum.split("T")[0];
+  }
+
+  // Plodina
   const plodinaSelect = document.getElementById("plodinaSelect");
   if (plodinaSelect) {
-    // nastav původní hodnotu (nepřepisuj ji novější sadbou)
-    plodinaSelect.innerHTML = `<option value="${udalost.Plodina || ""}">${udalost.Plodina || ""}</option>`;
+    plodinaSelect.innerHTML =
+      `<option value="${udalost.Plodina || ""}">${udalost.Plodina || ""}</option>`;
   }
 
+  // Výnos
+  const vynosInput = document.getElementById("udalostVynos");
+  const vynosLabel = document.getElementById("vynosLabel");
   if (udalost.Typ === "Sklizeň") {
-    document.getElementById("udalostVynos").disabled = false;
-    document.getElementById("udalostVynos").value = udalost.Vynos_kg || "";
+    if (vynosInput) {
+      vynosInput.disabled = false;
+      vynosInput.value = udalost.Vynos_kg || udalost.Vynos || "";
+    }
+    if (vynosLabel) vynosLabel.style.display = "inline";
   } else {
-    document.getElementById("udalostVynos").disabled = true;
-    document.getElementById("udalostVynos").value = "";
+    if (vynosInput) {
+      vynosInput.disabled = true;
+      vynosInput.value = "";
+    }
+    if (vynosLabel) vynosLabel.style.display = "none";
   }
 
-  // Pokud jde o hnojení
-  const hnojivoInput = document.getElementById("udalostHnojivo");
-  const mnozstviInput = document.getElementById("udalostMnozstvi");
-  if (hnojivoInput && mnozstviInput) {
-    hnojivoInput.value = udalost.Hnojivo || "";
-    mnozstviInput.value = udalost.Mnozstvi || "";
-  }
-
-  // Poznámka (u všech typů)
-  const poznInput = document.getElementById("udalostPoznamka");
-  if (poznInput) poznInput.value = udalost.Poznamka || "";
-
-  // Nastavení typu akce
-  window.typAkce =
-    typ.toLowerCase() === "hnojení"
-      ? "hnojeni"
-      : udalost.Typ.toLowerCase() === "setí"
-      ? "seti"
-      : "sklizen";
+  // (pokud používáš poznámku / další pole pro setí/sklizeň, můžeš je doplnit sem)
 }
+
 
 
 
