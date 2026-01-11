@@ -363,6 +363,15 @@ function saveZahon(){
     })
     .finally(()=>hideActionIndicator());
 }
+
+function todayForInput() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`; // formát pro input[type="date"]
+}
+
 function showUdalostForm(typ) {
   document.getElementById("modalViewDefault").style.display = "none";
   const uv = document.getElementById("modalViewUdalost");
@@ -404,13 +413,20 @@ function showUdalostForm(typ) {
     </div>
   `;
 
+   const datumInput = document.getElementById("hnojeniDatum");
+  if (datumInput && !window.editMode) {
+    datumInput.value = todayForInput();
+  }
+
   if (!window.editMode) {
     loadHnojiva();
   }
   zobrazHnojeniHistory();
+}
   } else {
     // ✅ OPRAVENÁ VERZE PRO SETÍ/SKLIZEŇ
     c.innerHTML = `
+    
       <h4>Setí a sklizeň</h4>
 
     <div class="typAkceBtns">
@@ -445,6 +461,10 @@ function showUdalostForm(typ) {
       <em>Načítám historii...</em>
     </div>
     `;
+    const datumInput = document.getElementById("udalostDatum");
+  if (datumInput && !window.editMode) {
+    datumInput.value = todayForInput();
+  }
     zobrazSetiSklizenHistory();
     window.typAkce = "seti";
     changeTypAkce("seti");
