@@ -657,54 +657,39 @@ function zobrazSetiSklizenHistory() {
   const cont = document.getElementById("udalostHistory");
   if (!cont) return;
   const data = modalDataCache.setiSklizenHistory || [];
-  console.log('[zobrazSetiSklizenHistory] Render s cache:', data);
+  console.log("[zobrazSetiSklizenHistory] Render s cache:", data);
   if (!data.length) {
     cont.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
     return;
   }
- let html = `<table>
-  <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th><th></th></tr></thead>
-  <tbody>`;
 
-data.slice().reverse().slice(0, 6).forEach(u => {
-  html += `<tr>
-    <td>${formatDate(u.Datum)}</td>
-    <td>${u.Typ}</td>
-    <td>${u.Plodina || ""}</td>
-    <td>${u.Vynos || ""}</td>
-    <td><button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button>
-      <button onclick="otevriUpravuUdalosti(${u.UdalostID}, '${u.Typ}')">✏️</button></td>
-  </tr>`;
-});
+  let html = `<table>
+    <thead><tr><th>Datum</th><th>Typ</th><th>Plodina</th><th>Výnos (kg)</th><th></th></tr></thead>
+    <tbody>`;
 
-html += "</tbody></table>";
-cont.innerHTML = html;
-}
-
-function formatDate(d) {
-  if (!d) return "";
-
-  // JS Date dělá bordel s YYYY-MM-DD → timezone, radši formátuj ručně
-  if (typeof d === "string") {
-    // ISO / SQL datum
-    if (/^\d{4}-\d{2}-\d{2}/.test(d)) {
-      const [y, m, day] = d.slice(0, 10).split("-");
-      return `${day}.${m}.${y}`;
+  data.slice().reverse().slice(0, 6).forEach(u => {
+    let datumText;
+    try {
+      datumText = formatDate(u.Datum);
+    } catch (e) {
+      console.error("Chyba při formátování datumu setí/sklizně:", u.Datum, e);
+      datumText = u.Datum || "";
     }
 
-    // už česky (DD.MM.YYYY) → vrať jak je
-    if (/^\d{2}\.\d{2}\.\d{4}$/.test(d.trim())) {
-      return d.trim();
-    }
-  }
+    html += `<tr>
+      <td>${datumText}</td>
+      <td>${u.Typ}</td>
+      <td>${u.Plodina || ""}</td>
+      <td>${u.Vynos || ""}</td>
+      <td>
+        <button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button>
+        <button onclick="otevriUpravuUdalosti(${u.UdalostID}, '${u.Typ}')">✏️</button>
+      </td>
+    </tr>`;
+  });
 
-  // fallback pro Date objekty atd.
-  const dateObj = new Date(d);
-  if (isNaN(dateObj)) return d;
-  const day = ("0" + dateObj.getDate()).slice(-2);
-  const mon = ("0" + (dateObj.getMonth() + 1)).slice(-2);
-  const yr  = dateObj.getFullYear();
-  return `${day}.${mon}.${yr}`;
+  html += "</tbody></table>";
+  cont.innerHTML = html;
 }
 
 // FUNKCE – otevření formuláře pro úpravu existující události
