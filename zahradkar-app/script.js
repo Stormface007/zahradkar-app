@@ -612,7 +612,6 @@ async function ulozHnojeni() {
 
 
 
-// FUNKCE PRO ZOBRAZENÍ HISTORIE HNOJENÍ
 function zobrazHnojeniHistory() {
   const cont = document.getElementById("hnojeniHistory");
   if (!cont) return;
@@ -629,18 +628,29 @@ function zobrazHnojeniHistory() {
     <tbody>`;
 
   data.slice().reverse().slice(0, 5).forEach(u => {
+    let datumText;
+    try {
+      datumText = formatDate(u.Datum);
+    } catch (e) {
+      console.error("Chyba při formátování datumu hnojení:", u.Datum, e);
+      datumText = u.Datum || "";
+    }
+
     html += `<tr>
-      <td>${formatDate(u.Datum)}</td>
+      <td>${datumText}</td>
       <td>${u.Hnojivo || ""}</td>
       <td>${u.Mnozstvi || u.Mnozstvi_kg || ""}</td>
-      <td><button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button>
-      <button onclick="otevriUpravuUdalosti(${u.UdalostID}, '${u.Typ}')">✏️</button></td>
+      <td>
+        <button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button>
+        <button onclick="otevriUpravuUdalosti(${u.UdalostID}, '${u.Typ}')">✏️</button>
+      </td>
     </tr>`;
   });
 
   html += "</tbody></table>";
   cont.innerHTML = html;
 }
+
 
 // FUNKCE PRO ZOBRAZENÍ HISTORIE SETÍ/SKLIZNĚ
 function zobrazSetiSklizenHistory() {
