@@ -384,8 +384,10 @@ function showUdalostForm(typ) {
         <em>Načítám historii...</em>
       </div>
     `;
+   if (!window.editMode) {
     loadHnojiva();
-    zobrazHnojeniHistory();
+  }
+  zobrazHnojeniHistory();
   } else {
     // ✅ OPRAVENÁ VERZE PRO SETÍ/SKLIZEŇ
     c.innerHTML = `
@@ -532,16 +534,16 @@ async function smazUdalost(id, typ) {
 
 
 
-function loadHnojiva(){
-  fetch(`${SERVER_URL}?action=getHnojiva`)
-    .then(r=>r.json())
-    .then(arr=>{
+function loadHnojiva() {
+  return fetch(`${SERVER_URL}?action=getHnojiva`)
+    .then(r => r.json())
+    .then(arr => {
       const sel = document.getElementById("hnojivoSelect");
-      if(!sel) return;
+      if (!sel) return;
       sel.innerHTML = `<option value="">– vyber hnojivo –</option>`;
-      arr.forEach(h=>{
+      arr.forEach(h => {
         const o = document.createElement("option");
-        o.value = h.nazev; 
+        o.value = h.nazev;
         o.textContent = h.nazev;
         sel.appendChild(o);
       });
@@ -696,33 +698,47 @@ function otevriUpravuUdalosti(id, typ) {
 
   const t = (typ || udalost.Typ || "").toLowerCase();
 
-  if (t === "hnojení") {
-    // === REŽIM HNOJENÍ ===
-    window.typAkce = "hnojeni";
+if (t === "hnojení") {
+  window.typAkce = "hnojeni";
+  showUdalostForm("hnojeni");
 
-    // přepni na formulář hnojení (vloží do DOM hnojeniDatum, hnojivoSelect, hnojeniMnozstvi…)
-    showUdalostForm("hnojeni");
+  const datumInput    = document.getElementById("hnojeniDatum");
+  const hnojivoSelect = document.getElementById("hnojivoSelect");
+  const mnozstviInput = document.getElementById("hnojeniMnozstvi");
 
-    // naplň hodnoty pro hnojení
-    const datumInput    = document.getElementById("hnojeniDatum");
-    const hnojivoSelect = document.getElementById("hnojivoSelect");
-    const mnozstviInput = document.getElementById("hnojeniMnozstvi");
-
-    if (datumInput && udalost.Datum) {
-      datumInput.value = udalost.Datum.split("T")[0];
-    }
-
-    if (hnojivoSelect) {
-      hnojivoSelect.innerHTML =
-        `<option value="${udalost.Hnojivo || ""}">${udalost.Hnojivo || ""}</option>`;
-    }
-
-    if (mnozstviInput) {
-      mnozstviInput.value = udalost.Mnozstvi || udalost.Mnozstvi_kg || "";
-    }
-
-    return;
+  if (datumInput && udalost.Datum) {
+    datumInput.value = udalost.Datum.split("T")[0];
   }
+
+  const vybraneHnojivo = udalost.Hnojivo || "";
+
+  if (hnojivoSelect) {
+    // Nejprve vlož aktuální hodnotu, ať něco vidíš
+    hnojivoSelect.innerHTML =
+      `<option value="${vybraneHnojivo}">${vybraneHnojivo}</option>`;
+
+    // Pak načti celý seznam a ponech vybranou hodnotu
+    loadHnojiva().then(() => {
+      const opt = Array.from(hnojivoSelect.options)
+        .find(o => o.value === vybraneHnojivo);
+      if (opt) {
+        hnojivoSelect.value = vybraneHnojivo;
+      } else if (vybraneHnojivo) {
+        const o = document.createElement("option");
+        o.value = vybraneHnojivo;
+        o.textContent = vybraneHnojivo;
+        hnojivoSelect.appendChild(o);
+        hnojivoSelect.value = vybraneHnojivo;
+      }
+    });
+  }
+
+  if (mnozstviInput) {
+    mnozstviInput.value = udalost.Mnozstvi || udalost.Mnozstvi_kg || "";
+  }
+
+  return;
+}
 
   // === REŽIM SETÍ / SKLIZEŇ ===
   window.typAkce =
