@@ -554,14 +554,21 @@ async function ulozHnojeni() {
   const datum = document.getElementById("hnojeniDatum").value;
   const hnojivo = document.getElementById("hnojivoSelect").value;
   const mnozstvi = document.getElementById("hnojeniMnozstvi").value;
-  
+
   if (!zahonID || !datum || !hnojivo || !mnozstvi) {
     alert("Vyplňte všechny povinné údaje.");
     return;
   }
-  
+
   const ps = new URLSearchParams();
-  ps.append("action", "addUdalost");
+
+  if (window.editMode && window.editUdalostID) {
+    ps.append("action", "updateUdalost");
+    ps.append("udalostID", window.editUdalostID);
+  } else {
+    ps.append("action", "addUdalost");
+  }
+
   ps.append("zahonID", zahonID);
   ps.append("datum", datum);
   ps.append("typ", "Hnojení");
@@ -575,19 +582,18 @@ async function ulozHnojeni() {
     showActionIndicator?.();
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
     const text = await res.text();
-    
-    // ✅ Zkus parsovat jako JSON nebo kontroluj "OK"
+
     let success = false;
     try {
       const data = JSON.parse(text);
       success = data.success === true;
     } catch {
-      // Není JSON → kontroluj "OK"
       success = text.trim() === "OK";
     }
-    
+
     if (success) {
-      // ✅ Úspěch - obnovení dat
+      window.editMode = false;
+      window.editUdalostID = null;
       await preloadModalData(aktualniZahon);
       zobrazHnojeniHistory?.();
       zpetNaDetailZahonu?.();
@@ -601,6 +607,7 @@ async function ulozHnojeni() {
     hideActionIndicator?.();
   }
 }
+
 
 
 // FUNKCE PRO ZOBRAZENÍ HISTORIE HNOJENÍ
