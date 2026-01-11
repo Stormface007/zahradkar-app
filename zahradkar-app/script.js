@@ -420,25 +420,13 @@ function showUdalostForm(typ) {
     
       <h4>Setí a sklizeň</h4>
 
-    <div class="typAkceBtns">
-      <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
-      <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
-    </div>
+    <input type="date" id="udalostDatum" class="udalost-input"/>
 
-    <div class="udalost-row">
-      <label class="udalost-label" for="udalostDatum">Datum:</label>
-      <input type="date" id="udalostDatum" class="udalost-input"/>
-    </div>
+<select id="plodinaSelect" class="udalost-input">
+  <option value="">– vyber plodinu –</option>
+</select>
 
-    <div class="udalost-row">
-      <label class="udalost-label" for="plodinaSelect">Plodina:</label>
-      <select id="plodinaSelect" class="udalost-input"></select>
-    </div>
-
-    <div class="udalost-row" id="vynosRow">
-      <label class="udalost-label" id="vynosLabel">Výnos (kg):</label>
-      <input type="number" id="udalostVynos" class="udalost-input"/>
-    </div>
+<input type="number" id="udalostVynos" class="udalost-input" placeholder="Výnos v kg"/>
 
     <div class="udalost-row">
       <label class="udalost-label">&nbsp;</label>
