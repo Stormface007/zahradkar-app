@@ -899,9 +899,9 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   const parent = canvas.parentElement;
   const padding = 10;
 
-  const width = parent.clientWidth;
+  const width  = parent.clientWidth;
   const height = parent.clientHeight;
-  canvas.width = width;
+  canvas.width  = width;
   canvas.height = height;
 
   ctx.clearRect(0, 0, width, height);
@@ -909,22 +909,21 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   // poměr stran záhonu
   const aspectRatio = delka / sirka;
 
-  const maxDrawWidth = width - padding * 2;
+  const maxDrawWidth  = width  - padding * 2;
   const maxDrawHeight = height - padding * 2;
 
-  let drawWidth = maxDrawWidth;
+  let drawWidth  = maxDrawWidth;
   let drawHeight = drawWidth / aspectRatio;
 
   if (drawHeight > maxDrawHeight) {
     drawHeight = maxDrawHeight;
-    drawWidth = drawHeight * aspectRatio;
+    drawWidth  = drawHeight * aspectRatio;
   }
 
-  // centrování
-  const offsetX = (width - drawWidth) / 2;
+  // centrování v tom bílém obdélníku
+  const offsetX = (width  - drawWidth)  / 2;
   const offsetY = (height - drawHeight) / 2;
 
-  // tady musíš použít spočítané hodnoty
   drawZahon(ctx, offsetX, offsetY, drawWidth, drawHeight);
 }
 
@@ -933,10 +932,9 @@ function drawZahon(ctx, x, y, w, h) {
   img.src = "img/soil.jpg";
 
   img.onload = function () {
-    ctx.drawImage(img, x, y, w, h);   // vykreslí obrázek do obdélníku [web:134][web:142]
+    ctx.drawImage(img, x, y, w, h);   // přesně do spočítaného „záhon“ obdélníku [web:134][web:142]
   };
 }
-
 
 function changeTypAkce(typ) {
   window.typAkce = typ;
