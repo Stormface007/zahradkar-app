@@ -671,9 +671,24 @@ html += "</tbody></table>";
 cont.innerHTML = html;
 }
 
-// FORMÁTOVÁNÍ DATA
 function formatDate(d) {
   if (!d) return "";
+
+  // JS Date dělá bordel s YYYY-MM-DD → timezone, radši formátuj ručně
+  if (typeof d === "string") {
+    // ISO / SQL datum
+    if (/^\d{4}-\d{2}-\d{2}/.test(d)) {
+      const [y, m, day] = d.slice(0, 10).split("-");
+      return `${day}.${m}.${y}`;
+    }
+
+    // už česky (DD.MM.YYYY) → vrať jak je
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(d.trim())) {
+      return d.trim();
+    }
+  }
+
+  // fallback pro Date objekty atd.
   const dateObj = new Date(d);
   if (isNaN(dateObj)) return d;
   const day = ("0" + dateObj.getDate()).slice(-2);
