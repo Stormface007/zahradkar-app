@@ -902,17 +902,17 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
 }
 function changeTypAkce(typ) {
-  document.getElementById("btnSeti").classList.toggle("active", typ === "seti");
-  document.getElementById("btnSklizen").classList.toggle("active", typ === "sklizen");
-window.typAkce = typ;
+  window.typAkce = typ;
 
-  const btnSeti    = document.getElementById("btnSeti");
-  const btnSklizen = document.getElementById("btnSklizen");
-  const vynosRow   = document.getElementById("vynosRow");
-  const vynosInput = document.getElementById("udalostVynos");
+  const btnSeti       = document.getElementById("btnSeti");
+  const btnSklizen    = document.getElementById("btnSklizen");
+  const vynosRow      = document.getElementById("vynosRow");
+  const vynosInput    = document.getElementById("udalostVynos");
+  const doporuceniDiv = document.getElementById("doporuceniHnojeni");
 
+  // přepnutí aktivního tlačítka
   if (btnSeti && btnSklizen) {
-    btnSeti.classList.toggle("active", typ === "seti");
+    btnSeti.classList.toggle("active",   typ === "seti");
     btnSklizen.classList.toggle("active", typ === "sklizen");
   }
 
@@ -923,18 +923,20 @@ window.typAkce = typ;
       vynosInput.disabled = true;
       vynosInput.value = "";
     }
+    if (doporuceniDiv) {
+      doporuceniDiv.style.display = "block";   // pokud chceš doporučení vidět u setí
+    }
   } else if (typ === "sklizen") {
     // sklizeň → zobraz výnos
     if (vynosRow)   vynosRow.style.display = "flex";
     if (vynosInput) vynosInput.disabled = false;
-  }
-
-    if (vynosLabel) vynosLabel.style.display = "inline"; // box zobraz
     if (doporuceniDiv) {
       doporuceniDiv.style.display = "none";
       doporuceniDiv.textContent = "";
     }
   }
+
+  // případná další logika (naplnPlodinySelect, prefillSklizenPlodinaFromCache, ...)
 }
 
 
