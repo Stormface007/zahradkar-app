@@ -903,20 +903,30 @@ function naplnPlodinySelect() {
 
 function czDateStringToDate(str) {
   if (!str) return new Date("1970-01-01");
-  // ISO (2025-03-28T00:00:00.000Z) = lze převést přímo
-  if (str.includes("-") || str.includes("T")) {
-    return new Date(str);
+  const s = String(str).trim();
+
+  // ISO (2025-11-11 nebo 2025-11-11T00:00:00.000Z)
+  const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    const [, y, m, d] = isoMatch;
+    // vytvoř lokální Date bez posunu
+    return new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
   }
+
   // CZ formát DD.MM.YYYY
-  const [d, m, y] = str.split(".");
-  return new Date(`${y.trim()}-${m.trim().padStart(2, "0")}-${d.trim().padStart(2, "0")}`);
+  if (s.includes(".")) {
+    const [d, m, y] = s.split(".");
+    return new Date(
+      parseInt(y, 10),
+      parseInt(m, 10) - 1,
+      parseInt(d, 10)
+    );
+  }
+
+  // fallback
+  return new Date(s);
 }
-modalDataCache = {
-  hnojeniHistory: null,
-  setiSklizenHistory: null,
-  plodiny: null,
-  posledniSetaPlodina: null
-};
+
 
 // ASYNCHRONNÍ FUNKCE PRO NAČTENÍ DAT DO CACHE MODALU
 async function preloadModalData(zahon) {
