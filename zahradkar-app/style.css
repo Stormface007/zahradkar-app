@@ -172,14 +172,24 @@ button:hover {
 .plocha { font-weight:bold; margin-bottom:1rem; }
 
 /* Vizualizace záhonu */
-#zahonVizualizace { height: 320px; /* mírné zvýšení výšky */
+#zahonVizualizace {
+  height: 320px;           /* mírné zvýšení výšky */
   margin-top: 10px;
-  position: relative; z-index:1; }
+  position: relative;
+  z-index: 1;
+}
+
 #zahonVizualizace canvas {
-  display:block; margin:0 auto; background:transparent;
+  display: block;
+  margin: 0 auto;
+  background-image: url("img/soil.jpg");
+  background-size: cover;          /* vyplní celý canvas */
+  background-position: center;     /* střed obrázku */
+  background-repeat: no-repeat;    /* bez opakování */
   border: 2px solid #2e7d32;
   border-radius: 6px;
 }
+
 
 /* Modal-btn */
 .modal-btn {
