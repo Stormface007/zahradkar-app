@@ -386,8 +386,7 @@ function showUdalostForm(typ) {
     window.typAkce = "hnojeni";
 
     c.innerHTML = `
-      <h4>Hnojení</h4>
-
+      
       <div class="udalost-row">
         <input type="date" id="hnojeniDatum" class="udalost-input"/>
       </div>
@@ -429,9 +428,7 @@ function showUdalostForm(typ) {
   // === SETÍ / SKLIZEŇ (PLODINA) ===
   if (typ === "plodina") {
     c.innerHTML = `
-      <h4>Setí a sklizeň</h4>
-
-      <div class="typAkceBtns">
+          <div class="typAkceBtns">
         <button type="button" id="btnSeti"
                 class="typ-akce-btn active"
                 onclick="changeTypAkce('seti')">Setí</button>
