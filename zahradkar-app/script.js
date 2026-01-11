@@ -907,26 +907,20 @@ function czDateStringToDate(str) {
   if (!str) return new Date("1970-01-01");
   const s = String(str).trim();
 
-  // 2025-11-10T23:00:00.000Z → vezmi jen YYYY-MM-DD
-  let isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (isoMatch) {
     const [, y, m, d] = isoMatch;
     return new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
   }
 
-  // 10.11.2025
   if (s.includes(".")) {
     const [d, m, y] = s.split(".");
-    return new Date(
-      parseInt(y, 10),
-      parseInt(m, 10) - 1,
-      parseInt(d, 10)
-    );
+    return new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
   }
 
-  // fallback
   return new Date(s);
 }
+
 
 
 // ASYNCHRONNÍ FUNKCE PRO NAČTENÍ DAT DO CACHE MODALU
@@ -996,7 +990,7 @@ function formatDate(d) {
   if (!d) return "";
   let s = String(d).trim();
 
-  // pokud je tam čas → necháme jen část před mezerou / T
+  // Ořízni čas – vše za mezerou nebo T zahodit
   if (s.includes(" ")) {
     s = s.split(" ")[0];
   }
@@ -1004,19 +998,19 @@ function formatDate(d) {
     s = s.split("T")[0];
   }
 
-  // ISO: 2025-11-10 → 10.11.2025
+  // ISO YYYY-MM-DD
   const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (isoMatch) {
     const [, y, m, day] = isoMatch;
-    return `${day}.${m}.${y}`;
+    return `${day}.${m}.${y}`;  // 10.11.2025
   }
 
-  // CZ: 10.11.2025
+  // CZ DD.MM.YYYY
   if (/^\d{2}\.\d{2}\.\d{4}$/.test(s)) {
     return s;
   }
 
-  // fallback – pokud přijde něco jiného, vrať syrově
+  // fallback – nic neparsuj, jen vrať
   return s;
 }
 
