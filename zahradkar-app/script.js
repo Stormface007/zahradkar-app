@@ -430,15 +430,17 @@ function zpetNaDetailZahonu(){
 async function ulozUdalost() {
   const typ = window.typAkce;
   const zahonID = aktualniZahon?.ZahonID;
-  const datum   = document.getElementById("udalostDatum").value;
+  const datumRaw = document.getElementById("udalostDatum").value;
   const plodina = document.getElementById("plodinaSelect").value.trim();
   let vynos = document.getElementById("udalostVynos").value.replace(",", ".");
   vynos = vynos === "" ? "" : parseFloat(vynos);
 
-  if (!zahonID || !datum || !plodina) {
+  if (!zahonID || !datumRaw || !plodina) {
     alert("Záhon, datum a plodina jsou povinné.");
     return;
   }
+
+  const datum = normalizeDateForBackend(datumRaw);
 
   const ps = new URLSearchParams();
 
@@ -472,18 +474,15 @@ async function ulozUdalost() {
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
     const text = await res.text();
 
-    // ✅ Zkus parsovat jako JSON, pokud ne, kontroluj "OK"
     let success = false;
     try {
       const data = JSON.parse(text);
       success = data.success === true;
     } catch {
-      // Není JSON → předpokládej že "OK" = úspěch
       success = text.trim() === "OK";
     }
 
     if (success) {
-      // ✅ Úspěch - ale nezobrazuj alert, dokud není historie načtena
       window.editMode = false; 
       window.editUdalostID = null;
 
@@ -491,9 +490,8 @@ async function ulozUdalost() {
       zobrazSetiSklizenHistory?.();
       zobrazHnojeniHistory?.();
       zpetNaDetailZahonu?.();
-      
-      // ✅ Alert až po úspěšném načtení
-      alert(window.editMode ? "Událost byla upravena." : "Událost byla přidána.");
+
+      alert("Událost byla uložena.");
     } else {
       alert("Chyba při ukládání události: " + text);
     }
@@ -504,7 +502,6 @@ async function ulozUdalost() {
     hideActionIndicator?.();
   }
 }
-
 
 
 async function smazUdalost(id, typ) {
@@ -553,14 +550,16 @@ function loadHnojiva() {
 
 async function ulozHnojeni() {
   const zahonID = aktualniZahon?.ZahonID;
-  const datum = document.getElementById("hnojeniDatum").value;
+  const datumRaw = document.getElementById("hnojeniDatum").value;
   const hnojivo = document.getElementById("hnojivoSelect").value;
   const mnozstvi = document.getElementById("hnojeniMnozstvi").value;
 
-  if (!zahonID || !datum || !hnojivo || !mnozstvi) {
+  if (!zahonID || !datumRaw || !hnojivo || !mnozstvi) {
     alert("Vyplňte všechny povinné údaje.");
     return;
   }
+
+  const datum = normalizeDateForBackend(datumRaw);
 
   const ps = new URLSearchParams();
 
@@ -1022,6 +1021,16 @@ function formatDate(d) {
   const yr  = dateObj.getFullYear();
   return `${day}.${mon}.${yr}`;
 }
+function normalizeDateForBackend(d) {
+  // d očekáváno "YYYY-MM-DD"
+  if (!d) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(d)) {
+    const [y, m, day] = d.split("-");
+    return `${day}.${m}.${y}`; // 11.11.2025
+  }
+  return d;
+}
+
 
 
 
