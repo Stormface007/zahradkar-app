@@ -419,6 +419,14 @@ function showUdalostForm(typ) {
     c.innerHTML = `
     
       <h4>Setí a sklizeň</h4>
+      <div class="typAkceBtns">
+      <button type="button" id="btnSeti"
+              class="typ-akce-btn active"
+              onclick="changeTypAkce('seti')">Setí</button>
+      <button type="button" id="btnSklizen"
+              class="typ-akce-btn"
+              onclick="changeTypAkce('sklizen')">Sklizeň</button>
+    </div>
 
     <input type="date" id="udalostDatum" class="udalost-input"/>
 
