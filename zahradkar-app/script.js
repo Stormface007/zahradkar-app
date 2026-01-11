@@ -904,34 +904,31 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
 function changeTypAkce(typ) {
   document.getElementById("btnSeti").classList.toggle("active", typ === "seti");
   document.getElementById("btnSklizen").classList.toggle("active", typ === "sklizen");
-  window.typAkce = typ;
+window.typAkce = typ;
 
+  const btnSeti    = document.getElementById("btnSeti");
+  const btnSklizen = document.getElementById("btnSklizen");
+  const vynosRow   = document.getElementById("vynosRow");
   const vynosInput = document.getElementById("udalostVynos");
-  const vynosLabel = document.getElementById("vynosLabel");
-  const plodinaSelect = document.getElementById("plodinaSelect");
-  const doporuceniDiv = document.getElementById("doporuceniHnojeni");
 
-  if (!plodinaSelect) return;
+  if (btnSeti && btnSklizen) {
+    btnSeti.classList.toggle("active", typ === "seti");
+    btnSklizen.classList.toggle("active", typ === "sklizen");
+  }
 
   if (typ === "seti") {
-    // přepnuto na SETÍ
-    naplnPlodinySelect();
+    // setí → jen datum + plodina
+    if (vynosRow)   vynosRow.style.display = "none";
     if (vynosInput) {
       vynosInput.disabled = true;
-      vynosInput.value = "";           // vždy vynuluj
-    }
-    if (vynosLabel) vynosLabel.style.display = "none";   // box skryj
-    if (doporuceniDiv) {
-      doporuceniDiv.style.display = "block";             // doporučení viditelné
+      vynosInput.value = "";
     }
   } else if (typ === "sklizen") {
-    // přepnuto na SKLIZEŇ
-    plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
-    prefillSklizenPlodinaFromCache();
-    if (vynosInput) {
-      vynosInput.disabled = false;
-      // hodnotu necháme (pro editaci), jen povolíme
-    }
+    // sklizeň → zobraz výnos
+    if (vynosRow)   vynosRow.style.display = "flex";
+    if (vynosInput) vynosInput.disabled = false;
+  }
+
     if (vynosLabel) vynosLabel.style.display = "inline"; // box zobraz
     if (doporuceniDiv) {
       doporuceniDiv.style.display = "none";
