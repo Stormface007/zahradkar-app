@@ -786,22 +786,32 @@ function changeTypAkce(typ) {
   if (!plodinaSelect) return;
 
   if (typ === "seti") {
+    // přepnuto na SETÍ
     naplnPlodinySelect();
-    vynosInput.disabled = true;
-    if (vynosLabel) vynosLabel.style.display = "none";  // SKRYJ výnos u setí
-    if (doporuceniDiv) doporuceniDiv.style.display = "block";  // ZOBRAZ doporučení u setí
-    setTimeout(zobrazDoporuceniHnojeni, 100);
+    if (vynosInput) {
+      vynosInput.disabled = true;
+      vynosInput.value = "";           // vždy vynuluj
+    }
+    if (vynosLabel) vynosLabel.style.display = "none";   // box skryj
+    if (doporuceniDiv) {
+      doporuceniDiv.style.display = "block";             // doporučení viditelné
+    }
   } else if (typ === "sklizen") {
+    // přepnuto na SKLIZEŇ
     plodinaSelect.innerHTML = '<option value="">Načítám…</option>';
     prefillSklizenPlodinaFromCache();
-    vynosInput.disabled = false;
-    if (vynosLabel) vynosLabel.style.display = "inline"; // ZOBRAZ výnos u sklizně
+    if (vynosInput) {
+      vynosInput.disabled = false;
+      // hodnotu necháme (pro editaci), jen povolíme
+    }
+    if (vynosLabel) vynosLabel.style.display = "inline"; // box zobraz
     if (doporuceniDiv) {
-      doporuceniDiv.style.display = "none";  // SKRYJ doporučení u sklizně
-      doporuceniDiv.textContent = "";  // Vyprázdni obsah
+      doporuceniDiv.style.display = "none";
+      doporuceniDiv.textContent = "";
     }
   }
 }
+
 
 
 
