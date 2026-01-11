@@ -627,6 +627,7 @@ function zobrazHnojeniHistory() {
     <tbody>`;
 
   data.slice().reverse().slice(0, 5).forEach(u => {
+    console.log("DEBUG datum:", u.Datum, typeof u.Datum);
     const datumText = formatDate(u.Datum);
     html += `<tr>
       <td>${datumText}</td>
@@ -660,6 +661,7 @@ function zobrazSetiSklizenHistory() {
     <tbody>`;
 
   data.slice().reverse().slice(0, 6).forEach(u => {
+    console.log("DEBUG datum:", u.Datum, typeof u.Datum);
     const datumText = formatDate(u.Datum);
     html += `<tr>
       <td>${datumText}</td>
