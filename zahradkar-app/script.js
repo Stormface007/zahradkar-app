@@ -426,6 +426,30 @@ function zpetNaDetailZahonu(){
   setActiveIcon(null);
 }
 
+function normalizeDateForBackend(d) {
+  if (!d) return "";
+  const s = String(d).trim();
+
+  // input type="date" → YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const [y, m, day] = s.split("-");
+    return `${day}.${m}.${y}`;  // 11.11.2025
+  }
+
+  // už DD.MM.YYYY
+  if (/^\d{2}\.\d{2}\.\d{4}$/.test(s)) {
+    return s;
+  }
+
+  // něco jako "11.11.2025 1:00:00" → vezmi část před mezerou
+  if (s.includes(" ")) {
+    return s.split(" ")[0];
+  }
+
+  return s;
+}
+
+
 
 async function ulozUdalost() {
   const typ = window.typAkce;
