@@ -770,9 +770,6 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   ctx.fillStyle = "#d4a373"; // světle hnědá
   ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
 }
-// Volat JEDNOU při inicializaci stránky (např. v setup funkci)
-document.getElementById("plodinaSelect")?.addEventListener("change", zobrazDoporuceniHnojeni);
-
 function changeTypAkce(typ) {
   document.getElementById("btnSeti").classList.toggle("active", typ === "seti");
   document.getElementById("btnSklizen").classList.toggle("active", typ === "sklizen");
