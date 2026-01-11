@@ -1,10 +1,13 @@
 /* Globální */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #c4f7c4; /* jemnější zelená */
-  color: black;
+  padding: 0;
+  background-image: url("img/grass.jpg");
+  background-size: cover;          /* obrázek pokryje celou stránku */
+  background-position: center;     /* centrování */
+  background-repeat: no-repeat;    /* bez dlaždic */
 }
+
 
 /* Přihlášení */
 #loginDiv {
