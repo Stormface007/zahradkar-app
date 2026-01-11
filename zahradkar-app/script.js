@@ -422,7 +422,6 @@ function showUdalostForm(typ) {
     loadHnojiva();
   }
   zobrazHnojeniHistory();
-}
   } else {
     // ✅ OPRAVENÁ VERZE PRO SETÍ/SKLIZEŇ
     c.innerHTML = `
