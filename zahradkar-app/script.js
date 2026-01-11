@@ -383,22 +383,14 @@ function showUdalostForm(typ) {
   c.innerHTML = `
     <h4>Hnojení</h4>
 
-    <div class="udalost-row">
-      <label class="udalost-label" for="hnojeniDatum">Datum:</label>
-      <input type="date" id="hnojeniDatum" class="udalost-input"/>
-    </div>
+    <input type="date" id="hnojeniDatum" class="udalost-input"/>
 
-    <div class="udalost-row">
-      <label class="udalost-label" for="hnojivoSelect">Hnojivo:</label>
-      <select id="hnojivoSelect" class="udalost-input">
-        <option value="">– vyber hnojivo –</option>
-      </select>
-    </div>
+<select id="hnojivoSelect" class="udalost-input">
+  <option value="">– vyber hnojivo –</option>
+</select>
 
-    <div class="udalost-row">
-      <label class="udalost-label" for="hnojeniMnozstvi">Množství (kg):</label>
-      <input type="number" id="hnojeniMnozstvi" class="udalost-input"/>
-    </div>
+<input type="number" id="hnojeniMnozstvi" class="udalost-input" placeholder="Množství v kg"/>
+
 
     <div class="udalost-row">
       <label class="udalost-label">&nbsp;</label>
