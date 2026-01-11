@@ -371,20 +371,40 @@ function showUdalostForm(typ) {
   const c = document.getElementById("udalostFormContainer");
 
   if (typ === "hnojeni") {
-    c.innerHTML = `
-      <h4>Hnojení</h4>
-      <label>Datum: <input type="date" id="hnojeniDatum"/></label><br>
-      <label>Hnojivo: <select id="hnojivoSelect"><option>Načítám…</option></select></label><br>
-      <label>Množství (kg): <input type="number" id="hnojeniMnozstvi"/></label><br>
-      <div class="modal-btns">
-        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
-        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+  c.innerHTML = `
+    <h4>Hnojení</h4>
+
+    <div class="udalost-row">
+      <label class="udalost-label" for="hnojeniDatum">Datum:</label>
+      <input type="date" id="hnojeniDatum" class="udalost-input"/>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label" for="hnojivoSelect">Hnojivo:</label>
+      <select id="hnojivoSelect" class="udalost-input">
+        <option value="">– vyber hnojivo –</option>
+      </select>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label" for="hnojeniMnozstvi">Množství (kg):</label>
+      <input type="number" id="hnojeniMnozstvi" class="udalost-input"/>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label">&nbsp;</label>
+      <div class="udalost-actions">
+        <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
+        <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
       </div>
-      <div id="hnojeniHistory" class="hnojeni-history">
-        <em>Načítám historii...</em>
-      </div>
-    `;
-   if (!window.editMode) {
+    </div>
+
+    <div id="hnojeniHistory" class="hnojeni-history">
+      <em>Načítám historii...</em>
+    </div>
+  `;
+
+  if (!window.editMode) {
     loadHnojiva();
   }
   zobrazHnojeniHistory();
@@ -392,24 +412,38 @@ function showUdalostForm(typ) {
     // ✅ OPRAVENÁ VERZE PRO SETÍ/SKLIZEŇ
     c.innerHTML = `
       <h4>Setí a sklizeň</h4>
-      <div class="typAkceBtns">
-        <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
-        <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
+
+    <div class="typAkceBtns">
+      <button type="button" id="btnSeti" class="typ-akce-btn active" onclick="changeTypAkce('seti')">Setí</button>
+      <button type="button" id="btnSklizen" class="typ-akce-btn" onclick="changeTypAkce('sklizen')">Sklizeň</button>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label" for="udalostDatum">Datum:</label>
+      <input type="date" id="udalostDatum" class="udalost-input"/>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label" for="plodinaSelect">Plodina:</label>
+      <select id="plodinaSelect" class="udalost-input"></select>
+    </div>
+
+    <div class="udalost-row" id="vynosRow">
+      <label class="udalost-label" id="vynosLabel">Výnos (kg):</label>
+      <input type="number" id="udalostVynos" class="udalost-input"/>
+    </div>
+
+    <div class="udalost-row">
+      <label class="udalost-label">&nbsp;</label>
+      <div class="udalost-actions">
+        <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
+        <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
       </div>
-      <label>Datum: <input type="date" id="udalostDatum"/></label><br>
-      <label>Plodina: 
-        <select id="plodinaSelect"><option>Načítám…</option></select>
-       
-      </label><br>
-      
-      <label id="vynosLabel" style="display:none;">Výnos (kg): <input type="number" id="udalostVynos"/></label><br>
-      <div class="modal-btns">
-        <img src="img/Safe.png" alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
-        <img src="img/Goback .png" alt="Zpět" class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-      </div>
-      <div id="udalostHistory" class="hnojeni-history">
-        <em>Načítám historii...</em>
-      </div>
+    </div>
+
+    <div id="udalostHistory" class="hnojeni-history">
+      <em>Načítám historii...</em>
+    </div>
     `;
     zobrazSetiSklizenHistory();
     window.typAkce = "seti";
