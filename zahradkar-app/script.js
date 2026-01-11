@@ -926,10 +926,18 @@ function resizeAndDrawCanvas(canvas, delka, sirka) {
   const offsetX = (width - drawWidth) / 2;
   const offsetY = (height - drawHeight) / 2;
 
-  // Kresli záhon
-  ctx.fillStyle = "#d4a373"; // světle hnědá
-  ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
+  drawZahon(ctx, x, y, w, h);
 }
+function drawZahon(ctx, x, y, w, h) {
+  const img = new Image();
+  img.src = "img/soil.jpg";
+
+  img.onload = function () {
+    // obrázek jako „obdélník“ záhonu
+    ctx.drawImage(img, x, y, w, h);       // roztáhne soil.jpg do zadaného obdélníku [web:114]
+  };
+}
+
 function changeTypAkce(typ) {
   window.typAkce = typ;
 
