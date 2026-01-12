@@ -936,10 +936,10 @@ function drawZahon(ctx, x, y, w, h) {
 function changeTypAkce(typ) {
   window.typAkce = typ;
 
-  const btnSeti       = document.getElementById("btnSeti");
-  const btnSklizen    = document.getElementById("btnSklizen");
-  const vynosRow      = document.getElementById("vynosRow");
-  const vynosInput    = document.getElementById("udalostVynos");
+  const btnSeti    = document.getElementById("btnSeti");
+  const btnSklizen = document.getElementById("btnSklizen");
+  const vynosRow   = document.getElementById("vynosRow");
+  const vynosInput = document.getElementById("udalostVynos");
 
   if (btnSeti && btnSklizen) {
     btnSeti.classList.toggle("active",   typ === "seti");
@@ -955,6 +955,9 @@ function changeTypAkce(typ) {
   } else if (typ === "sklizen") {
     if (vynosRow)   vynosRow.style.display = "flex";
     if (vynosInput) vynosInput.disabled = false;
+
+    // 🔹 po přepnutí na sklizeň zkus automaticky vybrat poslední zasetou plodinu
+    prefillSklizenPlodinaFromCache();
   }
 }
 
@@ -966,21 +969,21 @@ function changeTypAkce(typ) {
 // FUNKCE PRO PREFILL SKLIZEN PLODINY Z CACHE
 function prefillSklizenPlodinaFromCache() {
   if (!aktualniZahon) return;
-  const plodinaSelect = document.getElementById("plodinaSelect");
-  if (!plodinaSelect) return;
+  const select = document.getElementById("plodinaSelect");
+  if (!select) return;
+  if (window.editMode) return; // při editaci nesahat
 
-  // 🚫 1️⃣ Pokud je aktivní režim úprav, nezasahuj do selectu
-  if (window.editMode) return;
-
-  // ✅ 2️⃣ Jinak nabídni poslední zasetou plodinu
   const plodina = modalDataCache.posledniSetaPlodina;
-  if (plodina) {
-    plodinaSelect.innerHTML = `<option value="${plodina}">${plodina}</option>`;
-  } else {
-    plodinaSelect.innerHTML = '<option value="">není zaseto…</option>';
+  if (!plodina) return;
+
+  const wanted = plodina.toLowerCase();
+  for (let i = 0; i < select.options.length; i++) {
+    if (select.options[i].text.toLowerCase() === wanted) {
+      select.selectedIndex = i; // nastaví defaultní option podle textu [web:255][web:267]
+      break;
+    }
   }
 }
-
 
 
 
