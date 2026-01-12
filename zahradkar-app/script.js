@@ -1158,6 +1158,33 @@ function getDummyAiReply(userText) {
   return "Jsem tvůj farmář‑průvodce. Zeptej se na setí, sklizeň, hnojení nebo práci se záhony.";
 }
 
+async function sendAiMessage() {
+  const input = document.getElementById("aiChatInput");
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+
+  appendAiMessage(text, "user");
+  input.value = "";
+
+  try {
+    const params = new URLSearchParams({
+      action: "aiAvatarChat",
+      message: text,
+      screen: window.currentScreen || "",
+      zahonId: window.currentZahonId || ""
+    });
+
+    const res = await fetch(`${SERVER_URL}?${params.toString()}`);
+    const data = await res.json();
+
+    appendAiMessage(data.reply || "Server mi teď neodpověděl.", "bot");
+  } catch (err) {
+    console.error(err);
+    appendAiMessage("Nemohu se spojit se serverem.", "bot");
+  }
+}
+
 
 
 
