@@ -10,23 +10,59 @@ let modalDataCache = {
   posledniSetaPlodina: null
 };
 // — Počasí dle geolokace —
-function loadWeatherByGeolocation(){
-  const ic = document.getElementById("weatherIcon"),
-        tp = document.getElementById("weatherTemp");
-  if(!navigator.geolocation){ tp.textContent="–"; return; }
-  navigator.geolocation.getCurrentPosition(p=>{
-    const {latitude:lat, longitude:lon} = p.coords;
-    fetch(`https://wttr.in/${lat},${lon}?format=j1`)
-      .then(r=>r.json())
-      .then(d=>{
-        const cur = d.current_condition[0];
-        ic.src = cur.weatherIconUrl[0].value;
-        ic.alt = cur.weatherDesc[0].value;
-        tp.textContent = `${cur.temp_C} °C`;
-      })
-      .catch(e=>{ tp.textContent="–"; });
-  },_=> tp.textContent="–");
+// pomocná funkce – roční období pro ČR
+function getSeasonForCz(date = new Date()) {
+  const m = date.getMonth() + 1;  // 1–12 [web:334][web:342]
+  if (m === 12 || m === 1 || m === 2) return "zima";
+  if (m >= 3 && m <= 5)  return "jaro";
+  if (m >= 6 && m <= 8)  return "léto";
+  return "podzim";
 }
+
+// globální stav pro AI
+window.currentSeason  = getSeasonForCz();
+window.currentWeather = null;
+
+// — Počasí dle geolokace —
+function loadWeatherByGeolocation() {
+  const ic = document.getElementById("weatherIcon");
+  const tp = document.getElementById("weatherTemp");
+  if (!ic || !tp) return;
+
+  if (!navigator.geolocation) {
+    tp.textContent = "–";
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude: lat, longitude: lon } = pos.coords;
+    fetch(`https://wttr.in/${lat},${lon}?format=j1`)   // JSON API wttr.in [web:329][web:331][web:341]
+      .then(r => r.json())
+      .then(d => {
+        const cur = d.current_condition?.[0];
+        if (!cur) {
+          tp.textContent = "–";
+          return;
+        }
+
+        ic.src = cur.weatherIconUrl?.[0]?.value || "";
+        ic.alt = cur.weatherDesc?.[0]?.value || "";
+        tp.textContent = `${cur.temp_C} °C`;
+
+        // ulož pro AI
+        window.currentWeather = {
+          tempC: cur.temp_C,
+          desc:  cur.weatherDesc?.[0]?.value || ""
+        };
+      })
+      .catch(() => {
+        tp.textContent = "–";
+      });
+  }, () => {
+    tp.textContent = "–";
+  });
+}
+
 
 // — Indikátor akce (mrkev) —
 function showActionIndicator(){
@@ -1158,18 +1194,24 @@ async function sendAiMessage() {
 
   try {
     const params = new URLSearchParams({
-      action: "aiAvatarChat",
+      action:  "aiAvatarChat",
       message: text,
-      screen: window.currentScreen || "",
-      zahonId: window.currentZahonId || ""
+      screen:  window.currentScreen   || "",
+      zahonId: window.currentZahonId  || "",
+      season:  window.currentSeason   || "",
+      weather: window.currentWeather
+                ? JSON.stringify(window.currentWeather)
+                : ""
     });
 
     const res = await fetch(`${SERVER_URL}?${params.toString()}`);
     if (!res.ok) {
-      // server odpověděl chybovým kódem (500, 404, ...)
       const errText = await res.text();
       console.error("AI HTTP error:", res.status, errText);
-      appendAiMessage("Server AI teď hlásí chybu (" + res.status + "). Zkus to za chvíli znova.", "bot");
+      appendAiMessage(
+        "Server AI teď hlásí chybu (" + res.status + "). Zkus to za chvíli znova.",
+        "bot"
+      );
       return;
     }
 
@@ -1191,9 +1233,6 @@ async function sendAiMessage() {
     appendAiMessage("Nemohu se spojit se serverem.", "bot");
   }
 }
-
-
-
 
 
 
