@@ -1148,8 +1148,17 @@ async function sendAiMessage() {
       zahonId: window.currentZahonId || ""
     });
 
-    const res = await fetch(`${SERVER_URL}?${params.toString()}`);
-    const data = await res.json();
+    const res  = await fetch(`${SERVER_URL}?${params.toString()}`);
+    const textResp = await res.text();
+    console.log("AI raw:", textResp);
+
+    let data;
+    try {
+      data = JSON.parse(textResp);
+    } catch (e) {
+      appendAiMessage("Proxy nevrátila JSON, ale HTML nebo chybu.", "bot");
+      return;
+    }
 
     appendAiMessage(data.reply || "Server mi teď neodpověděl.", "bot");
   } catch (err) {
