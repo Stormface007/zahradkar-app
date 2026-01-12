@@ -1109,7 +1109,7 @@ function formatDate(d) {
   return s;
 }
 
-//AI zahradnik
+// AI zahradník
 function toggleAiChat() {
   const panel = document.getElementById("aiAvatarChat");
   if (!panel) return;
@@ -1129,33 +1129,6 @@ function appendAiMessage(text, from = "bot") {
 
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
-}
-
-function sendAiMessage() {
-  const input = document.getElementById("aiChatInput");
-  if (!input) return;
-  const text = input.value.trim();
-  if (!text) return;
-
-  appendAiMessage(text, "user");
-  input.value = "";
-
-  // zde zatím stub – později se nahradí voláním AI API
-  setTimeout(() => {
-    const reply = getDummyAiReply(text);
-    appendAiMessage(reply, "bot");
-  }, 400);
-}
-
-function getDummyAiReply(userText) {
-  const lower = userText.toLowerCase();
-  if (lower.includes("hnoj")) {
-    return "Pro hnojení vyber záhon, klikni na ikonu lahvičky a vyplň datum, hnojivo a množství na m².";
-  }
-  if (lower.includes("setí") || lower.includes("seti") || lower.includes("sklizeň")) {
-    return "V detailu záhonu přepni na Setí/Sklizeň, vyber plodinu a ulož datum události.";
-  }
-  return "Jsem tvůj farmář‑průvodce. Zeptej se na setí, sklizeň, hnojení nebo práci se záhony.";
 }
 
 async function sendAiMessage() {
@@ -1184,6 +1157,7 @@ async function sendAiMessage() {
     appendAiMessage("Nemohu se spojit se serverem.", "bot");
   }
 }
+
 
 
 
