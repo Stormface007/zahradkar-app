@@ -123,6 +123,45 @@ button:hover {
   background: #e9ffe9;
 }
 
+/* Panel Přidat záhon */
+#addZahonPanel {
+  max-width: 520px;
+  margin: 2rem auto 3rem;
+  padding: 1.5rem 2rem;
+  background-color: rgba(255,255,255,0.92);
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+}
+#addZahonPanel h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  color: #205520;
+}
+#addZahonPanel label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+#addZahonPanel input[type="text"],
+#addZahonPanel input[type="number"] {
+  max-width: 100%;
+}
+.typ-plochy-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.2rem 0;
+}
+.typ-plochy-row span {
+  font-size: 0.98rem;
+}
+#addZahonPanel .actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* Modal – overlay */
 .modal {
   display: none;
@@ -154,7 +193,11 @@ button:hover {
   background-color: rgba(255,255,255,0.85);
   background-blend-mode: lighten;
 }
-.modal-body {}
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
 
 /* Boční ikony */
 .side-icons {
@@ -186,7 +229,7 @@ button:hover {
 .dimensions {
   display: flex;
   gap: 1rem;
-  margin: 1rem 0;
+  margin: 1rem 0 0.5rem;
 }
 .dimensions input {
   flex: 1;
@@ -371,6 +414,11 @@ button:hover {
   #zoomCanvas {
     max-width: 100%;
   }
+
+  #addZahonPanel {
+    margin: 1.5rem 0 2rem;
+    border-radius: 0;
+  }
 }
 
 /* Nadpis záhonu v modalu */
@@ -441,7 +489,3 @@ button:hover {
   display: flex;
   gap: 8px;
 }
-
-
-
-
