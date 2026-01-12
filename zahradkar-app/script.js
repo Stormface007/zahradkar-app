@@ -234,14 +234,18 @@ function onIconClick(typ){
 async function otevriModal(z) {
   // --- UI příprava ---
   document.getElementById("nazevZahonu").textContent = z?.NazevZahonu || "";
+
+  // nastav aktuální záhon a ID pro AI / další funkce
   aktualniZahon = z;
+  window.currentZahonId = z?.ZahonID || "";
+
   setActiveIcon(null);
 
   const nazevInput = document.getElementById("editNazev");
   const delkaInput = document.getElementById("editDelka");
   const sirkaInput = document.getElementById("editSirka");
-  const modal = document.getElementById("modal");
-  const canvas = document.getElementById("zahonCanvas");
+  const modal      = document.getElementById("modal");
+  const canvas     = document.getElementById("zahonCanvas");
 
   if (!nazevInput || !delkaInput || !sirkaInput || !modal || !canvas) return;
 
@@ -259,8 +263,8 @@ async function otevriModal(z) {
     });
   } catch {}
 
-  document.getElementById("modalViewDefault").style.display = "block";
-  document.getElementById("modalViewUdalost").style.display = "none";
+  document.getElementById("modalViewDefault").style.display  = "block";
+  document.getElementById("modalViewUdalost").style.display  = "none";
   modal.style.display = "flex";
 
   // --- Loader do historie vždy ---
@@ -276,8 +280,7 @@ async function otevriModal(z) {
     zobrazHnojeniHistory();
     naplnPlodinySelect();
   } else {
-    // Pokud záhon nemá ID (např. nový ještě neuložený), zobraz info/fallback nebo prázdnou historii
-    if (udalostHistElem) udalostHistElem.innerHTML = "<p>Žádná historie setí nebo sklizně.</p>";
+    if (udalostHistElem)  udalostHistElem.innerHTML  = "<p>Žádná historie setí nebo sklizně.</p>";
     if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Žádná historie hnojení.</p>";
     naplnPlodinySelect();
   }
@@ -327,10 +330,12 @@ async function preloadModalData(zahon) {
   }
 }
 
-function closeModal(){
+function closeModal() {
   aktualniZahon = null;
+  window.currentZahonId = "";          // ať se po zavření nepoužije předchozí záhon
   document.getElementById("modal").style.display = "none";
 }
+
 
 // — Úprava a uložení záhonu —
 function updatePlocha(){
@@ -1023,7 +1028,7 @@ function czDateStringToDate(str) {
 
 // ASYNCHRONNÍ FUNKCE PRO NAČTENÍ DAT DO CACHE MODALU
 async function preloadModalData(zahon) {
-  // Očisti starou cache hned na začátku, aby nemohla zůstat přenesená z předchozího záhonu
+  // vždy na začátku vyčisti cache
   modalDataCache = {
     hnojeniHistory: [],
     setiSklizenHistory: [],
@@ -1031,7 +1036,6 @@ async function preloadModalData(zahon) {
     posledniSetaPlodina: null
   };
 
-  // Ověření vstupu
   if (!zahon || !zahon.ZahonID) {
     console.warn("preloadModalData: Chybí platný záhon nebo ZahonID", zahon);
     return;
@@ -1040,23 +1044,33 @@ async function preloadModalData(zahon) {
   try {
     const zahonID = zahon.ZahonID;
 
-    // Spusť dotazy paralelně
+    // načti události a plodiny paralelně
     const [udalostiArr, plodinyArr] = await Promise.all([
       fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json()),
       fetch(`${SERVER_URL}?action=getPlodiny`).then(r => r.json())
     ]);
 
-    // Filtrování jednotlivých typů událostí
-    const hnojArr = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
-    const setiSklArr = udalostiArr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
+    // helper na normalizaci typu (malá písmena + bez diakritiky)
+    const normTyp = t =>
+      (t || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
 
-    modalDataCache.hnojeniHistory = hnojArr;
+    // Rozdělení událostí
+    const hnojArr   = udalostiArr.filter(u => normTyp(u.Typ) === "hnojeni");
+    const setiSklArr = udalostiArr.filter(u => {
+      const t = normTyp(u.Typ);
+      return t === "seti" || t === "sklizen";
+    });
+
+    modalDataCache.hnojeniHistory     = hnojArr;
     modalDataCache.setiSklizenHistory = setiSklArr;
-    modalDataCache.plodiny = plodinyArr;
+    modalDataCache.plodiny            = plodinyArr;
 
-    // Logika pro určení posledního neukončeného setí (přizpůsobeno původnímu prefillSklizenPlodina)
-    const seti = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "setí");
-    const sklizne = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
+    // Poslední neukončené setí
+    const seti    = udalostiArr.filter(u => normTyp(u.Typ) === "seti");
+    const sklizne = udalostiArr.filter(u => normTyp(u.Typ) === "sklizen");
 
     let posledniZaseta = null;
     for (let i = seti.length - 1; i >= 0; i--) {
@@ -1070,10 +1084,8 @@ async function preloadModalData(zahon) {
 
     modalDataCache.posledniSetaPlodina = posledniZaseta ? posledniZaseta.Plodina : null;
 
-    // Log pro kontrolu
     console.log("preloadModalData: Načteno pro záhon", zahonID, modalDataCache);
   } catch (e) {
-    // V případě chyby je cache vyprazdněna a nahlášena
     modalDataCache = {
       hnojeniHistory: [],
       setiSklizenHistory: [],
@@ -1131,12 +1143,13 @@ function appendAiMessage(text, from = "bot") {
   div.appendChild(span);
 
   box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
+  box.scrollTop = box.scrollHeight;   // posuň scroll na konec [web:319][web:321]
 }
 
 async function sendAiMessage() {
   const input = document.getElementById("aiChatInput");
   if (!input) return;
+
   const text = input.value.trim();
   if (!text) return;
 
@@ -1151,24 +1164,34 @@ async function sendAiMessage() {
       zahonId: window.currentZahonId || ""
     });
 
-    const res  = await fetch(`${SERVER_URL}?${params.toString()}`);
+    const res = await fetch(`${SERVER_URL}?${params.toString()}`);
+    if (!res.ok) {
+      // server odpověděl chybovým kódem (500, 404, ...)
+      const errText = await res.text();
+      console.error("AI HTTP error:", res.status, errText);
+      appendAiMessage("Server AI teď hlásí chybu (" + res.status + "). Zkus to za chvíli znova.", "bot");
+      return;
+    }
+
     const textResp = await res.text();
     console.log("AI raw:", textResp);
 
     let data;
     try {
       data = JSON.parse(textResp);
-    } catch (e) {
-      appendAiMessage("Proxy nevrátila JSON, ale HTML nebo chybu.", "bot");
+    } catch {
+      appendAiMessage("Proxy nevrátila čitelný JSON, ale něco jiného.", "bot");
       return;
     }
 
-    appendAiMessage(data.reply || "Server mi teď neodpověděl.", "bot");
+    const reply = (data && data.reply) ? data.reply : "Server mi teď neodpověděl.";
+    appendAiMessage(reply, "bot");
   } catch (err) {
-    console.error(err);
+    console.error("AI fetch error:", err);
     appendAiMessage("Nemohu se spojit se serverem.", "bot");
   }
 }
+
 
 
 
