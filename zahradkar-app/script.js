@@ -1190,6 +1190,10 @@ async function sendAiMessage() {
   if (!text) return;
 
   appendAiMessage(text, "user");
+  console.log("AI DEBUG zahonId:", window.currentZahonId, 
+            "season:", window.currentSeason, 
+            "weather:", window.currentWeather);
+
   input.value = "";
 
   try {
