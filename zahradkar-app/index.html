@@ -7,6 +7,26 @@
   <link rel="stylesheet" href="style.css"/>
   <script src="script.js" defer></script>
 </head>
+
+  <!-- AI avatar chat widget -->
+<div id="aiAvatarWidget">
+  <div id="aiAvatarBubble" onclick="toggleAiChat()">
+    <img src="img/farmer.png" alt="Zahradník" />
+  </div>
+
+  <div id="aiAvatarChat" class="hidden">
+    <div class="ai-chat-header">
+      <span>Garden helper</span>
+      <button type="button" onclick="toggleAiChat()">✕</button>
+    </div>
+    <div class="ai-chat-messages" id="aiChatMessages"></div>
+    <div class="ai-chat-input-row">
+      <input type="text" id="aiChatInput" placeholder="Zeptej se na setí, hnojení..." />
+      <button type="button" onclick="sendAiMessage()">▶</button>
+    </div>
+  </div>
+</div>
+
 <body>
   <!-- Indikátor akce -->
   <div id="actionIndicator" class="action-indicator">
