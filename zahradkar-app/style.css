@@ -178,7 +178,7 @@ button:hover {
   font-weight: 600;
 }
 
-/* Sekce v modalu (Typ plochy, Lokace ...) */
+/* Sekce v modalu */
 .section {
   margin-top: 12px;
   padding-top: 8px;
@@ -226,7 +226,7 @@ button:hover {
   align-items: center;
 }
 
-/* Základní „karta“ modalu */
+/* Základní karta modalu */
 .modal-content {
   width: 95%;
   max-width: 520px;
@@ -254,7 +254,7 @@ button:hover {
   position: relative;
 }
 
-/* Header / footer / scrollovatelný obsah */
+/* Header / footer */
 .modal-header,
 .modal-footer {
   padding: 8px 16px;
@@ -269,13 +269,13 @@ button:hover {
   overflow-y: auto;
 }
 
-/* Layout: sidebar + obsah uvnitř širokého modalu */
+/* Layout: sidebar + obsah */
 .modal-layout {
   display: flex;
   align-items: flex-start;
 }
 
-/* Levý sloupec s ikonami */
+/* Levý sloupec s ikonami (desktop) */
 .modal-sidebar {
   display: flex;
   flex-direction: column;
@@ -294,6 +294,8 @@ button:hover {
   transition: transform 0.2s, opacity 0.2s;
   border: 2px solid #a5d6a7;
 }
+
+/* efekt na desktopu – vyjetí doprava */
 .side-icon.active,
 .side-icon:hover {
   opacity: 1;
@@ -310,19 +312,24 @@ button:hover {
   box-sizing: border-box;
 }
 
-/* Responsivita – na mobilech pod sebe */
+/* Responsivita – ikony nahoře v řádku, bez vyjíždění do boků */
 @media (max-width: 700px) {
   .modal-layout {
-    flex-direction: column;
+    flex-direction: column;         /* panel nahoře, obsah pod ním */
   }
   .modal-sidebar {
-    flex-direction: row;
+    flex-direction: row;            /* ikony vedle sebe */
     padding: 0.5rem 1rem 0;
     justify-content: flex-start;
+    gap: 0.5rem;
   }
   .side-icon {
     width: 48px;
     height: 48px;
+  }
+  .side-icon.active,
+  .side-icon:hover {
+    transform: scale(1.05);        /* jen malé zvětšení, žádný translateX */
   }
 }
 
@@ -333,7 +340,7 @@ button:hover {
   color: #205520;
 }
 
-/* Mobilní modaly – full screen */
+/* Mobilní modaly – fullscreen */
 @media (max-width: 500px) {
   .modal {
     align-items: stretch;
@@ -568,115 +575,4 @@ button:hover {
   max-width: 100%;
 }
 .udalost-actions {
-  display: flex;
-  gap: 8px;
-}
-
-/* AI avatar widget */
-#aiAvatarWidget {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 1100;
-  font-family: inherit;
-}
-
-/* Plovoucí bublina s farmářem */
-#aiAvatarBubble {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #2e7d32;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  padding: 4px;
-}
-#aiAvatarBubble img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: contain;
-}
-
-/* Chat okno */
-#aiAvatarChat {
-  position: absolute;
-  right: 0;
-  bottom: 72px;
-  width: 320px;
-  max-height: 420px;
-  background: rgba(255,255,255,0.97);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-#aiAvatarChat.hidden {
-  display: none;
-}
-.ai-chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #2e7d32;
-  color: #fff;
-  padding: 0.4rem 0.7rem;
-  font-weight: bold;
-}
-.ai-chat-header button {
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 1.1rem;
-  cursor: pointer;
-  margin: 0;
-  padding: 0 4px;
-}
-.ai-chat-messages {
-  flex: 1;
-  padding: 0.5rem 0.6rem;
-  overflow-y: auto;
-  font-size: 0.9rem;
-}
-
-/* Bubliny zpráv */
-.ai-msg {
-  margin-bottom: 0.35rem;
-  max-width: 90%;
-}
-.ai-msg-user {
-  text-align: right;
-}
-.ai-msg-user span {
-  display: inline-block;
-  background: #e9ffe9;
-  border-radius: 10px 0 10px 10px;
-  padding: 4px 8px;
-}
-.ai-msg-bot span {
-  display: inline-block;
-  background: #ffffff;
-  border-radius: 0 10px 10px 10px;
-  padding: 4px 8px;
-  border: 1px solid #d0e8d0;
-}
-
-.ai-chat-input-row {
-  display: flex;
-  padding: 0.4rem 0.5rem 0.5rem;
-  gap: 0.4rem;
-  border-top: 1px solid #d0e8d0;
-}
-.ai-chat-input-row input {
-  flex: 1;
-  max-width: none;
-  margin: 0;
-}
-.ai-chat-input-row button {
-  margin: 0;
-  padding: 0.3rem 0.6rem;
-}
+  dis
