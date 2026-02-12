@@ -527,77 +527,188 @@ button:hover {
 
 /* Přepínače setí / sklizeň */
 .typAkceBtns {
-  dis
-
-  /* FORCE fix pro Huga */
-#aiAvatarChat {
-  position: absolute !important;
-  width: 320px !important;
-  max-width: 90vw !important;
-  height: auto !important;
-  max-height: 70vh !important;
-  right: 0 !important;
-  bottom: 72px !important;
+  display: flex;
+  gap: 0.8em;
+  margin-bottom: 1em;
+}
+.typ-akce-btn {
+  background: #b9eeb9;
+  color: #155a15;
+  border: 2px solid #36bb36;
+  font-size: 1em;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: none;
+  cursor: pointer;
+  min-width: 100px;
+  max-width: 160px;
+  padding: 0.5em 1.2em;
+}
+.typ-akce-btn.active {
+  background: #2dd22d;
+  color: #ffffff;
+  box-shadow: 0 0 7px 2px #33aa33a0;
+  border-color: #118c11;
+}
+@media (max-width: 500px) {
+  .typ-akce-btn {
+    min-width: 72px;
+    max-width: 120px;
+    font-size: 0.98em;
+    padding: 0.4em 0.7em;
+  }
+  .typAkceBtns {
+    gap: 0.3em;
+  }
 }
 
-  /* === FORCE FIX HUGO CHAT WIDGET === */
+/* Řádky v modalu Událost */
+.udalost-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.udalost-label {
+  width: 110px;
+  font-weight: 500;
+}
+.udalost-input {
+  flex: 1;
+  max-width: 100%;
+}
+.udalost-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* === AI HUGO – CHAT WIDGET === */
 
 #aiAvatarWidget {
-  position: fixed !important;
-  right: 16px !important;
-  bottom: 16px !important;
-  z-index: 1100 !important;
-  width: auto !important;
-  max-width: 100% !important;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1100;
+  font-family: inherit;
+  width: auto;
+  max-width: 100%;
 }
 
-/* Bublina */
+/* Bublina s avatarem */
 #aiAvatarBubble {
-  width: 64px !important;
-  height: 64px !important;
-  border-radius: 50% !important;
-  background: #2e7d32 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
-  padding: 4px !important;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #2e7d32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  padding: 4px;
 }
 #aiAvatarBubble img {
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 50% !important;
-  object-fit: contain !important;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: contain;
 }
 
-/* Chat okno – nikdy fullscreen */
+/* Chat okno – malý panel u rohu, nikdy fullscreen */
 #aiAvatarChat {
-  position: absolute !important;
-  right: 0 !important;
-  bottom: 72px !important;
-  width: 320px !important;
-  max-width: 90vw !important;  /* max 90 % šířky displeje */
-  height: auto !important;
-  max-height: 70vh !important; /* max 70 % výšky */
-  background: rgba(255,255,255,0.97) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
+  position: absolute;
+  right: 0;
+  bottom: 72px;
+  width: 320px;
+  max-width: 90vw;
+  max-height: 70vh;
+  background: rgba(255,255,255,0.97);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#aiAvatarChat.hidden {
+  display: none;
 }
 
-/* Mobil – jemné posunutí */
+/* Hlavička chatu */
+.ai-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2e7d32;
+  color: #fff;
+  padding: 0.4rem 0.7rem;
+  font-weight: bold;
+}
+.ai-chat-header button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin: 0;
+  padding: 0 4px;
+}
+
+/* Obsah zpráv */
+.ai-chat-messages {
+  flex: 1;
+  padding: 0.5rem 0.6rem;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+/* Bubliny zpráv */
+.ai-msg {
+  margin-bottom: 0.35rem;
+  max-width: 90%;
+}
+.ai-msg-user {
+  text-align: right;
+}
+.ai-msg-user span {
+  display: inline-block;
+  background: #e9ffe9;
+  border-radius: 10px 0 10px 10px;
+  padding: 4px 8px;
+}
+.ai-msg-bot span {
+  display: inline-block;
+  background: #ffffff;
+  border-radius: 0 10px 10px 10px;
+  padding: 4px 8px;
+  border: 1px solid #d0e8d0;
+}
+
+/* Input řádek */
+.ai-chat-input-row {
+  display: flex;
+  padding: 0.4rem 0.5rem 0.5rem;
+  gap: 0.4rem;
+  border-top: 1px solid #d0e8d0;
+}
+.ai-chat-input-row input {
+  flex: 1;
+  max-width: none;
+  margin: 0;
+}
+.ai-chat-input-row button {
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+}
+
+/* Mobilní drobné úpravy pozice */
 @media (max-width: 600px) {
   #aiAvatarWidget {
-    right: 12px !important;
-    bottom: 12px !important;
+    right: 12px;
+    bottom: 12px;
   }
   #aiAvatarChat {
-    width: 90vw !important;
-    max-height: 70vh !important;
+    width: 90vw;
+    max-height: 70vh;
   }
 }
-
-
