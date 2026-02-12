@@ -63,6 +63,21 @@ function loadWeatherByGeolocation() {
   });
 }
 
+function fillNewBedLocationFromHere() {
+  if (!navigator.geolocation) {
+    alert("Prohlížeč neumí zjistit polohu.");
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude, longitude } = pos.coords;
+    document.getElementById("newLat").value = latitude.toFixed(6);
+    document.getElementById("newLon").value = longitude.toFixed(6);
+  }, () => {
+    alert("Nepodařilo se zjistit polohu.");
+  });
+}
+
+
 
 // — Indikátor akce (mrkev) —
 function showActionIndicator(){
@@ -191,10 +206,20 @@ async function addZahon(){
   const n   = document.getElementById("newNazev").value.trim();
   const d   = parseFloat(document.getElementById("newDelka").value) || 0;
   const s   = parseFloat(document.getElementById("newSirka").value) || 0;
-  
-  // ✅ Načti typ plochy z radio buttonu
+
   const typ = document.querySelector('input[name="typPlochy"]:checked')?.value || "zahon";
-  
+
+  // 🔹 lokace (volitelné)
+  const lokaceIdEl   = document.getElementById("newLokace");
+  const lokaceTextEl = document.getElementById("newLokaceText");
+  const latEl        = document.getElementById("newLat");
+  const lonEl        = document.getElementById("newLon");
+
+  const lokaceId   = lokaceIdEl   ? (lokaceIdEl.value || "") : "";
+  const lokaceText = lokaceTextEl ? lokaceTextEl.value.trim() : "";
+  const lat        = latEl        ? (latEl.value || "") : "";
+  const lon        = lonEl        ? (lonEl.value || "") : "";
+
   if (!n || d <= 0 || s <= 0) {
     alert("Vyplňte správně název, délku i šířku.");
     return;
@@ -207,7 +232,13 @@ async function addZahon(){
   ps.append("NazevZahonu", n);
   ps.append("Delka", d);
   ps.append("Sirka", s);
-  ps.append("typ", typ); // ✅ PŘIDEJ TYP PLOCHY
+  ps.append("typ", typ);
+
+  // 🔹 nové parametry lokace
+  ps.append("lokaceId", lokaceId);
+  ps.append("lokaceText", lokaceText);
+  ps.append("lat", lat);
+  ps.append("lon", lon);
   
   try {
     const res = await fetch(SERVER_URL, { method: "POST", body: ps });
@@ -224,6 +255,10 @@ async function addZahon(){
       document.getElementById("newNazev").value = "";
       document.getElementById("newDelka").value = "";
       document.getElementById("newSirka").value = "";
+      if (lokaceIdEl)   lokaceIdEl.value = "";
+      if (lokaceTextEl) lokaceTextEl.value = "";
+      if (latEl)        latEl.value = "";
+      if (lonEl)        lonEl.value = "";
       await loadZahony();
     } else {
       alert("Nepodařilo se přidat záhon.");
@@ -235,6 +270,7 @@ async function addZahon(){
     hideActionIndicator();
   }
 }
+
 
 function setActiveIcon(active) {
   const icons = ["mereni", "seti", "hnojeni", "analyza", "nastaveni"];
