@@ -201,6 +201,26 @@ function deleteSelected() {
     .finally(() => hideActionIndicator());
 }
 
+function openAddZahonModal() {
+  document.getElementById("addZahonModal").style.display = "flex";
+}
+
+function closeAddZahonModal() {
+  document.getElementById("addZahonModal").style.display = "none";
+}
+
+// přepínání tabů v modalu přidání záhonu
+document.addEventListener("click", e => {
+  if (!e.target.classList.contains("tab-btn")) return;
+  const targetTab = e.target.getAttribute("data-tab");
+  document.querySelectorAll("#addZahonModal .tab-btn").forEach(btn =>
+    btn.classList.toggle("active", btn === e.target)
+  );
+  document.querySelectorAll("#addZahonModal .tab-content").forEach(div =>
+    div.classList.toggle("hidden", div.id !== targetTab)
+  );
+});
+
 async function addZahon(){
   const uid = localStorage.getItem("userID");
   const n   = document.getElementById("newNazev").value.trim();
