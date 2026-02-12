@@ -428,14 +428,15 @@ button:hover {
 .soil-info input {
   width: 100%;
   padding: 0.5rem;
-  border: 2e7d32;
+  border: 2px solid #2e7d32;
   border-radius: 4px;
 }
 
 /* Historie hnojení + setí/sklizně */
 .hnojeni-history {
   max-height: 220px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: auto;
   margin-top: 1rem;
   border: 2px solid #2e7d32;
   background: #f7fff7;
@@ -444,21 +445,20 @@ button:hover {
   box-sizing: border-box;
 }
 .hnojeni-history table {
+  min-width: 480px;
   width: 100%;
   border-collapse: collapse;
   background: #f7fff7;
 }
 .hnojeni-history th,
 .hnojeni-history td {
-  padding: 6px 6px;
+  padding: 4px 6px;
   border: 1px solid #2e7d32;
   text-align: center;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-/* delší text může zalomit */
 .hnojeni-history td.hnojivo,
-.hnojeni-history td:nth-child(2),
 .hnojeni-history td:nth-child(3) {
   white-space: normal;
   word-wrap: break-word;
@@ -466,14 +466,9 @@ button:hover {
 @media (max-width: 600px) {
   .hnojeni-history {
     max-width: 100%;
-    overflow-x: auto;
   }
   .hnojeni-history table {
     font-size: 0.8rem;
-  }
-  .hnojeni-history th,
-  .hnojeni-history td {
-    padding: 4px 4px;
   }
 }
 
@@ -578,40 +573,33 @@ button:hover {
   }
 }
 
-/* Řádky v modalu Událost */
+/* Řádky v modalu Událost – formulář (datum, hnojivo, plodina, výnos) */
 .udalost-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: block;
   margin-bottom: 8px;
   width: 100%;
   box-sizing: border-box;
 }
 .udalost-label {
-  width: 110px;
+  display: block;
   font-weight: 500;
+  margin-bottom: 4px;
 }
-.udalost-input {
-  flex: 1;
+.udalost-input,
+.udalost-row input,
+.udalost-row select {
+  width: 100%;
   max-width: 100%;
+  box-sizing: border-box;
 }
 .udalost-actions {
   display: flex;
   gap: 8px;
+  justify-content: flex-start;
 }
 @media (max-width: 600px) {
-  .udalost-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .udalost-label {
-    width: auto;
-  }
-  .udalost-input,
-  .udalost-row input,
-  .udalost-row select {
-    width: 100%;
-    max-width: 100%;
+  .udalost-actions {
+    justify-content: space-between;
   }
 }
 
