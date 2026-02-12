@@ -444,9 +444,11 @@ button:hover {
 }
 
 /* Historie hnojení + setí/sklizně */
+/* Historie hnojení + setí/sklizně */
 .hnojeni-history {
-  max-height: 220px;
-  overflow: auto;
+  max-height: 400px;              /* na desktopu větší výška */
+  overflow-y: auto;               /* vertikální scroll vždy */
+  overflow-x: auto;               /* horizontální jen když třeba */
   margin-top: 1rem;
   border: 2px solid #2e7d32;
   background: #f7fff7;
@@ -454,28 +456,34 @@ button:hover {
   padding: 0;
   box-sizing: border-box;
   width: 100%;
-  max-width: 100%;
 }
+
 .hnojeni-history table {
-  min-width: 480px;
+  width: 100%;                    /* na desktopu zabere celou šířku */
+  min-width: 480px;               /* minimum pro mobil */
   border-collapse: collapse;
   background: #f7fff7;
 }
+
 .hnojeni-history th,
 .hnojeni-history td {
-  padding: 4px 6px;
+  padding: 6px 10px;              /* trochu větší padding na desktopu */
   border: 1px solid #2e7d32;
   text-align: center;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+
 .hnojeni-history td.hnojivo,
 .hnojeni-history td:nth-child(3) {
   white-space: normal;
   word-wrap: break-word;
 }
+
+/* MOBIL – menší výška a písmo */
 @media (max-width: 600px) {
   .hnojeni-history {
+    max-height: 220px;            /* na mobilu menší */
     max-width: calc(100vw - 32px);
   }
   .hnojeni-history table {
@@ -486,6 +494,7 @@ button:hover {
     padding: 3px 4px;
   }
 }
+
 
 /* Indikátor akce */
 .action-indicator {
