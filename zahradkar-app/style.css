@@ -8,7 +8,7 @@ body {
   background-repeat: no-repeat;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: #103410;
-  overflow-x: hidden; /* proti horizontálnímu scrollu na mobilu */
+  overflow-x: hidden;
 }
 
 /* Root / hlavní obsah */
@@ -326,10 +326,10 @@ button:hover {
 /* Responsivita – ikony nahoře v řádku, modal na celou šířku */
 @media (max-width: 700px) {
   .modal-layout {
-    flex-direction: column;         /* panel nahoře, obsah pod ním */
+    flex-direction: column;
   }
   .modal-sidebar {
-    flex-direction: row;            /* ikony vedle sebe */
+    flex-direction: row;
     padding: 0.5rem 1rem 0;
     justify-content: flex-start;
     gap: 0.5rem;
@@ -340,7 +340,7 @@ button:hover {
   }
   .side-icon.active,
   .side-icon:hover {
-    transform: scale(1.05);        /* jen malé zvětšení, žádný translateX */
+    transform: scale(1.05);
   }
 }
 
@@ -435,18 +435,18 @@ button:hover {
 /* Historie hnojení + setí/sklizně */
 .hnojeni-history {
   max-height: 220px;
-  overflow-y: auto;
-  overflow-x: auto;
+  overflow: auto;
   margin-top: 1rem;
   border: 2px solid #2e7d32;
   background: #f7fff7;
   border-radius: 5px;
   padding: 0;
   box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 .hnojeni-history table {
   min-width: 480px;
-  width: 100%;
   border-collapse: collapse;
   background: #f7fff7;
 }
@@ -465,10 +465,14 @@ button:hover {
 }
 @media (max-width: 600px) {
   .hnojeni-history {
-    max-width: 100%;
+    max-width: calc(100vw - 32px);
   }
   .hnojeni-history table {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+  }
+  .hnojeni-history th,
+  .hnojeni-history td {
+    padding: 3px 4px;
   }
 }
 
@@ -589,9 +593,20 @@ button:hover {
 .udalost-row input,
 .udalost-row select {
   width: 100%;
-  max-width: 100%;
   box-sizing: border-box;
 }
+
+/* mobilní zařízení – absolutní max šířka pro formuláře */
+@media (max-width: 600px) {
+  .modal-body,
+  .udalost-row,
+  .udalost-input,
+  .udalost-row input,
+  .udalost-row select {
+    max-width: calc(100vw - 32px);
+  }
+}
+
 .udalost-actions {
   display: flex;
   gap: 8px;
