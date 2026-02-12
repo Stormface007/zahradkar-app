@@ -528,3 +528,15 @@ button:hover {
 /* Přepínače setí / sklizeň */
 .typAkceBtns {
   dis
+
+  /* FORCE fix pro Huga */
+#aiAvatarChat {
+  position: absolute !important;
+  width: 320px !important;
+  max-width: 90vw !important;
+  height: auto !important;
+  max-height: 70vh !important;
+  right: 0 !important;
+  bottom: 72px !important;
+}
+
