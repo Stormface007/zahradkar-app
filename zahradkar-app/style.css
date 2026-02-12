@@ -540,3 +540,64 @@ button:hover {
   bottom: 72px !important;
 }
 
+  /* === FORCE FIX HUGO CHAT WIDGET === */
+
+#aiAvatarWidget {
+  position: fixed !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  z-index: 1100 !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+/* Bublina */
+#aiAvatarBubble {
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 50% !important;
+  background: #2e7d32 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+  padding: 4px !important;
+}
+#aiAvatarBubble img {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  object-fit: contain !important;
+}
+
+/* Chat okno – nikdy fullscreen */
+#aiAvatarChat {
+  position: absolute !important;
+  right: 0 !important;
+  bottom: 72px !important;
+  width: 320px !important;
+  max-width: 90vw !important;  /* max 90 % šířky displeje */
+  height: auto !important;
+  max-height: 70vh !important; /* max 70 % výšky */
+  background: rgba(255,255,255,0.97) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+/* Mobil – jemné posunutí */
+@media (max-width: 600px) {
+  #aiAvatarWidget {
+    right: 12px !important;
+    bottom: 12px !important;
+  }
+  #aiAvatarChat {
+    width: 90vw !important;
+    max-height: 70vh !important;
+  }
+}
+
+
