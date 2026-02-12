@@ -578,33 +578,39 @@ button:hover {
 }
 
 /* Řádky v modalu Událost – formulář (datum, hnojivo, plodina, výnos) */
+/* Řádky v modalu Událost – formulář (datum, hnojivo, plodina, výnos) */
 .udalost-row {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   width: 100%;
   box-sizing: border-box;
 }
+
 .udalost-label {
   display: block;
   font-weight: 500;
   margin-bottom: 4px;
 }
-.udalost-input,
+
+/* KLÍČOVÁ OPRAVA – inputy/selecty s třídou .udalost-input */
+.udalost-input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  margin: 0;
+  border: 2px solid #2e7d32;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #ffffff;
+}
+
+/* pro jistotu i bez třídy, pokud jsou přímo v .udalost-row */
 .udalost-row input,
 .udalost-row select {
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
-}
-
-/* mobilní zařízení – absolutní max šířka pro formuláře */
-@media (max-width: 600px) {
-  .modal-body,
-  .udalost-row,
-  .udalost-input,
-  .udalost-row input,
-  .udalost-row select {
-    max-width: calc(100vw - 32px);
-  }
 }
 
 .udalost-actions {
@@ -612,11 +618,21 @@ button:hover {
   gap: 8px;
   justify-content: flex-start;
 }
+
+/* mobilní zařízení – absolutní max šířka */
 @media (max-width: 600px) {
+  .udalost-row,
+  .udalost-input,
+  .udalost-row input,
+  .udalost-row select {
+    max-width: calc(100vw - 40px); /* šířka obrazovky minus padding modalu */
+  }
+  
   .udalost-actions {
     justify-content: space-between;
   }
 }
+
 
 /* === AI HUGO – CHAT WIDGET === */
 
