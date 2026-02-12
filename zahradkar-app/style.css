@@ -8,6 +8,7 @@ body {
   background-repeat: no-repeat;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: #103410;
+  overflow-x: hidden; /* proti horizontálnímu scrollu na mobilu */
 }
 
 /* Root / hlavní obsah */
@@ -251,7 +252,9 @@ button:hover {
 /* Široký modal pro detail záhonu */
 .modal-content--wide {
   max-width: 900px;
+  width: 100%;
   position: relative;
+  box-sizing: border-box;
 }
 
 /* Header / footer */
@@ -312,7 +315,7 @@ button:hover {
   box-sizing: border-box;
 }
 
-/* Responsivita – ikony nahoře v řádku, bez vyjíždění do boků */
+/* Responsivita – ikony nahoře v řádku, modal na celou šířku */
 @media (max-width: 700px) {
   .modal-layout {
     flex-direction: column;         /* panel nahoře, obsah pod ním */
@@ -333,24 +336,25 @@ button:hover {
   }
 }
 
-/* Přidávání záhonu */
-.add-zahon-modal .modal-header h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: #205520;
-}
-
-/* Mobilní modaly – fullscreen */
+/* Mobilní modaly – fullscreen, žádné useknutí vpravo */
 @media (max-width: 500px) {
   .modal {
     align-items: stretch;
   }
-  .modal-content {
+  .modal-content,
+  .modal-content--wide {
     border-radius: 0;
     max-width: 100%;
     width: 100%;
     max-height: 100vh;
   }
+}
+
+/* Přidávání záhonu */
+.add-zahon-modal .modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #205520;
 }
 
 /* Úprava záhonu */
@@ -523,56 +527,4 @@ button:hover {
 
 /* Přepínače setí / sklizeň */
 .typAkceBtns {
-  display: flex;
-  gap: 0.8em;
-  margin-bottom: 1em;
-}
-.typ-akce-btn {
-  background: #b9eeb9;
-  color: #155a15;
-  border: 2px solid #36bb36;
-  font-size: 1em;
-  font-weight: bold;
-  border-radius: 8px;
-  transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: none;
-  cursor: pointer;
-  min-width: 100px;
-  max-width: 160px;
-  padding: 0.5em 1.2em;
-}
-.typ-akce-btn.active {
-  background: #2dd22d;
-  color: #ffffff;
-  box-shadow: 0 0 7px 2px #33aa33a0;
-  border-color: #118c11;
-}
-@media (max-width: 500px) {
-  .typ-akce-btn {
-    min-width: 72px;
-    max-width: 120px;
-    font-size: 0.98em;
-    padding: 0.4em 0.7em;
-  }
-  .typAkceBtns {
-    gap: 0.3em;
-  }
-}
-
-/* Řádky v modalu Událost */
-.udalost-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.udalost-label {
-  width: 110px;
-  font-weight: 500;
-}
-.udalost-input {
-  flex: 1;
-  max-width: 100%;
-}
-.udalost-actions {
   dis
