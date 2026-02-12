@@ -100,111 +100,132 @@
         <button type="button" onclick="closeAddZahonModal()">✕</button>
       </div>
 
-      <div class="tabs">
-        <button type="button" class="tab-btn active" data-tab="tab-bed">
-          Záhon
-        </button>
-        <button type="button" class="tab-btn" data-tab="tab-location">
-          Lokace
-        </button>
-      </div>
-
-      <!-- TAB: Záhon -->
-      <div class="tab-content" id="tab-bed">
-        <label for="newNazev">Název</label>
-        <input type="text" id="newNazev" placeholder="Např. U vany" />
-
-        <label for="newDelka">Délka (m)</label>
-        <input
-          type="number"
-          id="newDelka"
-          min="0"
-          step="0.1"
-          placeholder="Např. 3,7"
-        />
-
-        <label for="newSirka">Šířka (m)</label>
-        <input
-          type="number"
-          id="newSirka"
-          min="0"
-          step="0.1"
-          placeholder="Např. 1,2"
-        />
-
-        <label>Typ plochy</label>
-        <div class="typ-plochy-row">
-          <input
-            type="radio"
-            name="typPlochy"
-            value="zahon"
-            id="typ-zahon"
-            checked
-          />
-          <label for="typ-zahon">🌾 Záhon</label>
+      <div class="modal-body-scroll">
+        <!-- Taby -->
+        <div class="tabs">
+          <button type="button" class="tab-btn active" data-tab="tab-bed">
+            Záhon
+          </button>
+          <button type="button" class="tab-btn" data-tab="tab-location">
+            Lokace
+          </button>
         </div>
-        <div class="typ-plochy-row">
-          <input
-            type="radio"
-            name="typPlochy"
-            value="sklenik"
-            id="typ-sklenik"
-          />
-          <label for="typ-sklenik">🏠 Skleník</label>
-        </div>
-        <div class="typ-plochy-row">
-          <input
-            type="radio"
-            name="typPlochy"
-            value="nadoba"
-            id="typ-nadoba"
-          />
-          <label for="typ-nadoba">🪴 Nádoba (truhlík/pytel)</label>
-        </div>
-      </div>
 
-      <!-- TAB: Lokace -->
-      <div class="tab-content hidden" id="tab-location">
-        <h4>Lokace záhonu</h4>
+        <!-- TAB: Záhon -->
+        <div class="tab-content" id="tab-bed">
+          <div class="form-grid form-grid--two-cols">
+            <div class="form-field" style="grid-column: 1 / -1;">
+              <label for="newNazev">Název</label>
+              <input type="text" id="newNazev" placeholder="Např. U vany" />
+            </div>
 
-        <label for="newLokace">Uložená lokace</label>
-        <select id="newLokace">
-          <option value="">– vyber lokaci –</option>
-          <!-- doplníš dynamicky -->
-        </select>
+            <div class="form-field">
+              <label for="newDelka">Délka (m)</label>
+              <input
+                type="number"
+                id="newDelka"
+                min="0"
+                step="0.1"
+                placeholder="Např. 3,7"
+              />
+            </div>
 
-        <label for="newLokaceText">Popis lokace</label>
-        <input
-          type="text"
-          id="newLokaceText"
-          placeholder="Např. Domov – zahrada za domem"
-        />
-
-        <div class="dimensions">
-          <div>
-            <label for="newLat">Lat (°)</label>
-            <input
-              type="number"
-              id="newLat"
-              step="0.000001"
-              placeholder="49.400000"
-            />
+            <div class="form-field">
+              <label for="newSirka">Šířka (m)</label>
+              <input
+                type="number"
+                id="newSirka"
+                min="0"
+                step="0.1"
+                placeholder="Např. 1,2"
+              />
+            </div>
           </div>
-          <div>
-            <label for="newLon">Lon (°)</label>
-            <input
-              type="number"
-              id="newLon"
-              step="0.000001"
-              placeholder="15.600000"
-            />
+
+          <div class="section">
+            <h4>Typ plochy</h4>
+            <div class="typ-plochy-row">
+              <input
+                type="radio"
+                name="typPlochy"
+                value="zahon"
+                id="typ-zahon"
+                checked
+              />
+              <label for="typ-zahon">🌾 Záhon</label>
+            </div>
+            <div class="typ-plochy-row">
+              <input
+                type="radio"
+                name="typPlochy"
+                value="sklenik"
+                id="typ-sklenik"
+              />
+              <label for="typ-sklenik">🏠 Skleník</label>
+            </div>
+            <div class="typ-plochy-row">
+              <input
+                type="radio"
+                name="typPlochy"
+                value="nadoba"
+                id="typ-nadoba"
+              />
+              <label for="typ-nadoba">🪴 Nádoba (truhlík/pytel)</label>
+            </div>
           </div>
         </div>
 
-        <button type="button" onclick="fillNewBedLocationFromHere()">
-          Použít moji aktuální polohu
-        </button>
-      </div>
+        <!-- TAB: Lokace -->
+        <div class="tab-content hidden" id="tab-location">
+          <div class="section">
+            <h4>Lokace záhonu</h4>
+
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="newLokace">Uložená lokace</label>
+                <select id="newLokace">
+                  <option value="">– vyber lokaci –</option>
+                  <!-- doplníš dynamicky -->
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label for="newLokaceText">Popis lokace</label>
+                <input
+                  type="text"
+                  id="newLokaceText"
+                  placeholder="Např. Domov – zahrada za domem"
+                />
+              </div>
+            </div>
+
+            <div class="form-grid form-grid--two-cols">
+              <div class="form-field">
+                <label for="newLat">Lat (°)</label>
+                <input
+                  type="number"
+                  id="newLat"
+                  step="0.000001"
+                  placeholder="49.400000"
+                />
+              </div>
+              <div class="form-field">
+                <label for="newLon">Lon (°)</label>
+                <input
+                  type="number"
+                  id="newLon"
+                  step="0.000001"
+                  placeholder="15.600000"
+                />
+              </div>
+            </div>
+
+            <button type="button" onclick="fillNewBedLocationFromHere()">
+              Použít moji aktuální polohu
+            </button>
+          </div>
+        </div>
+      </div><!-- /modal-body-scroll -->
 
       <div class="modal-footer">
         <button type="button" onclick="addZahon()">Přidat</button>
@@ -320,5 +341,32 @@
     </div>
   </div>
 
+  <script>
+    // přepínání tabů v modalu Přidat záhon
+    document.addEventListener("click", function (e) {
+      if (!e.target.classList.contains("tab-btn")) return;
+      const targetTab = e.target.getAttribute("data-tab");
+
+      document
+        .querySelectorAll("#addZahonModal .tab-btn")
+        .forEach((btn) => {
+          btn.classList.toggle("active", btn === e.target);
+        });
+
+      document
+        .querySelectorAll("#addZahonModal .tab-content")
+        .forEach((div) => {
+          div.classList.toggle("hidden", div.id !== targetTab);
+        });
+    });
+
+    function openAddZahonModal() {
+      document.getElementById("addZahonModal").style.display = "flex";
+    }
+
+    function closeAddZahonModal() {
+      document.getElementById("addZahonModal").style.display = "none";
+    }
+  </script>
 </body>
 </html>
