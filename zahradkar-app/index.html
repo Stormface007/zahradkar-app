@@ -237,15 +237,6 @@
     <div id="modal" class="modal">
       <div class="modal-content modal-content--wide">
         <div class="modal-header">
-          <!-- Ikona uložit (zobrazí se jen při editaci hnojení/setí) -->
-          <img
-            id="headerSaveIcon"
-            class="modal-header-btn"
-            src="img/Safe.png"
-            alt="Uložit"
-            style="display:none;"
-            onclick="ulozAktualniFormular()"
-          />
           <button type="button" onclick="closeModal()">✕</button>
         </div>
 
@@ -377,16 +368,6 @@
 
     function closeAddZahonModal() {
       document.getElementById("addZahonModal").style.display = "none";
-    }
-
-    // Pomocná funkce pro uložení z headeru
-    function ulozAktualniFormular() {
-      // podle typu akce zavolej správnou funkci
-      if (window.typAkce === "hnojeni") {
-        ulozHnojeni();
-      } else if (window.typAkce === "seti" || window.typAkce === "sklizen") {
-        ulozUdalost();
-      }
     }
   </script>
 </body>
