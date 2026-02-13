@@ -475,6 +475,10 @@ function showUdalostForm(typ) {
   uv.classList.remove("analysis");
   uv.style.display = "block";
 
+  // ZOBRAZ ikonu uložit v headeru
+  const saveIcon = document.getElementById("headerSaveIcon");
+  if (saveIcon) saveIcon.style.display = "block";
+
   const c = document.getElementById("udalostFormContainer");
   if (!c) return;
 
@@ -483,7 +487,6 @@ function showUdalostForm(typ) {
     window.typAkce = "hnojeni";
 
     c.innerHTML = `
-      
       <div class="udalost-row">
         <input type="date" id="hnojeniDatum" class="udalost-input"/>
       </div>
@@ -498,13 +501,6 @@ function showUdalostForm(typ) {
         <input type="number" id="hnojeniMnozstvi" class="udalost-input" placeholder="Množství (kg)"/>
       </div>
 
-      <div class="udalost-row">
-        <div class="udalost-actions">
-          <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
-          <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-        </div>
-      </div>
-
       <div id="hnojeniHistory" class="hnojeni-history">
         <em>Načítám historii...</em>
       </div>
@@ -512,7 +508,7 @@ function showUdalostForm(typ) {
 
     const datumInput = document.getElementById("hnojeniDatum");
     if (datumInput && !window.editMode) {
-      datumInput.value = todayForInput();        // default dnes [web:101][web:102]
+      datumInput.value = todayForInput();
     }
 
     if (!window.editMode) {
@@ -525,7 +521,7 @@ function showUdalostForm(typ) {
   // === SETÍ / SKLIZEŇ (PLODINA) ===
   if (typ === "plodina") {
     c.innerHTML = `
-          <div class="typAkceBtns">
+      <div class="typAkceBtns">
         <button type="button" id="btnSeti"
                 class="typ-akce-btn active"
                 onclick="changeTypAkce('seti')">Setí</button>
@@ -548,13 +544,6 @@ function showUdalostForm(typ) {
         <input type="number" id="udalostVynos" class="udalost-input" placeholder="Výnos (kg)"/>
       </div>
 
-      <div class="udalost-row">
-        <div class="udalost-actions">
-          <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
-          <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
-        </div>
-      </div>
-
       <div id="udalostHistory" class="hnojeni-history">
         <em>Načítám historii...</em>
       </div>
@@ -562,16 +551,17 @@ function showUdalostForm(typ) {
 
     const datumInput = document.getElementById("udalostDatum");
     if (datumInput && !window.editMode) {
-      datumInput.value = todayForInput();        // default dnes [web:101][web:102]
+      datumInput.value = todayForInput();
     }
 
     window.typAkce = "seti";
-    changeTypAkce("seti");                       // schová výnos pro setí
+    changeTypAkce("seti");
 
     naplnPlodinySelect?.();
     zobrazSetiSklizenHistory?.();
   }
 }
+
 
 
 
