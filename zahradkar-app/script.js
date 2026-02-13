@@ -486,25 +486,34 @@ function showUdalostForm(typ) {
   if (typ === "hnojeni") {
     window.typAkce = "hnojeni";
 
-    c.innerHTML = `
-      <div class="udalost-row">
-        <input type="date" id="hnojeniDatum" class="udalost-input"/>
-      </div>
+   // HNOJENÍ – ikony Uložit a Zpět dole
+c.innerHTML = `
+  <div class="udalost-row">
+    <input type="date" id="hnojeniDatum" class="udalost-input"/>
+  </div>
 
-      <div class="udalost-row">
-        <select id="hnojivoSelect" class="udalost-input">
-          <option value="">– vyber hnojivo –</option>
-        </select>
-      </div>
+  <div class="udalost-row">
+    <select id="hnojivoSelect" class="udalost-input">
+      <option value="">– vyber hnojivo –</option>
+    </select>
+  </div>
 
-      <div class="udalost-row">
-        <input type="number" id="hnojeniMnozstvi" class="udalost-input" placeholder="Množství (kg)"/>
-      </div>
+  <div class="udalost-row">
+    <input type="number" id="hnojeniMnozstvi" class="udalost-input" placeholder="Množství (kg)"/>
+  </div>
 
-      <div id="hnojeniHistory" class="hnojeni-history">
-        <em>Načítám historii...</em>
-      </div>
-    `;
+  <div class="udalost-row">
+    <div class="udalost-actions">
+      <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
+      <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+    </div>
+  </div>
+
+  <div id="hnojeniHistory" class="hnojeni-history">
+    <em>Načítám historii...</em>
+  </div>
+`;
+
 
     const datumInput = document.getElementById("hnojeniDatum");
     if (datumInput && !window.editMode) {
@@ -521,33 +530,40 @@ function showUdalostForm(typ) {
   // === SETÍ / SKLIZEŇ (PLODINA) ===
   if (typ === "plodina") {
     c.innerHTML = `
-      <div class="typAkceBtns">
-        <button type="button" id="btnSeti"
-                class="typ-akce-btn active"
-                onclick="changeTypAkce('seti')">Setí</button>
-        <button type="button" id="btnSklizen"
-                class="typ-akce-btn"
-                onclick="changeTypAkce('sklizen')">Sklizeň</button>
-      </div>
+  <div class="typAkceBtns">
+    <button type="button" id="btnSeti"
+            class="typ-akce-btn active"
+            onclick="changeTypAkce('seti')">Setí</button>
+    <button type="button" id="btnSklizen"
+            class="typ-akce-btn"
+            onclick="changeTypAkce('sklizen')">Sklizeň</button>
+  </div>
 
-      <div class="udalost-row">
-        <input type="date" id="udalostDatum" class="udalost-input"/>
-      </div>
+  <div class="udalost-row">
+    <input type="date" id="udalostDatum" class="udalost-input"/>
+  </div>
 
-      <div class="udalost-row">
-        <select id="plodinaSelect" class="udalost-input">
-          <option value="">– vyber plodinu –</option>
-        </select>
-      </div>
+  <div class="udalost-row">
+    <select id="plodinaSelect" class="udalost-input">
+      <option value="">– vyber plodinu –</option>
+    </select>
+  </div>
 
-      <div class="udalost-row" id="vynosRow">
-        <input type="number" id="udalostVynos" class="udalost-input" placeholder="Výnos (kg)"/>
-      </div>
+  <div class="udalost-row" id="vynosRow">
+    <input type="number" id="udalostVynos" class="udalost-input" placeholder="Výnos (kg)"/>
+  </div>
 
-      <div id="udalostHistory" class="hnojeni-history">
-        <em>Načítám historii...</em>
-      </div>
-    `;
+  <div class="udalost-row">
+    <div class="udalost-actions">
+      <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
+      <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
+    </div>
+  </div>
+
+  <div id="udalostHistory" class="hnojeni-history">
+    <em>Načítám historii...</em>
+  </div>
+`;
 
     const datumInput = document.getElementById("udalostDatum");
     if (datumInput && !window.editMode) {
