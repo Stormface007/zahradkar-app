@@ -579,9 +579,15 @@ function zpetNaDetailZahonu(){
   const uv = document.getElementById("modalViewUdalost");
   uv.style.display = "none";
   uv.classList.remove("analysis");
+  
+  // SKRYJ ikonu uložit v headeru
+  const saveIcon = document.getElementById("headerSaveIcon");
+  if (saveIcon) saveIcon.style.display = "none";
+  
   document.getElementById("modalViewDefault").style.display = "block";
   setActiveIcon(null);
 }
+
 
 function normalizeDateForBackend(d) {
   if (!d) return "";
