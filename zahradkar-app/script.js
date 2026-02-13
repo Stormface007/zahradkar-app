@@ -505,7 +505,6 @@ c.innerHTML = `
   <div class="udalost-row">
     <div class="udalost-actions">
       <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozHnojeni()"/>
-      <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
     </div>
   </div>
 
@@ -556,7 +555,6 @@ c.innerHTML = `
   <div class="udalost-row">
     <div class="udalost-actions">
       <img src="img/Safe.png"   alt="Uložit" class="modal-btn" onclick="ulozUdalost()"/>
-      <img src="img/Goback .png" alt="Zpět"   class="modal-btn" onclick="zpetNaDetailZahonu()"/>
     </div>
   </div>
 
