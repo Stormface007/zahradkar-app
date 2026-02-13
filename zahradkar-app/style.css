@@ -276,8 +276,18 @@ button:hover {
   box-sizing: border-box;
 }
 
-/* Header / footer */
-.modal-header,
+/* Header s názvem vlevo, křížek vpravo */
+.modal-header {
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 2px solid #2e7d32;
+}
+
+/* Footer */
 .modal-footer {
   padding: 8px 16px;
   background: rgba(255,255,255,0.9);
@@ -287,12 +297,13 @@ button:hover {
   gap: 8px;
 }
 
-/* Ikona v headeru modalu */
-.modal-header-btn {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  margin-right: auto;
+/* Nadpis záhonu v HEADERU */
+.modal-zahon-name {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: #205520;
+  letter-spacing: 1px;
+  margin: 0;
 }
 
 .modal-body-scroll {
@@ -401,16 +412,24 @@ button:hover {
 
 /* Vizualizace záhonu – ZVĚTŠENO */
 #zahonVizualizace {
-  height: 320px;               /* zpět na 320px */
+  height: 320px;
   margin-top: 10px;
   position: relative;
   z-index: 1;
 }
+#zahonVizualizace canvas {
+  display: block;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 2px solid #2e7d32;
+  border-radius: 6px;
+}
 
+/* Box pro vizualizaci záhonu */
 #canvasContainer {
   width: 100%;
   max-width: 600px;
-  height: 300px;               /* zvětšeno z 220px */
+  height: 300px;
   margin: 10px auto;
   background: #f7fff7;
   border: 2px solid #2e7d32;
@@ -424,6 +443,17 @@ button:hover {
   #canvasContainer {
     height: 160px;
   }
+}
+
+/* Zvětšený záhon modal */
+#zoomCanvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border: 2px solid #2e7d32;
+  border-radius: 8px;
+  background: #f7fff7;
 }
 
 /* Analýza */
@@ -524,55 +554,6 @@ button:hover {
   to   { transform: rotate(360deg); }
 }
 
-/* Box pro vizualizaci záhonu */
-#canvasContainer {
-  width: 100%;
-  max-width: 600px;
-  height: 220px;               /* sníženo z 32vh */
-  margin: 10px auto;
-  background: #f7fff7;
-  border: 2px solid #2e7d32;
-  border-radius: 8px;
-}
-
-@media (max-width: 500px) {
-  #zahonVizualizace {
-    height: 150px;
-  }
-  #canvasContainer {
-    height: 140px;             /* sníženo z 20vh */
-  }
-}
-
-/* Zvětšený záhon modal */
-#zoomCanvas {
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  border: 2px solid #2e7d32;
-  border-radius: 8px;
-  background: #f7fff7;
-}
-
-/* Nadpis záhonu v HEADERU */
-.modal-zahon-name {
-  font-weight: bold;
-  font-size: 1.3rem;
-  color: #205520;
-  letter-spacing: 1px;
-  margin: 0;
-}
-
-/* Nadpis záhonu v HEADERU */
-.modal-zahon-name {
-  font-weight: bold;
-  font-size: 1.3rem;
-  color: #205520;
-  letter-spacing: 1px;
-  margin: 0;
-}
-
 /* Přepínače setí / sklizeň */
 .typAkceBtns {
   display: flex;
@@ -625,10 +606,28 @@ button:hover {
   margin-bottom: 4px;
 }
 
+/* Akce pod vizualizací – OPRAVENÁ VELIKOST IKON */
 .udalost-actions {
   display: flex;
   gap: 8px;
   justify-content: flex-start;
+  margin-top: 0.5rem;
+}
+
+.udalost-actions img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  object-fit: contain;
+}
+
+/* Modal-btn (fallback) */
+.modal-btn {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  margin: 0.5rem;
+  object-fit: contain;
 }
 
 /* mobilní zařízení – absolutní max šířka pro formuláře */
@@ -669,109 +668,4 @@ button:hover {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  padding: 4px;
-}
-#aiAvatarBubble img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: contain;
-}
-
-/* Chat okno – malý panel u rohu, nikdy fullscreen */
-#aiAvatarChat {
-  position: absolute;
-  right: 0;
-  bottom: 72px;
-  width: 320px;
-  max-width: 90vw;
-  max-height: 70vh;
-  background: rgba(255,255,255,0.97);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-#aiAvatarChat.hidden {
-  display: none;
-}
-
-/* Hlavička chatu */
-.ai-chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #2e7d32;
-  color: #fff;
-  padding: 0.4rem 0.7rem;
-  font-weight: bold;
-}
-.ai-chat-header button {
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 1.1rem;
-  cursor: pointer;
-  margin: 0;
-  padding: 0 4px;
-}
-
-/* Obsah zpráv */
-.ai-chat-messages {
-  flex: 1;
-  padding: 0.5rem 0.6rem;
-  overflow-y: auto;
-  font-size: 0.9rem;
-}
-
-/* Bubliny zpráv */
-.ai-msg {
-  margin-bottom: 0.35rem;
-  max-width: 90%;
-}
-.ai-msg-user {
-  text-align: right;
-}
-.ai-msg-user span {
-  display: inline-block;
-  background: #e9ffe9;
-  border-radius: 10px 0 10px 10px;
-  padding: 4px 8px;
-}
-.ai-msg-bot span {
-  display: inline-block;
-  background: #ffffff;
-  border-radius: 0 10px 10px 10px;
-  padding: 4px 8px;
-  border: 1px solid #d0e8d0;
-}
-
-/* Input řádek */
-.ai-chat-input-row {
-  display: flex;
-  padding: 0.4rem 0.5rem 0.5rem;
-  gap: 0.4rem;
-  border-top: 1px solid #d0e8d0;
-}
-.ai-chat-input-row input {
-  flex: 1;
-  max-width: none;
-  margin: 0;
-}
-.ai-chat-input-row button {
-  margin: 0;
-  padding: 0.3rem 0.6rem;
-}
-
-/* Mobilní drobné úpravy pozice */
-@media (max-width: 600px) {
-  #aiAvatarWidget {
-    right: 12px;
-    bottom: 12px;
-  }
-  #aiAvatarChat {
-    width: 90vw;
-    max-height: 70vh;
-  }
-}
+  pad
