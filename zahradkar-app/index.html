@@ -1,374 +1,92 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zahrádkářský systém</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
-</head>
+function showUdalostForm(typ) {
+  document.getElementById("modalViewDefault").style.display = "none";
+  const uv = document.getElementById("modalViewUdalost");
+  uv.classList.remove("analysis");
+  uv.style.display = "block";
 
-<body>
-  <div id="root">
-    <!-- AI avatar chat widget -->
-    <div id="aiAvatarWidget">
-      <div id="aiAvatarBubble" onclick="toggleAiChat()">
-        <img src="img/HUGO2.png" alt="Zahradník" />
+  // ZOBRAZ ikonu uložit v headeru
+  const saveIcon = document.getElementById("headerSaveIcon");
+  if (saveIcon) saveIcon.style.display = "block";
+
+  const c = document.getElementById("udalostFormContainer");
+  if (!c) return;
+
+  // === HNOJENÍ ===
+  if (typ === "hnojeni") {
+    window.typAkce = "hnojeni";
+
+    c.innerHTML = `
+      <div class="udalost-row">
+        <input type="date" id="hnojeniDatum" class="udalost-input"/>
       </div>
 
-      <div id="aiAvatarChat" class="hidden">
-        <div class="ai-chat-header">
-          <span>Garden helper</span>
-          <button type="button" onclick="toggleAiChat()">✕</button>
-        </div>
-        <div class="ai-chat-messages" id="aiChatMessages"></div>
-        <div class="ai-chat-input-row">
-          <input
-            type="text"
-            id="aiChatInput"
-            placeholder="Zeptej se na setí, hnojení..."
-          />
-          <button type="button" onclick="sendAiMessage()">▶</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Indikátor akce -->
-    <div id="actionIndicator" class="action-indicator">
-      <img src="img/Plodina_mrkev .png" alt="Vizualizace akce" />
-    </div>
-
-    <!-- Přihlašovací formulář -->
-    <div id="loginDiv">
-      <img
-        src="img/icon_trimmed_transparent_customcolor.png"
-        alt="Logo"
-        class="logo-small"
-      />
-      <input type="text" id="username" placeholder="Uživatelské jméno" />
-      <input type="password" id="password" placeholder="Heslo" />
-      <button type="button" onclick="login()">Přihlásit</button>
-      <div id="loginMsg"></div>
-    </div>
-
-    <!-- Hlavní aplikace -->
-    <div id="appDiv" style="display:none;">
-
-      <div class="top-panel">
-        <div id="weatherContainer" class="toolbar-weather">
-          <img id="weatherIcon" alt="Počasí" />
-          <div id="weatherTemp">–</div>
-        </div>
-        <img
-          id="exitIcon"
-          class="icon-button"
-          src="img/Exit.png"
-          alt="Odhlásit se"
-          onclick="logout()"
-        />
-        <img
-          id="userIcon"
-          class="icon-button"
-          src="img/User.png"
-          alt="Uživatel"
-        />
+      <div class="udalost-row">
+        <select id="hnojivoSelect" class="udalost-input">
+          <option value="">– vyber hnojivo –</option>
+        </select>
       </div>
 
-      <div class="table-actions">
-        <button type="button" onclick="deleteSelected()">🗑️ Smazat označené</button>
-        <button type="button" onclick="openAddZahonModal()">➕ Přidat záhon</button>
+      <div class="udalost-row">
+        <input type="number" id="hnojeniMnozstvi" class="udalost-input" placeholder="Množství (kg)"/>
       </div>
 
-      <div class="table-container">
-        <table id="zahonyTable">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Název záhonu</th>
-              <th>Velikost</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <div id="hnojeniHistory" class="hnojeni-history">
+        <em>Načítám historii...</em>
       </div>
-    </div><!-- /appDiv -->
+    `;
 
-    <!-- MODÁL: Přidat nový záhon -->
-    <div id="addZahonModal" class="modal">
-      <div class="modal-content add-zahon-modal">
-        <div class="modal-header">
-          <h3>Přidat nový záhon</h3>
-          <button type="button" onclick="closeAddZahonModal()">✕</button>
-        </div>
-
-        <div class="modal-body-scroll">
-          <!-- Taby -->
-          <div class="tabs">
-            <button type="button" class="tab-btn active" data-tab="tab-bed">
-              Záhon
-            </button>
-            <button type="button" class="tab-btn" data-tab="tab-location">
-              Lokace
-            </button>
-          </div>
-
-          <!-- TAB: Záhon -->
-          <div class="tab-content" id="tab-bed">
-            <div class="form-grid form-grid--two-cols">
-              <div class="form-field" style="grid-column: 1 / -1;">
-                <label for="newNazev">Název</label>
-                <input type="text" id="newNazev" placeholder="Např. U vany" />
-              </div>
-
-              <div class="form-field">
-                <label for="newDelka">Délka (m)</label>
-                <input
-                  type="number"
-                  id="newDelka"
-                  min="0"
-                  step="0.1"
-                  placeholder="Např. 3,7"
-                />
-              </div>
-
-              <div class="form-field">
-                <label for="newSirka">Šířka (m)</label>
-                <input
-                  type="number"
-                  id="newSirka"
-                  min="0"
-                  step="0.1"
-                  placeholder="Např. 1,2"
-                />
-              </div>
-            </div>
-
-            <div class="section">
-              <h4>Typ plochy</h4>
-              <div class="typ-plochy-row">
-                <input
-                  type="radio"
-                  name="typPlochy"
-                  value="zahon"
-                  id="typ-zahon"
-                  checked
-                />
-                <label for="typ-zahon">🌾 Záhon</label>
-              </div>
-              <div class="typ-plochy-row">
-                <input
-                  type="radio"
-                  name="typPlochy"
-                  value="sklenik"
-                  id="typ-sklenik"
-                />
-                <label for="typ-sklenik">🏠 Skleník</label>
-              </div>
-              <div class="typ-plochy-row">
-                <input
-                  type="radio"
-                  name="typPlochy"
-                  value="nadoba"
-                  id="typ-nadoba"
-                />
-                <label for="typ-nadoba">🪴 Nádoba (truhlík/pytel)</label>
-              </div>
-            </div>
-          </div>
-
-          <!-- TAB: Lokace -->
-          <div class="tab-content hidden" id="tab-location">
-            <div class="section">
-              <h4>Lokace záhonu</h4>
-
-              <div class="form-grid">
-                <div class="form-field">
-                  <label for="newLokace">Uložená lokace</label>
-                  <select id="newLokace">
-                    <option value="">– vyber lokaci –</option>
-                  </select>
-                </div>
-
-                <div class="form-field">
-                  <label for="newLokaceText">Popis lokace</label>
-                  <input
-                    type="text"
-                    id="newLokaceText"
-                    placeholder="Např. Domov – zahrada za domem"
-                  />
-                </div>
-              </div>
-
-              <div class="form-grid form-grid--two-cols">
-                <div class="form-field">
-                  <label for="newLat">Lat (°)</label>
-                  <input
-                    type="number"
-                    id="newLat"
-                    step="0.000001"
-                    placeholder="49.400000"
-                  />
-                </div>
-                <div class="form-field">
-                  <label for="newLon">Lon (°)</label>
-                  <input
-                    type="number"
-                    id="newLon"
-                    step="0.000001"
-                    placeholder="15.600000"
-                  />
-                </div>
-              </div>
-
-              <button type="button" onclick="fillNewBedLocationFromHere()">
-                Použít moji aktuální polohu
-              </button>
-            </div>
-          </div>
-        </div><!-- /modal-body-scroll -->
-
-        <div class="modal-footer">
-          <button type="button" onclick="addZahon()">Přidat</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODÁLNÍ OKNO pro editaci záhonu a akce -->
-    <div id="modal" class="modal">
-      <div class="modal-content modal-content--wide">
-        <div class="modal-header">
-          <button type="button" onclick="closeModal()">✕</button>
-        </div>
-
-        <!-- nový layout: sidebar + obsah -->
-        <div class="modal-layout">
-          <div class="modal-sidebar">
-            <img
-              id="icon-mereni"
-              class="side-icon"
-              src="img/mereni.png"
-              alt="Měření"
-              onclick="onIconClick('mereni')"
-            />
-            <img
-              id="icon-seti"
-              class="side-icon"
-              src="img/sklizen.png"
-              alt="Setí / Sklizeň"
-              onclick="onIconClick('seti')"
-            />
-            <img
-              id="icon-hnojeni"
-              class="side-icon"
-              src="img/hnojeni.png"
-              alt="Hnojení"
-              onclick="onIconClick('hnojeni')"
-            />
-            <img
-              id="icon-analyza"
-              class="side-icon"
-              src="img/analyza.png"
-              alt="Analýza"
-              onclick="onIconClick('analyza')"
-            />
-            <img
-              id="icon-nastaveni"
-              class="side-icon"
-              src="img/nastaveni.png"
-              alt="Nastavení"
-              onclick="onIconClick('nastaveni')"
-            />
-          </div>
-
-          <div class="modal-body">
-            <div id="nazevZahonu" class="modal-zahon-name"></div>
-
-            <div id="modalViewDefault">
-              <h3>Úprava záhonu</h3>
-              <input type="text" id="editNazev" placeholder="Název záhonu" />
-
-              <div class="dimensions">
-                <input
-                  type="number"
-                  id="editDelka"
-                  placeholder="Délka (m)"
-                  min="0"
-                  oninput="updatePlocha()"
-                />
-                <input
-                  type="number"
-                  id="editSirka"
-                  placeholder="Šířka (m)"
-                  min="0"
-                  oninput="updatePlocha()"
-                />
-              </div>
-
-              <div class="plocha">
-                Plocha: <span id="vypocetPlochy">0</span>
-              </div>
-
-              <div id="zahonVizualizace">
-                <div id="canvasContainer">
-                  <canvas id="zahonCanvas" onclick="openZoom()"></canvas>
-                </div>
-              </div>
-
-              <div class="udalost-actions">
-                <img
-                  src="img/Safe.png"
-                  alt="Uložit"
-                  class="modal-btn"
-                  onclick="saveZahon()"
-                />
-              </div>
-            </div>
-
-            <div id="modalViewUdalost" style="display:none;">
-              <div id="udalostFormContainer"></div>
-            </div>
-          </div><!-- /modal-body -->
-        </div><!-- /modal-layout -->
-      </div>
-    </div>
-
-    <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED -->
-    <div id="zoomModal" class="modal">
-      <div class="modal-content" style="padding: 20px; max-width: 800px;">
-        <h3>Zvětšený náhled záhonu</h3>
-        <canvas id="zoomCanvas" width="600" height="400"></canvas>
-        <br />
-        <button type="button" onclick="closeZoomModal()">Zavřít</button>
-      </div>
-    </div>
-  </div><!-- /root -->
-
-  <script>
-    // přepínání tabů v modalu Přidat záhon
-    document.addEventListener("click", function (e) {
-      if (!e.target.classList.contains("tab-btn")) return;
-      const targetTab = e.target.getAttribute("data-tab");
-
-      document
-        .querySelectorAll("#addZahonModal .tab-btn")
-        .forEach((btn) => {
-          btn.classList.toggle("active", btn === e.target);
-        });
-
-      document
-        .querySelectorAll("#addZahonModal .tab-content")
-        .forEach((div) => {
-          div.classList.toggle("hidden", div.id !== targetTab);
-        });
-    });
-
-    function openAddZahonModal() {
-      document.getElementById("addZahonModal").style.display = "flex";
+    const datumInput = document.getElementById("hnojeniDatum");
+    if (datumInput && !window.editMode) {
+      datumInput.value = todayForInput();
     }
 
-    function closeAddZahonModal() {
-      document.getElementById("addZahonModal").style.display = "none";
+    if (!window.editMode) {
+      loadHnojiva();
     }
-  </script>
-</body>
-</html>
+    zobrazHnojeniHistory();
+    return;
+  }
+
+  // === SETÍ / SKLIZEŇ (PLODINA) ===
+  if (typ === "plodina") {
+    c.innerHTML = `
+      <div class="typAkceBtns">
+        <button type="button" id="btnSeti"
+                class="typ-akce-btn active"
+                onclick="changeTypAkce('seti')">Setí</button>
+        <button type="button" id="btnSklizen"
+                class="typ-akce-btn"
+                onclick="changeTypAkce('sklizen')">Sklizeň</button>
+      </div>
+
+      <div class="udalost-row">
+        <input type="date" id="udalostDatum" class="udalost-input"/>
+      </div>
+
+      <div class="udalost-row">
+        <select id="plodinaSelect" class="udalost-input">
+          <option value="">– vyber plodinu –</option>
+        </select>
+      </div>
+
+      <div class="udalost-row" id="vynosRow">
+        <input type="number" id="udalostVynos" class="udalost-input" placeholder="Výnos (kg)"/>
+      </div>
+
+      <div id="udalostHistory" class="hnojeni-history">
+        <em>Načítám historii...</em>
+      </div>
+    `;
+
+    const datumInput = document.getElementById("udalostDatum");
+    if (datumInput && !window.editMode) {
+      datumInput.value = todayForInput();
+    }
+
+    window.typAkce = "seti";
+    changeTypAkce("seti");
+
+    naplnPlodinySelect?.();
+    zobrazSetiSklizenHistory?.();
+  }
+}
