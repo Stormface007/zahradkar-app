@@ -399,27 +399,31 @@ button:hover {
   margin-bottom: 1rem;
 }
 
-/* Vizualizace záhonu */
+/* Vizualizace záhonu – ZVĚTŠENO */
 #zahonVizualizace {
-  height: 240px;               /* sníženo z 320px */
+  height: 320px;               /* zpět na 320px */
   margin-top: 10px;
   position: relative;
   z-index: 1;
 }
-#zahonVizualizace canvas {
-  display: block;
-  margin: 0 auto;
-  background: #ffffff;
+
+#canvasContainer {
+  width: 100%;
+  max-width: 600px;
+  height: 300px;               /* zvětšeno z 220px */
+  margin: 10px auto;
+  background: #f7fff7;
   border: 2px solid #2e7d32;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
-/* Modal-btn */
-.modal-btn {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  margin: 0.5rem;
+@media (max-width: 500px) {
+  #zahonVizualizace {
+    height: 180px;
+  }
+  #canvasContainer {
+    height: 160px;
+  }
 }
 
 /* Analýza */
@@ -551,15 +555,22 @@ button:hover {
   background: #f7fff7;
 }
 
-/* Nadpis záhonu v modalu */
+/* Nadpis záhonu v HEADERU */
 .modal-zahon-name {
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: #205520;
-  text-align: right;
-  margin-bottom: 0.5em;
-  margin-top: 0.2em;
   letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Nadpis záhonu v HEADERU */
+.modal-zahon-name {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: #205520;
+  letter-spacing: 1px;
+  margin: 0;
 }
 
 /* Přepínače setí / sklizeň */
