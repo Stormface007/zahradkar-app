@@ -401,7 +401,7 @@ button:hover {
 
 /* Vizualizace záhonu */
 #zahonVizualizace {
-  height: 320px;
+  height: 240px;               /* sníženo z 320px */
   margin-top: 10px;
   position: relative;
   z-index: 1;
@@ -524,18 +524,19 @@ button:hover {
 #canvasContainer {
   width: 100%;
   max-width: 600px;
-  height: 32vh;
+  height: 220px;               /* sníženo z 32vh */
   margin: 10px auto;
   background: #f7fff7;
   border: 2px solid #2e7d32;
   border-radius: 8px;
 }
+
 @media (max-width: 500px) {
   #zahonVizualizace {
     height: 150px;
   }
   #canvasContainer {
-    height: 20vh;
+    height: 140px;             /* sníženo z 20vh */
   }
 }
 
