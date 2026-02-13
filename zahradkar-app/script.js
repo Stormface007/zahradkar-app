@@ -697,7 +697,7 @@ async function ulozUdalost() {
 
 async function smazUdalost(id, typ) {
   if (!confirm(`Opravdu chceš smazat ${typ.toLowerCase()} (ID ${id})?`)) return;
-
+showActionIndicator();  // ← PŘIDEJ
   try {
     const ps = new URLSearchParams();
     ps.append("action", "deleteUdalost");
@@ -717,6 +717,8 @@ async function smazUdalost(id, typ) {
   } catch (e) {
     alert("Chyba při odesílání požadavku: " + e.message);
   }
+      hideActionIndicator();  // ← PŘIDEJ
+
 }
 
 
