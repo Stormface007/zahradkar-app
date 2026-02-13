@@ -808,7 +808,7 @@ function zobrazHnojeniHistory() {
       <td>${u.Mnozstvi || u.Mnozstvi_kg || ""}</td>
       <td>
         <button onclick="smazUdalost(${u.UdalostID}, 'Hnojení')">🗑️</button>
-        <button onclick="otevriUpravuUdalosti(${u.UdalostID}, '${u.Typ}')">✏️</button>
+        <button onclick="otevriUpravuUdalosti(${u.UdalostID}, 'Hnojení')">✏️</button>
       </td>
     </tr>`;
   });
