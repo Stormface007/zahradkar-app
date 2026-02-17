@@ -382,23 +382,20 @@ async function otevriModal(z) {
     zobrazHnojeniHistory();
     naplnPlodinySelect();
 
-    // 2) načtení zón a bodů a vykreslení SVG
+      // 2) načtení zón a bodů a vykreslení SVG
     try {
       const [zonyResponse, bodyResponse] = await Promise.all([
         fetch(`${SERVER_URL}?action=getZonyZahonu&zahonID=${z.ZahonID}`).then(r => r.json()),
         fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${z.ZahonID}`).then(r => r.json())
       ]);
+
+      console.log("otevriModal: zonyResponse=", zonyResponse);
+      console.log("otevriModal: bodyResponse=", bodyResponse);
+
       renderZahonSvg(z, bodyResponse, zonyResponse);
     } catch (e) {
       console.error("Chyba při načítání zón/bodů záhonu:", e);
     }
-
-    hideActionIndicator();
-  } else {
-    if (udalostHistElem)  udalostHistElem.innerHTML  = "<p>Žádná historie setí nebo sklizně.</p>";
-    if (hnojeniHistElem) hnojeniHistElem.innerHTML = "<p>Žádná historie hnojení.</p>";
-    naplnPlodinySelect();
-  }
 }
 
 
@@ -1159,15 +1156,18 @@ async function sendAiMessage() {
 async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
 
-  // pokud už jsme jednou řešili, nevoláme znovu generate
+  console.log("ensureBodyForZahon: start, ZahonID=", zahonID, "known keys:", Array.from(bodyGeneratedFor));
+
   if (bodyGeneratedFor.has(key)) {
+    console.log("ensureBodyForZahon: už bylo řešeno pro", key);
     return;
   }
 
   try {
-    // zkusíme body načíst
     let res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
     let json = await res.json().catch(() => null);
+
+    console.log("ensureBodyForZahon: první getBodyZahonu JSON=", json);
 
     let bodyArr = [];
     if (json) {
@@ -1178,12 +1178,15 @@ async function ensureBodyForZahon(zahonID) {
       }
     }
 
-    // pokud v tabulce nic není, necháme je vygenerovat
     if (!bodyArr.length) {
-      await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
-      // a znovu načteme
+      console.log("ensureBodyForZahon: body prázdné, volám generateBody");
+      const genRes = await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
+      const genTxt = await genRes.text();
+      console.log("ensureBodyForZahon: generateBody response:", genTxt);
+
       res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
       json = await res.json().catch(() => null);
+      console.log("ensureBodyForZahon: druhý getBodyZahonu JSON=", json);
 
       if (json) {
         if (Array.isArray(json.body)) {
@@ -1194,10 +1197,7 @@ async function ensureBodyForZahon(zahonID) {
       }
     }
 
-    if (!bodyArr.length) {
-      console.warn("ensureBodyForZahon: ani po generování nejsou body", json);
-    }
-
+    console.log("ensureBodyForZahon: finální bodyArr.length=", bodyArr.length);
     bodyGeneratedFor.add(key);
   } catch (e) {
     console.error("Chyba v ensureBodyForZahon:", e);
@@ -1205,12 +1205,20 @@ async function ensureBodyForZahon(zahonID) {
 }
 
 
+
 // script.js – vykreslení záhonu do SVG + klik na body se zobrazením detailu bodu
 
 async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
+  console.log("renderZahonSvg: zahon=", zahon);
+  console.log("renderZahonSvg: raw bodyZahonu=", bodyZahonu);
+  console.log("renderZahonSvg: raw zonyZahonu=", zonyZahonu);
+
   const svgContainer = document.getElementById("svg-container");
   const bodDetail    = document.getElementById("bod-detail");
-  if (!svgContainer) return;
+  if (!svgContainer) {
+    console.warn("renderZahonSvg: chybí #svg-container");
+    return;
+  }
 
   svgContainer.innerHTML = "";
 
@@ -1225,7 +1233,6 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   svg.style.border = "1px solid #ccc";
   svgContainer.appendChild(svg);
 
-  // obdélník záhonu
   const rect = document.createElementNS(svgNS, "rect");
   rect.setAttribute("x", 0);
   rect.setAttribute("y", 0);
@@ -1235,7 +1242,6 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   rect.setAttribute("stroke", "#888");
   svg.appendChild(rect);
 
-  // zóny (pokud jsou)
   if (zonyZahonu && Array.isArray(zonyZahonu.zony)) {
     zonyZahonu.zony.forEach(z => {
       const zRect = document.createElementNS(svgNS, "rect");
@@ -1264,17 +1270,24 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     return "V normě";
   }
 
-  // tady už víme, že API vrací { zahonID, body: [...] }
   const bodyArr = bodyZahonu && Array.isArray(bodyZahonu.body) ? bodyZahonu.body : [];
+  console.log("renderZahonSvg: bodyArr.length=", bodyArr.length,
+              "first body=", bodyArr[0]);
+
   if (!bodyArr.length) {
-    console.warn("renderZahonSvg: žádné body k vykreslení", bodyZahonu);
+    console.warn("renderZahonSvg: žádné body k vykreslení");
     return;
   }
 
   bodyArr.forEach(b => {
     const xRel = Number(b.X_rel);
     const yRel = Number(b.Y_rel);
-    if (isNaN(xRel) || isNaN(yRel)) return;
+    console.log("renderZahonSvg: bod", b.BodID, "X_rel=", b.X_rel, "Y_rel=", b.Y_rel);
+
+    if (isNaN(xRel) || isNaN(yRel)) {
+      console.warn("renderZahonSvg: bod má neplatné souřadnice", b);
+      return;
+    }
 
     const x = xRel * 100;
     const y = yRel * 50;
@@ -1312,53 +1325,10 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
           `${SERVER_URL}?action=getDetailBodu&bodID=${encodeURIComponent(b.BodID)}`
         );
         const detail = await res.json();
-
-        const bilList = detail.bilance || [];
-        let bil = null;
-
-        if (Array.isArray(bilList) && bilList.length) {
-          bilList.sort((a, b) => Number(a.Rok || 0) - Number(b.Rok || 0));
-          bil = bilList[bilList.length - 1];
-        }
-
-        if (!bil) {
-          bodDetail.innerHTML += `<br><br><strong>Bilance:</strong> zatím není k dispozici.`;
-          return;
-        }
-
-        const rok    = bil.Rok || "";
-        const sezona = bil.Sezona || "";
-
-        const N_bal = bil.N_bilance_kg;
-        const P_bal = bil.P_bilance_kg;
-        const K_bal = bil.K_bilance_kg;
-        const unava = bil.UnavaIndex;
-
-        const formatKg = (v) =>
-          (v === "" || v == null || isNaN(Number(v)))
-            ? "-"
-            : Number(v).toFixed(1).replace(".", ",");
-
-        bodDetail.innerHTML =
-          `<strong>Bod:</strong> ${b.BodID}<br>` +
-          `<strong>Zóna:</strong> ${zonaId || "-"}<br>` +
-          `<strong>Stav zóny:</strong> ${
-            stavZony === "Vyčerpaný"
-              ? "Vyčerpání živin"
-              : stavZony === "Přehnojený"
-              ? "Přehnojení"
-              : "V normě"
-          }<br>` +
-          `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}<br><br>` +
-          `<strong>Bilance NPK (${rok} ${sezona}):</strong><br>` +
-          `N: ${formatKg(N_bal)} kg<br>` +
-          `P: ${formatKg(P_bal)} kg<br>` +
-          `K: ${formatKg(K_bal)} kg<br>` +
-          `<strong>Únava index:</strong> ${unava ?? "-"}`;
+        console.log("renderZahonSvg: detail bodu", detail);
+        // ... (zbytek klik handleru nech tak, jak máš)
       } catch (err) {
         console.error("Chyba načítání detailu bodu:", err);
-        bodDetail.innerHTML +=
-          `<br><span style="color:red;">Chyba při načítání bilance NPK.</span>`;
       }
     });
   });
