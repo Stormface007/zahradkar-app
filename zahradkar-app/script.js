@@ -1326,9 +1326,53 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
         );
         const detail = await res.json();
         console.log("renderZahonSvg: detail bodu", detail);
-        // ... (zbytek klik handleru nech tak, jak máš)
+
+        const bilList = detail.bilance || [];
+        let bil = null;
+
+        if (Array.isArray(bilList) && bilList.length) {
+          bilList.sort((a, b) => Number(a.Rok || 0) - Number(b.Rok || 0));
+          bil = bilList[bilList.length - 1];
+        }
+
+        if (!bil) {
+          bodDetail.innerHTML += `<br><br><strong>Bilance:</strong> zatím není k dispozici.`;
+          return;
+        }
+
+        const rok    = bil.Rok || "";
+        const sezona = bil.Sezona || "";
+
+        const N_bal = bil.N_bilance_kg;
+        const P_bal = bil.P_bilance_kg;
+        const K_bal = bil.K_bilance_kg;
+        const unava = bil.UnavaIndex;
+
+        const formatKg = (v) =>
+          (v === "" || v == null || isNaN(Number(v)))
+            ? "-"
+            : Number(v).toFixed(1).replace(".", ",");
+
+        bodDetail.innerHTML =
+          `<strong>Bod:</strong> ${b.BodID}<br>` +
+          `<strong>Zóna:</strong> ${zonaId || "-"}<br>` +
+          `<strong>Stav zóny:</strong> ${
+            stavZony === "Vyčerpaný"
+              ? "Vyčerpání živin"
+              : stavZony === "Přehnojený"
+              ? "Přehnojení"
+              : "V normě"
+          }<br>` +
+          `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}<br><br>` +
+          `<strong>Bilance NPK (${rok} ${sezona}):</strong><br>` +
+          `N: ${formatKg(N_bal)} kg<br>` +
+          `P: ${formatKg(P_bal)} kg<br>` +
+          `K: ${formatKg(K_bal)} kg<br>` +
+          `<strong>Únava index:</strong> ${unava ?? "-"}`;
       } catch (err) {
         console.error("Chyba načítání detailu bodu:", err);
+        bodDetail.innerHTML +=
+          `<br><span style="color:red;">Chyba při načítání bilance NPK.</span>`;
       }
     });
   });
