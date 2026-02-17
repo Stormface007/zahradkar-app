@@ -1184,7 +1184,6 @@ async function ensureBodyForZahon(zahonID) {
 async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   const svgContainer = document.getElementById("svg-container");
   const bodDetail    = document.getElementById("bod-detail");
-
   if (!svgContainer) return;
 
   svgContainer.innerHTML = "";
@@ -1210,7 +1209,7 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   rect.setAttribute("stroke", "#888");
   svg.appendChild(rect);
 
-  // pokud existují zóny, vykresli je
+  // zóny (pokud jsou)
   if (zonyZahonu && Array.isArray(zonyZahonu.zony)) {
     zonyZahonu.zony.forEach(z => {
       const zRect = document.createElementNS(svgNS, "rect");
@@ -1235,18 +1234,22 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     });
   }
 
-  // funkce pro zjištění stavu zóny bodu – jen jednoduchý placeholder
+  // helper – stav zóny bodu (zatím placeholder)
   function getStavZonyForBod(bod) {
-    // můžeš později napojit na BilanceZon nebo jinou logiku
     return "V normě";
   }
 
-  // vykreslení bodů
-  if (!bodyZahonu || !Array.isArray(bodyZahonu.body)) return;
+  // KONTROLA STRUKTURY bodyZahonu
+  // očekáváme { zahonID, body: [...] }
+  if (!bodyZahonu || !Array.isArray(bodyZahonu.body)) {
+    console.warn("renderZahonSvg: neplatná struktura bodyZahonu", bodyZahonu);
+    return;
+  }
 
   bodyZahonu.body.forEach(b => {
     const xRel = Number(b.X_rel);
     const yRel = Number(b.Y_rel);
+    if (isNaN(xRel) || isNaN(yRel)) return;
 
     const x = xRel * 100;
     const y = yRel * 50;
@@ -1258,7 +1261,6 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     circle.setAttribute("fill", "#007bff");
     circle.setAttribute("stroke", "#004a99");
     circle.style.cursor = "pointer";
-
     svg.appendChild(circle);
 
     const zonaId = b.ZonaID || "";
@@ -1267,7 +1269,6 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     circle.addEventListener("click", async () => {
       if (!bodDetail) return;
 
-      // základní info hned
       bodDetail.innerHTML =
         `<strong>Bod:</strong> ${b.BodID}<br>` +
         `<strong>Zóna:</strong> ${zonaId || "-"}<br>` +
@@ -1291,7 +1292,6 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
         let bil = null;
 
         if (Array.isArray(bilList) && bilList.length) {
-          // vyber poslední záznam (nejvyšší rok, případně poslední v seznamech)
           bilList.sort((a, b) => Number(a.Rok || 0) - Number(b.Rok || 0));
           bil = bilList[bilList.length - 1];
         }
