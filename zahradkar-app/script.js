@@ -1166,6 +1166,20 @@ async function ensureBodyForZahon(zahonID) {
   try {
     let res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
     let json = await res.json().catch(() => null);
+// zajistí, že pro záhon existují body a po vygenerování si je i načte
+async function ensureBodyForZahon(zahonID) {
+  const key = String(zahonID);
+
+  console.log("ensureBodyForZahon: start, ZahonID=", zahonID, "known keys:", Array.from(bodyGeneratedFor));
+
+  if (bodyGeneratedFor.has(key)) {
+    console.log("ensureBodyForZahon: už bylo řešeno pro", key);
+    return;
+  }
+
+  try {
+    let res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
+    let json = await res.json().catch(() => null);
 
     console.log("ensureBodyForZahon: první getBodyZahonu JSON=", json);
 
@@ -1204,10 +1218,7 @@ async function ensureBodyForZahon(zahonID) {
   }
 }
 
-
-
 // script.js – vykreslení záhonu do SVG + klik na body se zobrazením detailu bodu
-
 async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   console.log("renderZahonSvg: zahon=", zahon);
   console.log("renderZahonSvg: raw bodyZahonu=", bodyZahonu);
@@ -1377,3 +1388,4 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     });
   });
 }
+
