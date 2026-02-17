@@ -1149,11 +1149,9 @@ async function sendAiMessage() {
   }
 }
 
-// zajistí, že pro záhon existují body
 
-// zajistí, že pro záhon existují body
 // zajistí, že pro záhon existují body a po vygenerování si je i načte
-async function ensureBodyForZahon(zahonID) {
+  async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
 
   console.log("ensureBodyForZahon: start, ZahonID=", zahonID, "known keys:", Array.from(bodyGeneratedFor));
