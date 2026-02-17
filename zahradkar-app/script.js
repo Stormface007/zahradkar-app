@@ -1,5 +1,6 @@
 // — deklarace —  
 const SERVER_URL = "/.netlify/functions/proxy";
+let bodyGeneratedFor = new Set();
 
 let aktualniZahon = null;
 // CACHE OBJEKT
@@ -394,20 +395,24 @@ async function preloadModalData(zahon) {
     console.warn("preloadModalData: Chybí platný záhon nebo ZahonID", zahon);
     return;
   }
-  try{
+  try {
     const zahonID = zahon.ZahonID;
-    const [hnojArr, setiSklArr, plodinyArr] = await Promise.all([
-      fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json()),
+
+    // 🔹 jen DVA requesty místo tří
+    const [udalostiArr, plodinyArr] = await Promise.all([
       fetch(`${SERVER_URL}?action=getZahonUdalosti&zahonID=${zahonID}`).then(r => r.json()),
       fetch(`${SERVER_URL}?action=getPlodiny`).then(r => r.json())
     ]);
 
-    modalDataCache.hnojeniHistory = hnojArr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
-    modalDataCache.setiSklizenHistory = setiSklArr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
+    modalDataCache.hnojeniHistory =
+      udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "hnojení");
+    modalDataCache.setiSklizenHistory =
+      udalostiArr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
     modalDataCache.plodiny = plodinyArr;
 
-    const seti = setiSklArr.filter(u => (u.Typ || "").toLowerCase() === "setí");
-    const sklizne = setiSklArr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
+    // nalezení poslední nesklizené plodiny
+    const seti = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "setí");
+    const sklizne = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
     let posledniZaseta = null;
     for (let i = seti.length - 1; i >= 0; i--) {
       const datumSeti = czDateStringToDate(seti[i].Datum);
@@ -428,6 +433,7 @@ async function preloadModalData(zahon) {
     console.error("Chyba při preloadu modal dat:", e);
   }
 }
+
 
 function closeModal() {
   aktualniZahon = null;
@@ -1180,14 +1186,26 @@ async function sendAiMessage() {
 
 // zajistí, že pro záhon existují body
 async function ensureBodyForZahon(zahonID) {
+  const key = String(zahonID);
+
+  // 🔹 pokud už jsme to pro tento záhon řešili, nespouštěj znovu
+  if (bodyGeneratedFor.has(key)) {
+    return;
+  }
+
   const url = `${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`;
   const res = await fetch(url);
   const text = await res.text();
   let body = [];
-  try { body = JSON.parse(text); } catch (e) { body = []; }
-
-  if (body && body.length > 0) {
-    return;
+  try {
+    body = JSON.parse(text);
+  } catch (e) {
+    body = [];
   }
-  await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
+
+  if (!body || body.length === 0) {
+    await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
+  }
+
+  bodyGeneratedFor.add(key);
 }
