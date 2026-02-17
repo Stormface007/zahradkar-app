@@ -1180,6 +1180,7 @@ async function ensureBodyForZahon(zahonID) {
 
 
 // vykreslení SVG záhonu + zóny + body s pevnou pozicí
+// vykreslení SVG záhonu + zóny + body s pevnou pozicí
 function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
   const svg = document.getElementById("zahonSvg");
   if (!svg) return;
@@ -1246,7 +1247,7 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
     return "#4caf50";                           // OK – zelená
   };
 
-  // 1) vykreslit obdélníky zón
+  // 1) vykreslit obdélníky zón (vizualizace nad body)
   zony.forEach(z => {
     if (!z.ZonaID) return;
     const info = zonaMap[z.ZonaID];
@@ -1272,7 +1273,7 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
     svg.appendChild(r);
   });
 
-  // 2) vykreslit body s pevnou relativní pozicí
+  // 2) vykreslit body s pevnou relativní pozicí (hlavní entita)
   bodyArr.forEach(b => {
     const zonaId = b.ZonaID || "";
     const zonaInfo = zonaMap[zonaId];
