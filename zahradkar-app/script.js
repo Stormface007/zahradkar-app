@@ -1179,7 +1179,7 @@ async function ensureBodyForZahon(zahonID) {
 
 
 
-// vykreslení SVG záhonu + zóny + body uprostřed zón
+// vykreslení SVG záhonu + zóny + body s pevnou pozicí
 function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
   const svg = document.getElementById("zahonSvg");
   if (!svg) return;
@@ -1227,7 +1227,7 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
     ? zonyResponse.zony
     : [];
 
-  // mapa zóna → StavZony a zóna → souřadnice
+  // mapa zóna → info (stav + souřadnice)
   const zonaMap = {};
   zony.forEach(z => {
     if (!z.ZonaID) return;
@@ -1272,21 +1272,13 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
     svg.appendChild(r);
   });
 
-  // 2) vykreslit body (střed zóny, pokud ji mají)
+  // 2) vykreslit body s pevnou relativní pozicí
   bodyArr.forEach(b => {
     const zonaId = b.ZonaID || "";
     const zonaInfo = zonaMap[zonaId];
 
-    let xRel;
-    let yRel;
-
-    if (zonaInfo) {
-      xRel = (zonaInfo.x1 + zonaInfo.x2) / 2;
-      yRel = (zonaInfo.y1 + zonaInfo.y2) / 2;
-    } else {
-      xRel = Number(b.X_rel || b.x || 0.5);
-      yRel = Number(b.Y_rel || b.y || 0.5);
-    }
+    const xRel = Number(b.X_rel || b.x || 0.5);
+    const yRel = Number(b.Y_rel || b.y || 0.5);
 
     const cx = margin + xRel * usableWidth;
     const cy = margin + yRel * usableHeight;
