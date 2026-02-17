@@ -234,12 +234,12 @@
     </div>
 
     <!-- MODÁLNÍ OKNO pro editaci záhonu a akce -->
-   <div id="modal" class="modal">
-  <div class="modal-content modal-content--wide">
-    <div class="modal-header">
-      <div id="nazevZahonu" class="modal-zahon-name"></div>
-      <button type="button" onclick="closeModal()">✕</button>
-    </div>
+    <div id="modal" class="modal">
+      <div class="modal-content modal-content--wide">
+        <div class="modal-header">
+          <div id="nazevZahonu" class="modal-zahon-name"></div>
+          <button type="button" onclick="closeModal()">✕</button>
+        </div>
 
         <!-- nový layout: sidebar + obsah -->
         <div class="modal-layout">
@@ -309,10 +309,14 @@
                 Plocha: <span id="vypocetPlochy">0</span>
               </div>
 
+              <!-- SVG vizualizace záhonu + detail bodu -->
               <div id="zahonVizualizace">
-                <div id="canvasContainer">
-                  <canvas id="zahonCanvas" onclick="openZoom()"></canvas>
+                <div id="svgContainer">
+                  <svg id="zahonSvg"
+                       viewBox="0 0 100 100"
+                       preserveAspectRatio="xMidYMid meet"></svg>
                 </div>
+                <div id="bodDetail" class="bod-detail"></div>
               </div>
 
               <div class="udalost-actions">
@@ -333,7 +337,7 @@
       </div>
     </div>
 
-    <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED -->
+    <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED (zatím může zůstat, nebo ho později zahodíme) -->
     <div id="zoomModal" class="modal">
       <div class="modal-content" style="padding: 20px; max-width: 800px;">
         <h3>Zvětšený náhled záhonu</h3>
