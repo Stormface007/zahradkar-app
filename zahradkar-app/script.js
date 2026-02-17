@@ -1155,30 +1155,47 @@ async function sendAiMessage() {
 // zajistí, že pro záhon existují body
 
 // zajistí, že pro záhon existují body
+// zajistí, že pro záhon existují body a po vygenerování si je i načte
 async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
 
+  // pokud už jsme jednou řešili, nevoláme znovu generate
   if (bodyGeneratedFor.has(key)) {
     return;
   }
 
   try {
-    const res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
-    const json = await res.json().catch(() => null);
+    // zkusíme body načíst
+    let res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
+    let json = await res.json().catch(() => null);
 
-    // podporuje oba tvary: { body:[...] } i prosté [...]
     let bodyArr = [];
     if (json) {
-      if (Array.isArray(json)) {
-        bodyArr = json;
-      } else if (Array.isArray(json.body)) {
+      if (Array.isArray(json.body)) {
         bodyArr = json.body;
+      } else if (Array.isArray(json)) {
+        bodyArr = json;
+      }
+    }
+
+    // pokud v tabulce nic není, necháme je vygenerovat
+    if (!bodyArr.length) {
+      await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
+      // a znovu načteme
+      res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
+      json = await res.json().catch(() => null);
+
+      if (json) {
+        if (Array.isArray(json.body)) {
+          bodyArr = json.body;
+        } else if (Array.isArray(json)) {
+          bodyArr = json;
+        }
       }
     }
 
     if (!bodyArr.length) {
-      // žádné body => vygeneruj
-      await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
+      console.warn("ensureBodyForZahon: ani po generování nejsou body", json);
     }
 
     bodyGeneratedFor.add(key);
@@ -1186,7 +1203,6 @@ async function ensureBodyForZahon(zahonID) {
     console.error("Chyba v ensureBodyForZahon:", e);
   }
 }
-
 
 
 // script.js – vykreslení záhonu do SVG + klik na body se zobrazením detailu bodu
@@ -1248,24 +1264,16 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     return "V normě";
   }
 
-  // sjednocení struktury bodyZahonu -> bodyArr
-  let bodyArr = [];
-  if (bodyZahonu) {
-    if (Array.isArray(bodyZahonu)) {
-      bodyArr = bodyZahonu;
-    } else if (Array.isArray(bodyZahonu.body)) {
-      bodyArr = bodyZahonu.body;
-    }
-  }
-
+  // tady už víme, že API vrací { zahonID, body: [...] }
+  const bodyArr = bodyZahonu && Array.isArray(bodyZahonu.body) ? bodyZahonu.body : [];
   if (!bodyArr.length) {
     console.warn("renderZahonSvg: žádné body k vykreslení", bodyZahonu);
     return;
   }
 
   bodyArr.forEach(b => {
-    const xRel = Number(b.X_rel ?? b.x_rel);
-    const yRel = Number(b.Y_rel ?? b.y_rel);
+    const xRel = Number(b.X_rel);
+    const yRel = Number(b.Y_rel);
     if (isNaN(xRel) || isNaN(yRel)) return;
 
     const x = xRel * 100;
