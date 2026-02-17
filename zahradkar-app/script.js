@@ -1179,125 +1179,97 @@ async function ensureBodyForZahon(zahonID) {
 
 
 
-// vykreslení SVG záhonu + zóny + body s pevnou pozicí
-// vykreslení SVG záhonu + zóny + body s pevnou pozicí
-function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
-  const svg = document.getElementById("zahonSvg");
-  if (!svg) return;
+// script.js – vykreslení záhonu do SVG + klik na body se zobrazením detailu bodu
 
-  // vyčištění
-  while (svg.firstChild) svg.removeChild(svg.firstChild);
+const SERVER_URL = SCRIPT_URL_GOES_HERE; // doplň svoji WebApp URL
 
-  const delka = Number(zahon.Delka) || 1;
-  const sirka = Number(zahon.Sirka) || 1;
-  const aspect = delka / sirka;
+async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
+  const svgContainer = document.getElementById("svg-container");
+  const bodDetail    = document.getElementById("bod-detail");
 
-  const base = 100;
-  let widthView = base * aspect;
-  let heightView = base;
-  if (aspect < 1) {
-    widthView = base;
-    heightView = base / aspect;
-  }
-  svg.setAttribute("viewBox", `0 0 ${widthView} ${heightView}`);
+  if (!svgContainer) return;
 
-  const margin = 5;
-  const usableWidth = widthView - 2 * margin;
-  const usableHeight = heightView - 2 * margin;
+  svgContainer.innerHTML = "";
 
-  // obrys záhonu
-  const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  rect.setAttribute("x", margin);
-  rect.setAttribute("y", margin);
-  rect.setAttribute("width", widthView - 2 * margin);
-  rect.setAttribute("height", heightView - 2 * margin);
-  rect.setAttribute("rx", 2);
-  rect.setAttribute("fill", "#6b4f28");
-  rect.setAttribute("fill-opacity", "0.4");
-  rect.setAttribute("stroke", "#3e2a17");
-  rect.setAttribute("stroke-width", "1.5");
+  const width  = 600;
+  const height = 300;
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("width", width);
+  svg.setAttribute("height", height);
+  svg.setAttribute("viewBox", "0 0 100 50");
+  svg.style.border = "1px solid #ccc";
+  svgContainer.appendChild(svg);
+
+  // obdélník záhonu
+  const rect = document.createElementNS(svgNS, "rect");
+  rect.setAttribute("x", 0);
+  rect.setAttribute("y", 0);
+  rect.setAttribute("width", 100);
+  rect.setAttribute("height", 50);
+  rect.setAttribute("fill", "#fdfcf5");
+  rect.setAttribute("stroke", "#888");
   svg.appendChild(rect);
 
-  const bodDetail = document.getElementById("bodDetail");
+  // pokud existují zóny, vykresli je
+  if (zonyZahonu && Array.isArray(zonyZahonu.zony)) {
+    zonyZahonu.zony.forEach(z => {
+      const zRect = document.createElementNS(svgNS, "rect");
+      const x1 = Number(z.X1_rel) * 100;
+      const y1 = Number(z.Y1_rel) * 50;
+      const x2 = Number(z.X2_rel) * 100;
+      const y2 = Number(z.Y2_rel) * 50;
 
-  const bodyArr = bodyResponse && Array.isArray(bodyResponse.body)
-    ? bodyResponse.body
-    : [];
+      const zx = Math.min(x1, x2);
+      const zy = Math.min(y1, y2);
+      const zw = Math.abs(x2 - x1);
+      const zh = Math.abs(y2 - y1);
 
-  const zony = (zonyResponse && Array.isArray(zonyResponse.zony))
-    ? zonyResponse.zony
-    : [];
+      zRect.setAttribute("x", zx.toString());
+      zRect.setAttribute("y", zy.toString());
+      zRect.setAttribute("width", zw.toString());
+      zRect.setAttribute("height", zh.toString());
+      zRect.setAttribute("fill", "rgba(0, 150, 0, 0.08)");
+      zRect.setAttribute("stroke", "rgba(0, 150, 0, 0.4)");
+      zRect.setAttribute("stroke-dasharray", "2,2");
+      svg.appendChild(zRect);
+    });
+  }
 
-  // mapa zóna → info (stav + souřadnice)
-  const zonaMap = {};
-  zony.forEach(z => {
-    if (!z.ZonaID) return;
-    zonaMap[z.ZonaID] = {
-      stav: z.StavZony || "OK",
-      x1: Number(z.X1_rel || 0),
-      y1: Number(z.Y1_rel || 0),
-      x2: Number(z.X2_rel || 1),
-      y2: Number(z.Y2_rel || 1)
-    };
-  });
+  // funkce pro zjištění stavu zóny bodu – jen jednoduchý placeholder
+  function getStavZonyForBod(bod) {
+    // můžeš později napojit na BilanceZon nebo jinou logiku
+    return "V normě";
+  }
 
-  const colorForStav = (stav) => {
-    if (stav === "Přehnojený") return "#1e88e5"; // modrá
-    if (stav === "Vyčerpaný")  return "#fb8c00"; // oranžová
-    return "#4caf50";                           // OK – zelená
-  };
+  // vykreslení bodů
+  if (!bodyZahonu || !Array.isArray(bodyZahonu.body)) return;
 
-  // 1) vykreslit obdélníky zón (vizualizace nad body)
-  zony.forEach(z => {
-    if (!z.ZonaID) return;
-    const info = zonaMap[z.ZonaID];
-    const stav = info.stav;
-    const fillColor = colorForStav(stav);
+  bodyZahonu.body.forEach(b => {
+    const xRel = Number(b.X_rel);
+    const yRel = Number(b.Y_rel);
 
-    const x1 = info.x1 * usableWidth  + margin;
-    const y1 = info.y1 * usableHeight + margin;
-    const x2 = info.x2 * usableWidth  + margin;
-    const y2 = info.y2 * usableHeight + margin;
-    const w  = x2 - x1;
-    const h  = y2 - y1;
+    const x = xRel * 100;
+    const y = yRel * 50;
 
-    const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    r.setAttribute("x", x1);
-    r.setAttribute("y", y1);
-    r.setAttribute("width",  w);
-    r.setAttribute("height", h);
-    r.setAttribute("fill", fillColor);
-    r.setAttribute("fill-opacity", "0.25");
-    r.setAttribute("stroke", fillColor);
-    r.setAttribute("stroke-width", "0.7");
-    svg.appendChild(r);
-  });
-
-  // 2) vykreslit body s pevnou relativní pozicí (hlavní entita)
-  bodyArr.forEach(b => {
-    const zonaId = b.ZonaID || "";
-    const zonaInfo = zonaMap[zonaId];
-
-    const xRel = Number(b.X_rel || b.x || 0.5);
-    const yRel = Number(b.Y_rel || b.y || 0.5);
-
-    const cx = margin + xRel * usableWidth;
-    const cy = margin + yRel * usableHeight;
-
-    const stavZony = zonaInfo ? zonaInfo.stav : "OK";
-    const fillColor = colorForStav(stavZony);
-
-    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    circle.setAttribute("cx", cx);
-    circle.setAttribute("cy", cy);
-    circle.setAttribute("r", 2.5);
-    circle.setAttribute("fill", fillColor);
-    circle.setAttribute("stroke", "#1b5e20");
-    circle.setAttribute("stroke-width", "0.5");
+    const circle = document.createElementNS(svgNS, "circle");
+    circle.setAttribute("cx", x.toString());
+    circle.setAttribute("cy", y.toString());
+    circle.setAttribute("r", "1.2");
+    circle.setAttribute("fill", "#007bff");
+    circle.setAttribute("stroke", "#004a99");
     circle.style.cursor = "pointer";
 
-    circle.addEventListener("click", () => {
+    svg.appendChild(circle);
+
+    const zonaId = b.ZonaID || "";
+    const stavZony = getStavZonyForBod(b);
+
+    circle.addEventListener("click", async () => {
       if (!bodDetail) return;
+
+      // základní info hned
       bodDetail.innerHTML =
         `<strong>Bod:</strong> ${b.BodID}<br>` +
         `<strong>Zóna:</strong> ${zonaId || "-"}<br>` +
@@ -1308,9 +1280,63 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
             ? "Přehnojení"
             : "V normě"
         }<br>` +
-        `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}`;
-    });
+        `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}<br>` +
+        `<em>Načítám bilanci NPK...</em>`;
 
-    svg.appendChild(circle);
+      try {
+        const res = await fetch(
+          `${SERVER_URL}?action=getDetailBodu&bodID=${encodeURIComponent(b.BodID)}`
+        );
+        const detail = await res.json();
+
+        const bilList = detail.bilance || [];
+        let bil = null;
+
+        if (Array.isArray(bilList) && bilList.length) {
+          // vyber poslední záznam (nejvyšší rok, případně poslední v seznamech)
+          bilList.sort((a, b) => Number(a.Rok || 0) - Number(b.Rok || 0));
+          bil = bilList[bilList.length - 1];
+        }
+
+        if (!bil) {
+          bodDetail.innerHTML += `<br><br><strong>Bilance:</strong> zatím není k dispozici.`;
+          return;
+        }
+
+        const rok    = bil.Rok || "";
+        const sezona = bil.Sezona || "";
+
+        const N_bal = bil.N_bilance_kg;
+        const P_bal = bil.P_bilance_kg;
+        const K_bal = bil.K_bilance_kg;
+        const unava = bil.UnavaIndex;
+
+        const formatKg = (v) =>
+          (v === "" || v == null || isNaN(Number(v)))
+            ? "-"
+            : Number(v).toFixed(1).replace(".", ",");
+
+        bodDetail.innerHTML =
+          `<strong>Bod:</strong> ${b.BodID}<br>` +
+          `<strong>Zóna:</strong> ${zonaId || "-"}<br>` +
+          `<strong>Stav zóny:</strong> ${
+            stavZony === "Vyčerpaný"
+              ? "Vyčerpání živin"
+              : stavZony === "Přehnojený"
+              ? "Přehnojení"
+              : "V normě"
+          }<br>` +
+          `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}<br><br>` +
+          `<strong>Bilance NPK (${rok} ${sezona}):</strong><br>` +
+          `N: ${formatKg(N_bal)} kg<br>` +
+          `P: ${formatKg(P_bal)} kg<br>` +
+          `K: ${formatKg(K_bal)} kg<br>` +
+          `<strong>Únava index:</strong> ${unava ?? "-"}`;
+      } catch (err) {
+        console.error("Chyba načítání detailu bodu:", err);
+        bodDetail.innerHTML +=
+          `<br><span style="color:red;">Chyba při načítání bilance NPK.</span>`;
+      }
+    });
   });
 }
