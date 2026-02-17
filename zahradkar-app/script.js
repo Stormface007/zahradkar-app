@@ -1181,8 +1181,6 @@ async function ensureBodyForZahon(zahonID) {
 
 // script.js – vykreslení záhonu do SVG + klik na body se zobrazením detailu bodu
 
-const SERVER_URL = SCRIPT_URL_GOES_HERE; // doplň svoji WebApp URL
-
 async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   const svgContainer = document.getElementById("svg-container");
   const bodDetail    = document.getElementById("bod-detail");
