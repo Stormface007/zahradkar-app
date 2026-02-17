@@ -1167,7 +1167,6 @@ async function sendAiMessage() {
      }
     
 // zajistí, že pro záhon existují body a po vygenerování si je i načte
-// zajistí, že pro záhon existují body a po vygenerování si je i načte
 async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
 
