@@ -1164,6 +1164,8 @@ async function sendAiMessage() {
   try {
     let res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
     let json = await res.json().catch(() => null);
+     }
+    
 // zajistí, že pro záhon existují body a po vygenerování si je i načte
 async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
