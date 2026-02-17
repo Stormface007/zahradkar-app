@@ -1167,6 +1167,7 @@ async function sendAiMessage() {
      }
     
 // zajistí, že pro záhon existují body a po vygenerování si je i načte
+// zajistí, že pro záhon existují body a po vygenerování si je i načte
 async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
 
@@ -1217,6 +1218,7 @@ async function ensureBodyForZahon(zahonID) {
     console.error("Chyba v ensureBodyForZahon:", e);
   }
 }
+
 
 // script.js – vykreslení záhonu do SVG + klik na body se zobrazením detailu bodu
 async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
