@@ -1178,7 +1178,8 @@ async function ensureBodyForZahon(zahonID) {
 }
 
 
-// vykreslení SVG záhonu + klikatelné body se stavem zóny
+
+// vykreslení SVG záhonu + zóny + body uprostřed zón
 function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
   const svg = document.getElementById("zahonSvg");
   if (!svg) return;
@@ -1200,6 +1201,10 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
   svg.setAttribute("viewBox", `0 0 ${widthView} ${heightView}`);
 
   const margin = 5;
+  const usableWidth = widthView - 2 * margin;
+  const usableHeight = heightView - 2 * margin;
+
+  // obrys záhonu
   const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
   rect.setAttribute("x", margin);
   rect.setAttribute("y", margin);
@@ -1207,28 +1212,33 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
   rect.setAttribute("height", heightView - 2 * margin);
   rect.setAttribute("rx", 2);
   rect.setAttribute("fill", "#6b4f28");
-  rect.setAttribute("fill-opacity", "0.5");
+  rect.setAttribute("fill-opacity", "0.4");
   rect.setAttribute("stroke", "#3e2a17");
   rect.setAttribute("stroke-width", "1.5");
   svg.appendChild(rect);
 
   const bodDetail = document.getElementById("bodDetail");
-  const usableWidth = widthView - 2 * margin;
-  const usableHeight = heightView - 2 * margin;
 
   const bodyArr = bodyResponse && Array.isArray(bodyResponse.body)
     ? bodyResponse.body
     : [];
 
-  // mapa zóna → StavZony
+  const zony = (zonyResponse && Array.isArray(zonyResponse.zony))
+    ? zonyResponse.zony
+    : [];
+
+  // mapa zóna → StavZony a zóna → souřadnice
   const zonaMap = {};
-  if (zonyResponse && Array.isArray(zonyResponse.zony)) {
-    zonyResponse.zony.forEach(z => {
-      if (!z.ZonaID) return;
-      // očekáváme hodnoty: "Vyčerpaný", "Přehnojený", "OK"
-      zonaMap[z.ZonaID] = z.StavZony || "OK";
-    });
-  }
+  zony.forEach(z => {
+    if (!z.ZonaID) return;
+    zonaMap[z.ZonaID] = {
+      stav: z.StavZony || "OK",
+      x1: Number(z.X1_rel || 0),
+      y1: Number(z.Y1_rel || 0),
+      x2: Number(z.X2_rel || 1),
+      y2: Number(z.Y2_rel || 1)
+    };
+  });
 
   const colorForStav = (stav) => {
     if (stav === "Přehnojený") return "#1e88e5"; // modrá
@@ -1236,15 +1246,52 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
     return "#4caf50";                           // OK – zelená
   };
 
+  // 1) vykreslit obdélníky zón
+  zony.forEach(z => {
+    if (!z.ZonaID) return;
+    const info = zonaMap[z.ZonaID];
+    const stav = info.stav;
+    const fillColor = colorForStav(stav);
+
+    const x1 = info.x1 * usableWidth  + margin;
+    const y1 = info.y1 * usableHeight + margin;
+    const x2 = info.x2 * usableWidth  + margin;
+    const y2 = info.y2 * usableHeight + margin;
+    const w  = x2 - x1;
+    const h  = y2 - y1;
+
+    const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    r.setAttribute("x", x1);
+    r.setAttribute("y", y1);
+    r.setAttribute("width",  w);
+    r.setAttribute("height", h);
+    r.setAttribute("fill", fillColor);
+    r.setAttribute("fill-opacity", "0.25");
+    r.setAttribute("stroke", fillColor);
+    r.setAttribute("stroke-width", "0.7");
+    svg.appendChild(r);
+  });
+
+  // 2) vykreslit body (střed zóny, pokud ji mají)
   bodyArr.forEach(b => {
-    const xRel = Number(b.X_rel || b.x || 0.5);
-    const yRel = Number(b.Y_rel || b.y || 0.5);
+    const zonaId = b.ZonaID || "";
+    const zonaInfo = zonaMap[zonaId];
+
+    let xRel;
+    let yRel;
+
+    if (zonaInfo) {
+      xRel = (zonaInfo.x1 + zonaInfo.x2) / 2;
+      yRel = (zonaInfo.y1 + zonaInfo.y2) / 2;
+    } else {
+      xRel = Number(b.X_rel || b.x || 0.5);
+      yRel = Number(b.Y_rel || b.y || 0.5);
+    }
 
     const cx = margin + xRel * usableWidth;
     const cy = margin + yRel * usableHeight;
 
-    const zonaId = b.ZonaID || "";
-    const stavZony = zonaMap[zonaId] || "OK";
+    const stavZony = zonaInfo ? zonaInfo.stav : "OK";
     const fillColor = colorForStav(stavZony);
 
     const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -1274,4 +1321,3 @@ function renderZahonSvg(zahon, bodyResponse, zonyResponse) {
     svg.appendChild(circle);
   });
 }
-
