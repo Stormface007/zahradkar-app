@@ -333,12 +333,14 @@ function onIconClick(typ){
 }
 
 // — otevření detailu záhonu (opravené, jen jednou) —
+// — otevření detailu záhonu se SVG —
 async function otevriModal(z) {
   document.getElementById("nazevZahonu").textContent = z?.NazevZahonu || "";
 
   aktualniZahon = z;
   window.currentZahonId = z?.ZahonID || "";
 
+  // zajistí body v backendu (jen poprvé)
   if (z?.ZahonID) {
     await ensureBodyForZahon(z.ZahonID);
   }
@@ -349,23 +351,13 @@ async function otevriModal(z) {
   const delkaInput = document.getElementById("editDelka");
   const sirkaInput = document.getElementById("editSirka");
   const modal      = document.getElementById("modal");
-  const canvas     = document.getElementById("zahonCanvas");
 
-  if (!nazevInput || !delkaInput || !sirkaInput || !modal || !canvas) return;
+  if (!nazevInput || !delkaInput || !sirkaInput || !modal) return;
 
   nazevInput.value = z?.NazevZahonu || "";
   delkaInput.value = z?.Delka || 0;
   sirkaInput.value = z?.Sirka || 0;
   updatePlocha();
-
-  try {
-    requestAnimationFrame(() => {
-      const canvas2 = document.getElementById("zahonCanvas");
-      if (canvas2) {
-        resizeAndDrawCanvas(canvas2, aktualniZahon?.Delka, aktualniZahon?.Sirka);
-      }
-    });
-  } catch {}
 
   document.getElementById("modalViewDefault").style.display  = "block";
   document.getElementById("modalViewUdalost").style.display  = "none";
@@ -378,10 +370,23 @@ async function otevriModal(z) {
 
   if (z?.ZahonID) {
     showActionIndicator();
+
+    // 1) načtení událostí a plodin (jako dřív)
     await preloadModalData(z);
     zobrazSetiSklizenHistory();
     zobrazHnojeniHistory();
     naplnPlodinySelect();
+
+    // 2) načtení bodů a vykreslení SVG
+    try {
+      const bodyData = await fetch(
+        `${SERVER_URL}?action=getBodyZahonu&zahonID=${z.ZahonID}`
+      ).then(r => r.json());
+      renderZahonSvg(z, bodyData);
+    } catch (e) {
+      console.error("Chyba při načítání bodů záhonu:", e);
+    }
+
     hideActionIndicator();
   } else {
     if (udalostHistElem)  udalostHistElem.innerHTML  = "<p>Žádná historie setí nebo sklizně.</p>";
@@ -1209,3 +1214,73 @@ async function ensureBodyForZahon(zahonID) {
 
   bodyGeneratedFor.add(key);
 }
+
+function renderZahonSvg(zahon, bodyData) {
+  const svg = document.getElementById("zahonSvg");
+  if (!svg) return;
+
+  // vyčištění
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const delka = Number(zahon.Delka) || 1;
+  const sirka = Number(zahon.Sirka) || 1;
+  const aspect = delka / sirka;
+
+  // nastavení viewBoxu podle poměru stran
+  const base = 100;
+  let widthView = base * aspect;
+  let heightView = base;
+  if (aspect < 1) {
+    widthView = base;
+    heightView = base / aspect;
+  }
+  svg.setAttribute("viewBox", `0 0 ${widthView} ${heightView}`);
+
+  // obrys záhonu
+  const margin = 5;
+  const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  rect.setAttribute("x", margin);
+  rect.setAttribute("y", margin);
+  rect.setAttribute("width", widthView - 2 * margin);
+  rect.setAttribute("height", heightView - 2 * margin);
+  rect.setAttribute("rx", 2);
+  rect.setAttribute("fill", "#6b4f28");
+  rect.setAttribute("fill-opacity", "0.5");
+  rect.setAttribute("stroke", "#3e2a17");
+  rect.setAttribute("stroke-width", "1.5");
+  svg.appendChild(rect);
+
+  // body
+  const bodDetail = document.getElementById("bodDetail");
+  const usableWidth = widthView - 2 * margin;
+  const usableHeight = heightView - 2 * margin;
+
+  (bodyData || []).forEach(b => {
+    const xRel = Number(b.x || b.X_rel || 0.5);
+    const yRel = Number(b.y || b.Y_rel || 0.5);
+
+    const cx = margin + xRel * usableWidth;
+    const cy = margin + yRel * usableHeight;
+
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", cx);
+    circle.setAttribute("cy", cy);
+    circle.setAttribute("r", 2.5);
+    circle.setAttribute("fill", "#4caf50");
+    circle.setAttribute("stroke", "#1b5e20");
+    circle.setAttribute("stroke-width", "0.5");
+
+    circle.style.cursor = "pointer";
+
+    circle.addEventListener("click", () => {
+      if (!bodDetail) return;
+      bodDetail.innerHTML =
+        `<strong>Bod:</strong> ${b.BodID}<br>` +
+        `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}`;
+      // později sem doplníme i souhrn bilance NPK z HistorieBodu/HnojeniBodu
+    });
+
+    svg.appendChild(circle);
+  });
+}
+
