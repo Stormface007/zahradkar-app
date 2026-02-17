@@ -1153,6 +1153,7 @@ async function sendAiMessage() {
 }
 
 // zajistí, že pro záhon existují body
+
 // zajistí, že pro záhon existují body
 async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
@@ -1162,12 +1163,21 @@ async function ensureBodyForZahon(zahonID) {
   }
 
   try {
-    const res = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
+    const res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
     const json = await res.json().catch(() => null);
 
-    const bodyArr = json && Array.isArray(json.body) ? json.body : [];
+    // podporuje oba tvary: { body:[...] } i prosté [...]
+    let bodyArr = [];
+    if (json) {
+      if (Array.isArray(json)) {
+        bodyArr = json;
+      } else if (Array.isArray(json.body)) {
+        bodyArr = json.body;
+      }
+    }
 
     if (!bodyArr.length) {
+      // žádné body => vygeneruj
       await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
     }
 
@@ -1234,21 +1244,28 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     });
   }
 
-  // helper – stav zóny bodu (zatím placeholder)
   function getStavZonyForBod(bod) {
     return "V normě";
   }
 
-  // KONTROLA STRUKTURY bodyZahonu
-  // očekáváme { zahonID, body: [...] }
-  if (!bodyZahonu || !Array.isArray(bodyZahonu.body)) {
-    console.warn("renderZahonSvg: neplatná struktura bodyZahonu", bodyZahonu);
+  // sjednocení struktury bodyZahonu -> bodyArr
+  let bodyArr = [];
+  if (bodyZahonu) {
+    if (Array.isArray(bodyZahonu)) {
+      bodyArr = bodyZahonu;
+    } else if (Array.isArray(bodyZahonu.body)) {
+      bodyArr = bodyZahonu.body;
+    }
+  }
+
+  if (!bodyArr.length) {
+    console.warn("renderZahonSvg: žádné body k vykreslení", bodyZahonu);
     return;
   }
 
-  bodyZahonu.body.forEach(b => {
-    const xRel = Number(b.X_rel);
-    const yRel = Number(b.Y_rel);
+  bodyArr.forEach(b => {
+    const xRel = Number(b.X_rel ?? b.x_rel);
+    const yRel = Number(b.Y_rel ?? b.y_rel);
     if (isNaN(xRel) || isNaN(yRel)) return;
 
     const x = xRel * 100;
@@ -1263,7 +1280,7 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     circle.style.cursor = "pointer";
     svg.appendChild(circle);
 
-    const zonaId = b.ZonaID || "";
+    const zonaId   = b.ZonaID || "";
     const stavZony = getStavZonyForBod(b);
 
     circle.addEventListener("click", async () => {
