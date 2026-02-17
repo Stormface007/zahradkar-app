@@ -171,7 +171,7 @@ async function loadZahony() {
       a.textContent = z.NazevZahonu;
       a.addEventListener("click", e => {
         e.preventDefault();
-        dal(z);
+        otevriModal(z);          // opraveno: voláme otevriModal
       });
       td2.append(a);
 
@@ -331,19 +331,19 @@ function onIconClick(typ){
   }
 }
 
+// — otevření detailu záhonu (opravené, jen jednou) —
 async function otevriModal(z) {
-  async function otevriModal(z) {
   document.getElementById("nazevZahonu").textContent = z?.NazevZahonu || "";
 
   aktualniZahon = z;
   window.currentZahonId = z?.ZahonID || "";
 
-  // 🔹 sem přidej – zajistí, že existují body pro daný záhon
   if (z?.ZahonID) {
     await ensureBodyForZahon(z.ZahonID);
   }
 
   setActiveIcon(null);
+
   const nazevInput = document.getElementById("editNazev");
   const delkaInput = document.getElementById("editDelka");
   const sirkaInput = document.getElementById("editSirka");
@@ -359,9 +359,9 @@ async function otevriModal(z) {
 
   try {
     requestAnimationFrame(() => {
-      const canvas = document.getElementById("zahonCanvas");
-      if (canvas) {
-        resizeAndDrawCanvas(canvas, aktualniZahon?.Delka, aktualniZahon?.Sirka);
+      const canvas2 = document.getElementById("zahonCanvas");
+      if (canvas2) {
+        resizeAndDrawCanvas(canvas2, aktualniZahon?.Delka, aktualniZahon?.Sirka);
       }
     });
   } catch {}
@@ -1178,6 +1178,7 @@ async function sendAiMessage() {
   }
 }
 
+// zajistí, že pro záhon existují body
 async function ensureBodyForZahon(zahonID) {
   const url = `${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`;
   const res = await fetch(url);
@@ -1190,4 +1191,3 @@ async function ensureBodyForZahon(zahonID) {
   }
   await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
 }
-
