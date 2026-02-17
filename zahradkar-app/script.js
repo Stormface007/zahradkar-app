@@ -171,7 +171,7 @@ async function loadZahony() {
       a.textContent = z.NazevZahonu;
       a.addEventListener("click", e => {
         e.preventDefault();
-        otevriModal(z);
+        dal(z);
       });
       td2.append(a);
 
@@ -332,13 +332,18 @@ function onIconClick(typ){
 }
 
 async function otevriModal(z) {
+  async function otevriModal(z) {
   document.getElementById("nazevZahonu").textContent = z?.NazevZahonu || "";
 
   aktualniZahon = z;
   window.currentZahonId = z?.ZahonID || "";
 
-  setActiveIcon(null);
+  // 🔹 sem přidej – zajistí, že existují body pro daný záhon
+  if (z?.ZahonID) {
+    await ensureBodyForZahon(z.ZahonID);
+  }
 
+  setActiveIcon(null);
   const nazevInput = document.getElementById("editNazev");
   const delkaInput = document.getElementById("editDelka");
   const sirkaInput = document.getElementById("editSirka");
@@ -1172,3 +1177,17 @@ async function sendAiMessage() {
     hideActionIndicator();
   }
 }
+
+async function ensureBodyForZahon(zahonID) {
+  const url = `${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`;
+  const res = await fetch(url);
+  const text = await res.text();
+  let body = [];
+  try { body = JSON.parse(text); } catch (e) { body = []; }
+
+  if (body && body.length > 0) {
+    return;
+  }
+  await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
+}
+
