@@ -332,10 +332,8 @@ function onIconClick(typ){
   }
 }
 
-
 // — otevření detailu záhonu se SVG —
 async function otevriModal(z) {
-  // název do headeru
   const titleEl = document.getElementById("zahonDetailTitle");
   if (titleEl) {
     titleEl.textContent = z?.NazevZahonu || "";
@@ -344,7 +342,6 @@ async function otevriModal(z) {
   aktualniZahon = z;
   window.currentZahonId = z?.ZahonID || "";
 
-  // zajistí body v backendu (jen poprvé)
   if (z?.ZahonID) {
     await ensureBodyForZahon(z.ZahonID);
   }
@@ -376,13 +373,11 @@ async function otevriModal(z) {
   if (z?.ZahonID) {
     showActionIndicator();
 
-    // 1) načtení událostí a plodin
     await preloadModalData(z);
     zobrazSetiSklizenHistory();
     zobrazHnojeniHistory();
     naplnPlodinySelect();
 
-      // 2) načtení zón a bodů a vykreslení SVG
     try {
       const [zonyResponse, bodyResponse] = await Promise.all([
         fetch(`${SERVER_URL}?action=getZonyZahonu&zahonID=${z.ZahonID}`).then(r => r.json()),
@@ -395,9 +390,11 @@ async function otevriModal(z) {
       renderZahonSvg(z, bodyResponse, zonyResponse);
     } catch (e) {
       console.error("Chyba při načítání zón/bodů záhonu:", e);
+    } finally {
+      hideActionIndicator();
     }
+  }
 }
-
 
 async function preloadModalData(zahon) {
   if (!zahon || !zahon.ZahonID) {
@@ -418,7 +415,6 @@ async function preloadModalData(zahon) {
       udalostiArr.filter(u => u.Typ === "Setí" || u.Typ === "Sklizeň");
     modalDataCache.plodiny = plodinyArr;
 
-    // nalezení poslední nesklizené plodiny
     const seti = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "setí");
     const sklizne = udalostiArr.filter(u => (u.Typ || "").toLowerCase() === "sklizeň");
     let posledniZaseta = null;
@@ -1149,23 +1145,6 @@ async function sendAiMessage() {
   }
 }
 
-
-// zajistí, že pro záhon existují body a po vygenerování si je i načte
-  async function ensureBodyForZahon(zahonID) {
-  const key = String(zahonID);
-
-  console.log("ensureBodyForZahon: start, ZahonID=", zahonID, "known keys:", Array.from(bodyGeneratedFor));
-
-  if (bodyGeneratedFor.has(key)) {
-    console.log("ensureBodyForZahon: už bylo řešeno pro", key);
-    return;
-  }
-
-  try {
-    let res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
-    let json = await res.json().catch(() => null);
-
-    
 // zajistí, že pro záhon existují body a po vygenerování si je i načte
 async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
@@ -1217,7 +1196,6 @@ async function ensureBodyForZahon(zahonID) {
     console.error("Chyba v ensureBodyForZahon:", e);
   }
 }
-
 
 // script.js – vykreslení záhonu do SVG + klik na body se zobrazením detailu bodu
 async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
@@ -1389,4 +1367,3 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     });
   });
 }
-
