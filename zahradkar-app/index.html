@@ -237,11 +237,10 @@
     <div id="modal" class="modal">
       <div class="modal-content modal-content--wide">
         <div class="modal-header">
-          <div id="nazevZahonu" class="modal-zahon-name"></div>
+          <div id="zahonDetailTitle" class="modal-zahon-name"></div>
           <button type="button" onclick="closeModal()">✕</button>
         </div>
 
-        <!-- nový layout: sidebar + obsah -->
         <div class="modal-layout">
           <div class="modal-sidebar">
             <img
@@ -311,12 +310,8 @@
 
               <!-- SVG vizualizace záhonu + detail bodu -->
               <div id="zahonVizualizace">
-                <div id="svgContainer">
-                  <svg id="zahonSvg"
-                       viewBox="0 0 100 100"
-                       preserveAspectRatio="xMidYMid meet"></svg>
-                </div>
-                <div id="bodDetail" class="bod-detail"></div>
+                <div id="svg-container"></div>
+                <div id="bod-detail" class="bod-detail"></div>
               </div>
 
               <div class="udalost-actions">
@@ -337,7 +332,6 @@
       </div>
     </div>
 
-    <!-- MODÁLNÍ OKNO PRO ZVĚTŠENÝ NÁHLED (zatím může zůstat, nebo ho později zahodíme) -->
     <div id="zoomModal" class="modal">
       <div class="modal-content" style="padding: 20px; max-width: 800px;">
         <h3>Zvětšený náhled záhonu</h3>
@@ -347,33 +341,5 @@
       </div>
     </div>
   </div><!-- /root -->
-
-  <script>
-    // přepínání tabů v modalu Přidat záhon
-    document.addEventListener("click", function (e) {
-      if (!e.target.classList.contains("tab-btn")) return;
-      const targetTab = e.target.getAttribute("data-tab");
-
-      document
-        .querySelectorAll("#addZahonModal .tab-btn")
-        .forEach((btn) => {
-          btn.classList.toggle("active", btn === e.target);
-        });
-
-      document
-        .querySelectorAll("#addZahonModal .tab-content")
-        .forEach((div) => {
-          div.classList.toggle("hidden", div.id !== targetTab);
-        });
-    });
-
-    function openAddZahonModal() {
-      document.getElementById("addZahonModal").style.display = "flex";
-    }
-
-    function closeAddZahonModal() {
-      document.getElementById("addZahonModal").style.display = "none";
-    }
-  </script>
 </body>
 </html>
