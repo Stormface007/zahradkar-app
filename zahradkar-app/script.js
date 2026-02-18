@@ -1384,9 +1384,9 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
         const rok    = bil.Rok || "";
         const sezona = bil.Sezona || "";
 
-        const N_bal = bil.N_bilance_kg;
-        const P_bal = bil.P_bilance_kg;
-        const K_bal = bil.K_bilance_kg;
+        const N_bal = bil.N_bilance_g;
+        const P_bal = bil.P_bilance_g;
+        const K_bal = bil.K_bilance_g;
         const unava = bil.UnavaIndex;
 
         const formatKg = (v) =>
@@ -1406,9 +1406,9 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
           }<br>` +
           `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}<br><br>` +
           `<strong>Bilance NPK (${rok} ${sezona}):</strong><br>` +
-          `N: ${formatKg(N_bal)} kg<br>` +
-          `P: ${formatKg(P_bal)} kg<br>` +
-          `K: ${formatKg(K_bal)} kg<br>` +
+          `N: ${formatKg(N_bal)} g<br>` +
+          `P: ${formatKg(P_bal)} g<br>` +
+          `K: ${formatKg(K_bal)} g<br>` +
           `<strong>Únava index:</strong> ${
             unava === "" || unava == null || isNaN(Number(unava))
               ? "-"
