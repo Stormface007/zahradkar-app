@@ -1146,6 +1146,7 @@ async function sendAiMessage() {
 }
 
 // zajistí, že pro záhon existují body a po vygenerování si je i načte
+// zajistí, že pro záhon existují body a po vygenerování si je i načte
 async function ensureBodyForZahon(zahonID) {
   const key = String(zahonID);
 
@@ -1157,6 +1158,7 @@ async function ensureBodyForZahon(zahonID) {
   }
 
   try {
+    // 1) zkusíme načíst body
     let res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
     let json = await res.json().catch(() => null);
 
@@ -1171,12 +1173,14 @@ async function ensureBodyForZahon(zahonID) {
       }
     }
 
+    // 2) pokud žádné body nejsou, necháme backend vygenerovat body + zóny
     if (!bodyArr.length) {
-      console.log("ensureBodyForZahon: body prázdné, volám generateBody");
-      const genRes = await fetch(`${SERVER_URL}?action=generateBody&zahonID=${zahonID}`);
+      console.log("ensureBodyForZahon: body prázdné, volám generateBody + generateZonyProZahon");
+      const genRes = await fetch(`${SERVER_URL}?action=generateBodyAndZony&zahonID=${zahonID}`);
       const genTxt = await genRes.text();
-      console.log("ensureBodyForZahon: generateBody response:", genTxt);
+      console.log("ensureBodyForZahon: generateBodyAndZony response:", genTxt);
 
+      // a znovu načteme body
       res  = await fetch(`${SERVER_URL}?action=getBodyZahonu&zahonID=${zahonID}`);
       json = await res.json().catch(() => null);
       console.log("ensureBodyForZahon: druhý getBodyZahonu JSON=", json);
