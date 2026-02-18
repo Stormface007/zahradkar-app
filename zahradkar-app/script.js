@@ -481,6 +481,48 @@ function saveZahon(){
     .finally(()=>hideActionIndicator());
 }
 
+async function nactiBilanciBodu(bodID, rok = 2026, sezona = "sezona") {
+  if (!bodID) return;
+
+  try {
+    const res = await fetch(`${SERVER_URL}?action=getDetailBodu&bodID=${encodeURIComponent(bodID)}`);
+    const data = await res.json();
+
+    console.log("nactiBilanciBodu:", data);
+
+    const bilanceArr = Array.isArray(data.bilance) ? data.bilance : [];
+    const record = bilanceArr.find(b =>
+      String(b.Rok) === String(rok) && String(b.Sezona) === String(sezona)
+    );
+
+    const nEl = document.getElementById("bilanceN");
+    const pEl = document.getElementById("bilanceP");
+    const kEl = document.getElementById("bilanceK");
+    const uEl = document.getElementById("bilanceUnava");
+
+    if (!nEl || !pEl || !kEl || !uEl) {
+      console.warn("Chybí elementy pro zobrazení bilance NPK.");
+      return;
+    }
+
+    if (!record) {
+      nEl.textContent = "N: 0,0 kg";
+      pEl.textContent = "P: 0,0 kg";
+      kEl.textContent = "K: 0,0 kg";
+      uEl.textContent = "Únava index: 0";
+      return;
+    }
+
+    nEl.textContent = `N: ${Number(record.N_bilance_kg || 0).toFixed(3)} kg`;
+    pEl.textContent = `P: ${Number(record.P_bilance_kg || 0).toFixed(3)} kg`;
+    kEl.textContent = `K: ${Number(record.K_bilance_kg || 0).toFixed(3)} kg`;
+    uEl.textContent = `Únava index: ${Number(record.UnavaIndex || 0).toFixed(2)}`;
+  } catch (e) {
+    console.error("Chyba při načítání bilance bodu:", e);
+  }
+}
+
+
 function todayForInput() {
   const d = new Date();
   const y = d.getFullYear();
@@ -1236,13 +1278,14 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   rect.setAttribute("stroke", "#888");
   svg.appendChild(rect);
 
+  // zóny (pokud je chceš jen pro vizuál)
   if (zonyZahonu && Array.isArray(zonyZahonu.zony)) {
     zonyZahonu.zony.forEach(z => {
       const zRect = document.createElementNS(svgNS, "rect");
-      const x1 = Number(z.X1_rel) * 100;
-      const y1 = Number(z.Y1_rel) * 50;
-      const x2 = Number(z.X2_rel) * 100;
-      const y2 = Number(z.Y2_rel) * 50;
+      const x1 = Number(z.X1rel) * 100;  // názvy polí jako v apiGetZonyZahonu
+      const y1 = Number(z.Y1rel) * 50;
+      const x2 = Number(z.X2rel) * 100;
+      const y2 = Number(z.Y2rel) * 50;
 
       const zx = Math.min(x1, x2);
       const zy = Math.min(y1, y2);
@@ -1261,6 +1304,7 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   }
 
   function getStavZonyForBod(bod) {
+    // zatím dummy – stav zóny teď ignorujeme, bilance je čistě na bodu
     return "V normě";
   }
 
@@ -1274,9 +1318,10 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   }
 
   bodyArr.forEach(b => {
-    const xRel = Number(b.X_rel);
-    const yRel = Number(b.Y_rel);
-    console.log("renderZahonSvg: bod", b.BodID, "X_rel=", b.X_rel, "Y_rel=", b.Y_rel);
+    // názvy polí jako v apiGetBodyZahonu: BodID, Xrel, Yrel, ZonaID, Plocham2 ...
+    const xRel = Number(b.Xrel);
+    const yRel = Number(b.Yrel);
+    console.log("renderZahonSvg: bod", b.BodID, "Xrel=", b.Xrel, "Yrel=", b.Yrel);
 
     if (isNaN(xRel) || isNaN(yRel)) {
       console.warn("renderZahonSvg: bod má neplatné souřadnice", b);
@@ -1321,10 +1366,11 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
         const detail = await res.json();
         console.log("renderZahonSvg: detail bodu", detail);
 
-        const bilList = detail.bilance || [];
+        const bilList = Array.isArray(detail.bilance) ? detail.bilance : [];
         let bil = null;
 
-        if (Array.isArray(bilList) && bilList.length) {
+        if (bilList.length) {
+          // vezmeme nejnovější záznam (nejvyšší rok, případně poslední sezona)
           bilList.sort((a, b) => Number(a.Rok || 0) - Number(b.Rok || 0));
           bil = bilList[bilList.length - 1];
         }
@@ -1345,7 +1391,7 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
         const formatKg = (v) =>
           (v === "" || v == null || isNaN(Number(v)))
             ? "-"
-            : Number(v).toFixed(1).replace(".", ",");
+            : Number(v).toFixed(3).replace(".", ",");
 
         bodDetail.innerHTML =
           `<strong>Bod:</strong> ${b.BodID}<br>` +
@@ -1362,7 +1408,11 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
           `N: ${formatKg(N_bal)} kg<br>` +
           `P: ${formatKg(P_bal)} kg<br>` +
           `K: ${formatKg(K_bal)} kg<br>` +
-          `<strong>Únava index:</strong> ${unava ?? "-"}`;
+          `<strong>Únava index:</strong> ${
+            unava === "" || unava == null || isNaN(Number(unava))
+              ? "-"
+              : Number(unava).toFixed(2).replace(".", ",")
+          }`;
       } catch (err) {
         console.error("Chyba načítání detailu bodu:", err);
         bodDetail.innerHTML +=
@@ -1371,3 +1421,4 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     });
   });
 }
+
