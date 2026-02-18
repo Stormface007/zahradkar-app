@@ -845,3 +845,43 @@ button:hover {
   overflow-y: auto;
 }
 
+#zona-panel {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fafafa;
+  font-size: 14px;
+}
+
+.zona-panel-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+#zona-panel label {
+  font-weight: 500;
+}
+
+#zonaInfo {
+  font-size: 13px;
+  color: #444;
+}
+
+.zona-stav-ok {
+  color: #1b5e20;
+  font-weight: 500;
+}
+
+.zona-stav-nedostatek {
+  color: #e65100;
+  font-weight: 500;
+}
+
+.zona-stav-prebytek {
+  color: #b71c1c;
+  font-weight: 500;
+}
+
