@@ -304,13 +304,29 @@
                 />
               </div>
 
-              <div class="plocha">
+                            <div class="plocha">
                 Plocha: <span id="vypocetPlochy">0</span>
               </div>
 
-              <!-- SVG vizualizace záhonu + detail bodu -->
-              <!-- SVG vizualizace záhonu + detail bodu -->
+              <!-- Panel pro bilanci zóny + SVG vizualizace záhonu + detail bodu -->
               <div id="zahonVizualizace">
+
+                <!-- NOVÝ panel pro výběr prvku a info o zóně -->
+                <div id="zona-panel">
+                  <div class="zona-panel-row">
+                    <label for="bilanceElement">Bilance prvku:</label>
+                    <select id="bilanceElement">
+                      <option value="N">Dusík (N)</option>
+                      <option value="P">Fosfor (P)</option>
+                      <option value="K">Draslík (K)</option>
+                    </select>
+                  </div>
+
+                  <div id="zonaInfo">
+                    <em>Klikni na zónu v záhonu pro zobrazení bilance.</em>
+                  </div>
+                </div>
+
                 <div id="svg-container" class="zahon-svg-wrapper"></div>
                 <div id="bod-detail" class="bod-detail"></div>
               </div>
