@@ -42,7 +42,7 @@ body {
   margin: 0 auto 1rem;
 }
 
-/* Vstupní pole & select – GLOBÁLNÍ (pro přihlášení a hlavní stránku) */
+/* Vstupní pole & select – GLOBÁLNÍ */
 input,
 select {
   width: 100%;
@@ -63,7 +63,7 @@ select {
   background-size: 8px 5px;
 }
 
-/* PŘEPIS PRO MODALY – plná šířka, žádný limit */
+/* PŘEPIS PRO MODALY – plná šířka */
 .modal-body input,
 .modal-body select,
 .modal-body-scroll input,
@@ -276,7 +276,7 @@ button:hover {
   box-sizing: border-box;
 }
 
-/* Header s názvem vlevo, křížek vpravo */
+/* Header */
 .modal-header {
   padding: 12px 16px;
   background: rgba(255,255,255,0.95);
@@ -297,7 +297,7 @@ button:hover {
   gap: 8px;
 }
 
-/* Nadpis záhonu v HEADERU */
+/* Nadpis záhonu */
 .modal-zahon-name {
   font-weight: bold;
   font-size: 1.3rem;
@@ -317,7 +317,7 @@ button:hover {
   align-items: flex-start;
 }
 
-/* Levý sloupec s ikonami (desktop) */
+/* Levý sloupec s ikonami */
 .modal-sidebar {
   display: flex;
   flex-direction: column;
@@ -336,8 +336,6 @@ button:hover {
   transition: transform 0.2s, opacity 0.2s;
   border: 2px solid #a5d6a7;
 }
-
-/* efekt na desktopu – vyjetí doprava */
 .side-icon.active,
 .side-icon:hover {
   opacity: 1;
@@ -354,7 +352,7 @@ button:hover {
   box-sizing: border-box;
 }
 
-/* Responsivita – ikony nahoře v řádku, modal na celou šířku */
+/* Responsivita sidebaru */
 @media (max-width: 700px) {
   .modal-layout {
     flex-direction: column;
@@ -375,7 +373,7 @@ button:hover {
   }
 }
 
-/* Mobilní modaly – fullscreen, žádné useknutí vpravo */
+/* Mobilní modaly – fullscreen */
 @media (max-width: 500px) {
   .modal {
     align-items: stretch;
@@ -410,59 +408,52 @@ button:hover {
   margin-bottom: 1rem;
 }
 
-/* Vizualizace záhonu – SVG varianta */
+/* Vizualizace záhonu – SVG + detail bodu */
 #zahonVizualizace {
-  margin-top: 10px;
   display: flex;
-  gap: 1rem;
-  align-items: stretch;
+  gap: 16px;
+  margin-top: 16px;
 }
 
-/* Kontejner pro SVG – desktop */
-#svgContainer {
-  flex: 2;
-  min-height: 260px;
-  max-height: 380px;
-  border: 2px solid #2e7d32;
-  border-radius: 8px;
-  background: #f7fff7;
-  padding: 4px;
-  box-sizing: border-box;
+.zahon-svg-wrapper {
+  flex: 1 1 auto;
+  max-width: 420px;
+  max-height: 220px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
 }
-
-/* Samotné SVG se natáhne do kontejneru */
-#zahonSvg {
+.zahon-svg-wrapper svg {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-/* Panel s detailem bodu / zóny */
-#bodDetail {
-  flex: 1;
-  max-width: 260px;
-  border: 2px solid #2e7d32;
-  border-radius: 8px;
+.bod-detail {
+  flex: 0 0 220px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   background: #ffffff;
   padding: 0.5rem 0.75rem;
-  font-size: 0.9rem;
   box-sizing: border-box;
-  overflow-y: auto;
+  font-size: 0.9rem;
 }
 
-/* Mobil / užší obrazovky – SVG nad detailem */
+/* Mobil – SVG nad detailem */
 @media (max-width: 900px) {
   #zahonVizualizace {
     flex-direction: column;
   }
-  #svgContainer {
-    width: 100%;
-    min-height: 200px;
+  .zahon-svg-wrapper {
+    max-width: 100%;
     max-height: 240px;
   }
-  #bodDetail {
+  .bod-detail {
+    flex: 0 0 auto;
     max-width: 100%;
-    width: 100%;
+    max-height: 200px;
   }
 }
 
@@ -613,28 +604,26 @@ button:hover {
   }
 }
 
-/* Řádky v modalu Událost – formulář (datum, hnojivo, plodina, výnos) */
+/* Řádky v modalu Událost */
 .udalost-row {
   display: block;
   margin-bottom: 12px;
   width: 100%;
   box-sizing: border-box;
 }
-
 .udalost-label {
   display: block;
   font-weight: 500;
   margin-bottom: 4px;
 }
 
-/* Akce pod vizualizací – OPRAVENÁ VELIKOST IKON */
+/* Akce pod vizualizací */
 .udalost-actions {
   display: flex;
   gap: 8px;
   justify-content: flex-start;
   margin-top: 0.5rem;
 }
-
 .udalost-actions img {
   width: 50px;
   height: 50px;
@@ -651,7 +640,7 @@ button:hover {
   object-fit: contain;
 }
 
-/* mobilní zařízení – absolutní max šířka pro formuláře */
+/* mobilní zařízení – max šířka pro formuláře */
 @media (max-width: 600px) {
   .modal-body,
   .udalost-row,
@@ -676,7 +665,7 @@ button:hover {
   font-family: inherit;
 }
 
-/* Bublina s avatarem – ZVĚTŠENO */
+/* Bublina s avatarem */
 #aiAvatarBubble {
   width: 80px;
   height: 80px;
@@ -700,7 +689,7 @@ button:hover {
   object-fit: cover;
 }
 
-/* Chat okno – OPRAVENO */
+/* Chat okno */
 #aiAvatarChat {
   position: absolute;
   right: 0;
@@ -800,7 +789,7 @@ button:hover {
   font-size: 1rem;
 }
 
-/* Mobilní úpravy */
+/* Mobilní úpravy pro chat */
 @media (max-width: 600px) {
   #aiAvatarWidget {
     right: 16px;
@@ -816,72 +805,3 @@ button:hover {
     bottom: 86px;
   }
 }
-
-/* SVG kontajner */
-#zahonVizualizace {
-  display: flex;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.zahon-svg-wrapper {
-  flex: 1 1 auto;
-  max-width: 420px;
-  max-height: 220px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.zahon-svg-wrapper svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.bod-detail {
-  flex: 0 0 220px;
-  max-height: 220px;
-  overflow-y: auto;
-}
-
-#zona-panel {
-  margin-bottom: 8px;
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: #fafafa;
-  font-size: 14px;
-}
-
-.zona-panel-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-#zona-panel label {
-  font-weight: 500;
-}
-
-#zonaInfo {
-  font-size: 13px;
-  color: #444;
-}
-
-.zona-stav-ok {
-  color: #1b5e20;
-  font-weight: 500;
-}
-
-.zona-stav-nedostatek {
-  color: #e65100;
-  font-weight: 500;
-}
-
-.zona-stav-prebytek {
-  color: #b71c1c;
-  font-weight: 500;
-}
-
