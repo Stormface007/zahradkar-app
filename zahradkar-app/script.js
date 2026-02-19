@@ -1243,7 +1243,7 @@ async function ensureBodyForZahon(zahonID) {
   }
 }
 
-// script.js – vykreslení záhonu do SVG + klik na body se zobrazením detailu bodu
+// script.js – vykreslení záhonu do SVG + klik na body (bez bilance NPK)
 async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   console.log("renderZahonSvg: zahon=", zahon);
   console.log("renderZahonSvg: raw bodyZahonu=", bodyZahonu);
@@ -1269,6 +1269,7 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   svg.style.border = "1px solid #ccc";
   svgContainer.appendChild(svg);
 
+  // pozadí záhonu
   const rect = document.createElementNS(svgNS, "rect");
   rect.setAttribute("x", 0);
   rect.setAttribute("y", 0);
@@ -1278,7 +1279,7 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   rect.setAttribute("stroke", "#888");
   svg.appendChild(rect);
 
-  // Zóny – jen vizuálně (pokud je máš)
+  // Zóny – jen vizuálně (pokud je máš, ale už je nijak nehodnotíme)
   if (zonyZahonu && Array.isArray(zonyZahonu.zony)) {
     zonyZahonu.zony.forEach(z => {
       const zRect = document.createElementNS(svgNS, "rect");
@@ -1304,10 +1305,6 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     });
   }
 
-  function getStavZonyForBod(bod) {
-    return "V normě";
-  }
-
   const bodyArr = bodyZahonu && Array.isArray(bodyZahonu.body) ? bodyZahonu.body : [];
   console.log("renderZahonSvg: bodyArr.length=", bodyArr.length, "first body=", bodyArr[0]);
 
@@ -1317,6 +1314,7 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
   }
 
   bodyArr.forEach(b => {
+    // backend může poslat Xrel/Yrel nebo X_rel/Y_rel – vezmeme, co existuje
     const rawX = (b.Xrel !== undefined ? b.Xrel : b.X_rel);
     const rawY = (b.Yrel !== undefined ? b.Yrel : b.Y_rel);
 
@@ -1342,84 +1340,16 @@ async function renderZahonSvg(zahon, bodyZahonu, zonyZahonu) {
     circle.style.cursor = "pointer";
     svg.appendChild(circle);
 
-    const zonaId   = b.ZonaID || "";
-    const stavZony = getStavZonyForBod(b);
+    const zonaId = b.ZonaID || "";
 
-    circle.addEventListener("click", async () => {
+    // Jednoduchý detail bodu – už BEZ bilance, žádný fetch
+    circle.addEventListener("click", () => {
       if (!bodDetail) return;
 
       bodDetail.innerHTML =
         `<strong>Bod:</strong> ${b.BodID}<br>` +
         `<strong>Zóna:</strong> ${zonaId || "-"}<br>` +
-        `<strong>Stav zóny:</strong> ${
-          stavZony === "Vyčerpaný"
-            ? "Vyčerpání živin"
-            : stavZony === "Přehnojený"
-            ? "Přehnojení"
-            : "V normě"
-        }<br>` +
-        `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}<br>` +
-        `<em>Načítám bilanci NPK...</em>`;
-
-      try {
-        const res = await fetch(
-          `${SERVER_URL}?action=getDetailBodu&bodID=${encodeURIComponent(b.BodID)}`
-        );
-        const detail = await res.json();
-        console.log("renderZahonSvg: detail bodu", detail);
-
-        const bilList = Array.isArray(detail.bilance) ? detail.bilance : [];
-        let bil = null;
-
-        if (bilList.length) {
-          bilList.sort((a, b) => Number(a.Rok || 0) - Number(b.Rok || 0));
-          bil = bilList[bilList.length - 1];
-        }
-
-        if (!bil) {
-          bodDetail.innerHTML += `<br><br><strong>Bilance:</strong> zatím není k dispozici.`;
-          return;
-        }
-
-        const rok    = bil.Rok || "";
-        const sezona = bil.Sezona || "";
-
-        const N_bal = bil.N_bilance_g;
-        const P_bal = bil.P_bilance_g;
-        const K_bal = bil.K_bilance_g;
-        const unava = bil.UnavaIndex;
-
-        const formatKg = (v) =>
-          (v === "" || v == null || isNaN(Number(v)))
-            ? "-"
-            : Number(v).toFixed(3).replace(".", ",");
-
-        bodDetail.innerHTML =
-          `<strong>Bod:</strong> ${b.BodID}<br>` +
-          `<strong>Zóna:</strong> ${zonaId || "-"}<br>` +
-          `<strong>Stav zóny:</strong> ${
-            stavZony === "Vyčerpaný"
-              ? "Vyčerpání živin"
-              : stavZony === "Přehnojený"
-              ? "Přehnojení"
-              : "V normě"
-          }<br>` +
-          `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}<br><br>` +
-          `<strong>Bilance NPK (${rok} ${sezona}):</strong><br>` +
-          `N: ${formatKg(N_bal)} g<br>` +
-          `P: ${formatKg(P_bal)} g<br>` +
-          `K: ${formatKg(K_bal)} g<br>` +
-          `<strong>Únava index:</strong> ${
-            unava === "" || unava == null || isNaN(Number(unava))
-              ? "-"
-              : Number(unava).toFixed(2).replace(".", ",")
-          }`;
-      } catch (err) {
-        console.error("Chyba načítání detailu bodu:", err);
-        bodDetail.innerHTML +=
-          `<br><span style="color:red;">Chyba při načítání bilance NPK.</span>`;
-      }
+        `<strong>Rel. pozice:</strong> x=${xRel.toFixed(2)}, y=${yRel.toFixed(2)}`;
     });
   });
 }
-
